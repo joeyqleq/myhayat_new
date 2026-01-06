@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Hayat - Technology &amp; Security</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barriecito&amp;family=Schoolbell&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .bg-pattern-blocks {
+            background-color: #f98181;background-image: 
+                linear-gradient(30deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+                linear-gradient(150deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+                linear-gradient(30deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+                linear-gradient(150deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+                linear-gradient(60deg, #fec81077 25%, transparent 25.5%, transparent 75%, #fec81077 75%, #fec81077),
+                linear-gradient(60deg, #fec81077 25%, transparent 25.5%, transparent 75%, #fec81077 75%, #fec81077);
+            background-size: 40px 70px;
+            background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+            opacity: 0.1;
+        }.bg-japanese-cube {
+            background-color: #ffc4d3;background-image: linear-gradient(30deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+            linear-gradient(150deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+            linear-gradient(30deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+            linear-gradient(150deg, #f85baa 12%, transparent 12.5%, transparent 87%, #f85baa 87.5%, #f85baa),
+            linear-gradient(60deg, #ff9e7d 25%, transparent 25.5%, transparent 75%, #ff9e7d 75%, #ff9e7d),
+            linear-gradient(60deg, #ff9e7d 25%, transparent 25.5%, transparent 75%, #ff9e7d 75%, #ff9e7d);
+            background-size: 20px 35px;
+            background-position: 0 0, 0 0, 10px 18px, 10px 18px, 0 0, 10px 18px;
+        }
+        .text-stroke-title {
+            -webkit-text-stroke: 1px #5D2E46;
+        }
+    }
+</style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "brand-pink": "#F85BAA",
+                "brand-yellow": "#FEC810",
+                "brand-salmon": "#F98181",
+                "brand-dark": "#2E1A22",
+                "brand-text": "#5D2E46",
+                "bg-cream": "#FFF9F5", 
+              },
+              fontFamily: {
+                "display": ["Barriecito", "cursive"],
+                "body": ["Schoolbell", "cursive"],
+                "sans": ["Nunito", "sans-serif"]
+              },
+              borderRadius: {
+                "curvy": "2.5rem",
+                "blob": "40% 60% 70% 30% / 40% 50% 60% 50%",
+              },
+              boxShadow: {
+                'pop': '4px 4px 0px 0px #F98181', // Changed for nav as requested
+                'pop-hover': '6px 6px 0px 0px rgba(0,0,0,0.15)',
+                'card-outer': '0 10px 30px -5px rgba(248, 91, 170, 0.25)',
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="font-sans bg-bg-cream text-brand-text antialiased selection:bg-brand-pink selection:text-white">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-gradient-to-br from-pink-50 via-red-50 to-yellow-50">
+<div class="fixed inset-0 pointer-events-none z-0 opacity-40">
+<div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-brand-pink/30 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-brand-yellow/30 rounded-full blur-[100px]"></div>
+<div class="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-brand-salmon/30 rounded-full blur-[80px]"></div>
+</div>
+<div class="relative z-10 flex h-full grow flex-col">
+<div class="flex flex-1 justify-center py-5">
+<div class="flex flex-col max-w-[1024px] flex-1 px-4 md:px-6">
+<header class="sticky top-5 z-50 flex items-center justify-between bg-brand-yellow rounded-full border-2 border-brand-text shadow-pop px-6 py-3 transition-transform hover:-translate-y-0.5">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-brand-pink text-white rounded-full flex items-center justify-center p-2 border-2 border-brand-text shadow-sm">
+<span class="font-display text-2xl pt-1">M</span>
+</div>
+<h2 class="text-brand-text text-2xl font-display tracking-wide pt-1">My Hayat</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-brand-text font-body text-lg font-bold hover:text-brand-pink transition-colors" href="#">Features</a>
+<a class="text-brand-text font-body text-lg font-bold hover:text-brand-pink transition-colors" href="#">About</a>
+<a class="text-brand-text font-body text-lg font-bold hover:text-brand-pink transition-colors" href="#">Echoes</a>
+</div>
+<button class="hidden sm:flex cursor-pointer items-center justify-center rounded-full h-11 px-6 bg-brand-pink hover:bg-brand-salmon transition-all shadow-[2px_2px_0px_0px_rgba(93,46,70,1)] border-2 border-brand-text text-white font-display text-lg tracking-wide hover:-translate-y-0.5 active:translate-y-0 active:shadow-none">
+            Get Started
+        </button>
+</div>
+</header>
+<main class="flex-grow mt-12 mb-20">
+<div class="flex flex-col gap-6 px-4 py-8 text-center items-center relative">
+<div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border-2 border-brand-yellow shadow-[4px_4px_0px_0px_rgba(254,200,16,0.4)] rotate-[-2deg] hover:rotate-0 transition-transform duration-300">
+<span class="material-symbols-outlined text-brand-salmon text-xl">lock</span>
+<span class="text-lg font-display text-brand-salmon pt-1">Safe &amp; Secure Space</span>
+</div>
+<h1 class="text-brand-dark text-5xl md:text-7xl font-display leading-[1] max-w-4xl drop-shadow-sm mt-4 relative z-10">
+            Technology with a 
+            <span class="relative inline-block text-brand-pink mx-2 transform rotate-2">
+                Heart
+                <svg class="absolute w-full h-4 -bottom-1 left-0 text-brand-yellow" preserveAspectRatio="none" viewBox="0 0 100 20">
+<path d="M0 10 Q 25 20 50 10 T 100 10" fill="none" stroke="currentColor" stroke-width="6"></path>
+</svg>
+</span>
+</h1>
+<p class="text-brand-text/80 font-body text-xl md:text-2xl leading-relaxed max-w-2xl mt-4">
+            We combine advanced AI with strict privacy measures to ensure your conversations remain private, secure, and culturally respectful.
+        </p>
+</div>
+<div class="mt-8 px-2 md:px-0">
+<div class="bg-gradient-to-br from-white to-pink-50 rounded-[3rem] p-1 border-[3px] border-brand-pink shadow-card-outer group hover:-translate-y-1 transition-transform duration-500">
+<div class="bg-japanese-cube rounded-[2.8rem] p-8 md:p-12 relative overflow-hidden h-full">
+<div class="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-0"></div>
+<div class="flex flex-col md:flex-row gap-12 items-center relative z-10">
+<div class="flex-1 flex flex-col gap-6">
+<div class="flex items-center gap-4">
+<div class="size-16 bg-brand-yellow rounded-2xl flex items-center justify-center border-2 border-brand-text shadow-[4px_4px_0px_0px_rgba(93,46,70,1)] transform -rotate-6">
+<span class="material-symbols-outlined text-3xl text-brand-text">neurology</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-display text-brand-text pt-2">Powered by Azure OpenAI</h2>
+</div>
+<p class="text-brand-text font-body text-xl leading-relaxed">
+                            My Hayat utilizes the robust infrastructure of <strong class="text-brand-pink font-bold bg-brand-pink/10 px-1 rounded">Microsoft Azure</strong> and the intelligence of <strong class="text-brand-pink font-bold bg-brand-pink/10 px-1 rounded">OpenAI</strong> to understand and respond to the unique nuances of the Lebanese dialect.
+                        </p>
+<div class="flex flex-wrap gap-4 mt-2">
+<div class="flex items-center gap-3 bg-white/90 p-4 rounded-xl border-2 border-brand-salmon/30 shadow-sm hover:border-brand-salmon transition-colors">
+<span class="material-symbols-outlined text-brand-salmon">translate</span>
+<span class="font-display text-brand-text text-lg pt-1">Lebanese Dialect Support</span>
+</div>
+<div class="flex items-center gap-3 bg-white/90 p-4 rounded-xl border-2 border-brand-salmon/30 shadow-sm hover:border-brand-salmon transition-colors">
+<span class="material-symbols-outlined text-brand-salmon">psychology</span>
+<span class="font-display text-brand-text text-lg pt-1">Contextual Understanding</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/3 flex justify-center">
+<div class="relative w-64 h-64">
+<div class="absolute inset-0 bg-gradient-to-tr from-brand-yellow to-brand-salmon rounded-full opacity-20 blur-xl animate-pulse"></div>
+<div class="relative w-full h-full bg-white rounded-[2rem] border-2 border-brand-text shadow-[8px_8px_0px_0px_rgba(248,91,170,0.5)] flex items-center justify-center overflow-hidden rotate-3 hover:rotate-6 transition-transform duration-500">
+<div class="absolute top-0 w-full h-6 bg-brand-pink border-b-2 border-brand-text flex items-center px-3 gap-1">
+<div class="w-2 h-2 rounded-full bg-white border border-brand-text"></div>
+<div class="w-2 h-2 rounded-full bg-white border border-brand-text"></div>
+</div>
+<span class="material-symbols-outlined text-8xl text-brand-salmon/80">smart_toy</span>
+<div class="absolute bottom-4 right-4 text-4xl animate-bounce">💬</div>
+<div class="absolute top-10 left-4 text-2xl animate-pulse">✨</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 px-2 md:px-0">
+<div class="bg-white rounded-[2.5rem] p-1 border-[3px] border-brand-text shadow-[8px_8px_0px_0px_rgba(93,46,70,0.1)] hover:shadow-[12px_12px_0px_0px_rgba(248,91,170,0.3)] transition-all duration-300">
+<div class="h-full bg-gradient-to-b from-white to-pink-100 rounded-[2.2rem] p-8 flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-pink/20 rounded-full blur-xl"></div>
+<div class="size-16 bg-brand-pink text-white rounded-2xl flex items-center justify-center border-2 border-brand-text shadow-sm rotate-[-3deg]">
+<span class="material-symbols-outlined text-3xl">encrypted</span>
+</div>
+<h3 class="text-2xl font-display text-brand-text pt-1">Iron-Clad Data Security</h3>
+<p class="text-brand-text/80 font-body text-lg leading-relaxed">
+                    Your privacy is our priority. We employ enterprise-grade encryption for all data in transit and at rest. Your conversations are yours alone—safeguarded with the highest security standards.
+                </p>
+<ul class="flex flex-col gap-3 mt-auto pt-4">
+<li class="flex items-center gap-3 text-brand-text font-bold font-sans">
+<div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center border border-green-300">
+<span class="material-symbols-outlined text-green-600 text-sm font-bold">check</span>
+</div>
+                        End-to-End Encryption
+                    </li>
+<li class="flex items-center gap-3 text-brand-text font-bold font-sans">
+<div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center border border-green-300">
+<span class="material-symbols-outlined text-green-600 text-sm font-bold">check</span>
+</div>
+                        Anonymized Data Processing
+                    </li>
+</ul>
+</div>
+</div>
+<div class="bg-white rounded-[2.5rem] p-1 border-[3px] border-brand-text shadow-[8px_8px_0px_0px_rgba(93,46,70,0.1)] hover:shadow-[12px_12px_0px_0px_rgba(254,200,16,0.3)] transition-all duration-300">
+<div class="h-full bg-gradient-to-b from-white to-yellow-100 rounded-[2.2rem] p-8 flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-brand-yellow/20 rounded-full blur-xl"></div>
+<div class="size-16 bg-brand-yellow text-brand-text rounded-2xl flex items-center justify-center border-2 border-brand-text shadow-sm rotate-[3deg]">
+<span class="material-symbols-outlined text-3xl">handshake</span>
+</div>
+<h3 class="text-2xl font-display text-brand-text pt-1">Cultural &amp; Ethical Guidelines</h3>
+<p class="text-brand-text/80 font-body text-lg leading-relaxed">
+                    Our AI is trained on culturally specific datasets to ensure interactions are respectful, relevant, and supportive of Lebanese social norms and values. We prioritize ethical AI usage.
+                </p>
+<ul class="flex flex-col gap-3 mt-auto pt-4">
+<li class="flex items-center gap-3 text-brand-text font-bold font-sans">
+<div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center border border-green-300">
+<span class="material-symbols-outlined text-green-600 text-sm font-bold">check</span>
+</div>
+                        Culturally Sensitive AI Training
+                    </li>
+<li class="flex items-center gap-3 text-brand-text font-bold font-sans">
+<div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center border border-green-300">
+<span class="material-symbols-outlined text-green-600 text-sm font-bold">check</span>
+</div>
+                        Strict Ethical Boundaries
+                    </li>
+</ul>
+</div>
+</div>
+</div>
+<div class="mt-12 mb-8 px-2 md:px-0">
+<div class="bg-brand-salmon rounded-[3rem] p-2 shadow-xl border-4 border-brand-salmon relative overflow-hidden">
+<div class="bg-japanese-cube rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
+<div class="absolute inset-0 bg-brand-salmon/90 z-0"></div>
+<div class="absolute top-[-20%] right-[-5%] p-8 opacity-20 z-0 transform rotate-12">
+<span class="material-symbols-outlined text-white text-[180px]">lock_person</span>
+</div>
+<div class="flex-1 z-10 relative">
+<h3 class="text-white text-3xl md:text-4xl font-display mb-4 flex items-center gap-3">
+<span class="bg-white text-brand-salmon p-3 rounded-2xl shadow-sm border-2 border-brand-text transform -rotate-3 block">
+<span class="material-symbols-outlined text-2xl block">visibility_off</span>
+</span>
+                        Your Secrets Stay Yours
+                    </h3>
+<p class="text-white font-body text-xl md:text-2xl leading-relaxed">
+                        We do not sell your personal data. We are transparent about what information is collected and how it is used to improve your experience. You are always in control.
+                    </p>
+</div>
+<div class="flex-shrink-0 z-10">
+<button class="group bg-white text-brand-salmon text-lg font-display tracking-wide py-4 px-8 rounded-full shadow-[4px_4px_0px_0px_rgba(93,46,70,0.3)] hover:shadow-[6px_6px_0px_0px_rgba(93,46,70,0.3)] border-2 border-brand-text hover:-translate-y-1 transition-all flex items-center gap-2">
+<span>Read Privacy Policy</span>
+<span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-10 border-t-2 border-brand-text/10 bg-white/60 backdrop-blur-md px-8 py-10 rounded-t-[3rem] relative z-20 mx-2 md:mx-0">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-brand-pink text-white rounded-lg flex items-center justify-center shadow-sm border border-brand-text">
+<span class="font-display text-xl pt-1">M</span>
+</div>
+<span class="text-brand-text/70 font-body text-base font-bold">© 2024 My Hayat. With love from Lebanon.</span>
+</div>
+<div class="flex items-center gap-8">
+<a class="text-brand-text/70 font-body text-base font-bold hover:text-brand-pink transition-colors" href="#">Privacy Policy</a>
+<a class="text-brand-text/70 font-body text-base font-bold hover:text-brand-pink transition-colors" href="#">Terms of Service</a>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-brand-pink/10 flex items-center justify-center text-brand-pink cursor-pointer border border-brand-pink/20 hover:bg-brand-pink hover:text-white transition-all hover:scale-110">
+<span class="material-symbols-outlined text-xl">share</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</div>
+</body></html>

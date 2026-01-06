@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Hayat Footer Design</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Barriecito&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F85BAA", // Hot Pink
+                        secondary: "#FEC810", // Yellow
+                        accent: "#F98181", // Salmon/Light Red
+                        "background-light": "#FFF5F9", // Very light pink
+                        "background-dark": "#1f121b", // Dark purple-brown
+                        "surface-dark": "#2d1b27",
+                    },
+                    fontFamily: {
+                        display: ["Barriecito", "cursive"],
+                        body: ["Nunito", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                        '3xl': '2rem',
+                        '4xl': '3rem',
+                    },
+                    backgroundImage: {
+                        'cube-pattern': "url(\"data:image/svg+xml,%3Csvg width='40' height='46' viewBox='0 0 40 46' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.25' fill-rule='evenodd'%3E%3Cpath d='M0 46L20 34.5L40 46V23L20 11.5L0 23V46ZM20 11.5L0 0V23L20 34.5V11.5ZM20 11.5L40 23V0L20 11.5Z' /%3E%3C/g%3E%3C/svg%3E\")",
+                        'cube-pattern-input': "url(\"data:image/svg+xml,%3Csvg width='40' height='46' viewBox='0 0 40 46' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F98181' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M0 46L20 34.5L40 46V23L20 11.5L0 23V46ZM20 11.5L0 0V23L20 34.5V11.5ZM20 11.5L40 23V0L20 11.5Z' /%3E%3C/g%3E%3C/svg%3E\")",
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #F85BAA;
+            border-radius: 10px;
+        }
+        .text-outline-secondary {
+            -webkit-text-stroke: 1px #FEC810; 
+            text-shadow: 2px 2px 0px #F98181;
+        }
+        .cube-bg-animation {
+            animation: moveBackground 20s linear infinite;
+        }
+        @keyframes moveBackground {
+            from { background-position: 0 0; }
+            to { background-position: 100% 100%; }
+        }.newsletter-box {
+            background-color: #FEC810;
+            box-shadow: 10px 10px 0px #F98181;
+        }
+        .dark .newsletter-box {
+            background-color: #1f2937;
+            box-shadow: 10px 10px 0px #F98181;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-body min-h-screen flex flex-col justify-between text-gray-800 dark:text-gray-200 transition-colors duration-300">
+<main class="flex-grow container mx-auto px-4 py-12 text-center">
+<h1 class="text-4xl md:text-6xl font-display text-primary mb-8 drop-shadow-md">
+            Welcome to <span class="text-secondary" style="-webkit-text-stroke: 1px #F85BAA;">My Hayat</span>
+</h1>
+<p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-12">
+            Your friendly AI mental health companion. Scroll down to see our vibrant footer design.
+    </p>
+<button class="px-6 py-3 rounded-full bg-secondary text-primary font-bold hover:scale-105 transition-transform shadow-lg border-2 border-primary" onclick="document.documentElement.classList.toggle('dark')">
+            Toggle Light/Dark Mode
+    </button>
+</main>
+<footer class="relative mt-20">
+<div class="absolute -top-16 left-0 w-full overflow-hidden leading-none rotate-180">
+<svg class="relative block w-[calc(100%+1.3px)] h-16 md:h-24 text-primary dark:text-surface-dark transition-colors duration-300" data-name="Layer 1" preserveAspectRatio="none" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg">
+<path class="fill-current" d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+</svg>
+</div>
+<div class="bg-gradient-to-b from-primary via-[#fb8294] to-accent dark:from-surface-dark dark:to-surface-dark pt-12 pb-8 px-4 md:px-8 transition-colors duration-300 relative overflow-hidden">
+<div class="absolute inset-0 bg-cube-pattern opacity-10 pointer-events-none cube-bg-animation"></div>
+<div class="container mx-auto relative z-10">
+<div class="max-w-4xl mx-auto mb-16 relative">
+<div class="newsletter-box rounded-4xl p-1 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+<div class="bg-white/20 dark:bg-white/5 rounded-[2.5rem] border-4 border-white dark:border-secondary border-dashed p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-sm">
+<div class="text-center md:text-left">
+<h3 class="font-display text-3xl md:text-4xl text-primary dark:text-secondary mb-2 drop-shadow-sm">
+                                    Join the Circle!
+                            </h3>
+<p class="text-primary/80 dark:text-gray-300 font-bold text-lg">
+                                    Get daily positivity tips &amp; app updates.
+                            </p>
+</div>
+<form class="w-full md:w-auto flex-1 max-w-md flex flex-col sm:flex-row gap-3">
+<div class="relative flex-grow group">
+<input class="w-full h-14 pl-6 pr-4 rounded-full border-4 border-white/50 focus:border-white outline-none bg-cube-pattern-input bg-white text-gray-800 placeholder-gray-400 transition-all duration-300 shadow-inner group-hover:scale-[1.02]" placeholder="Enter your email..." type="email"/>
+</div>
+<button class="h-14 px-8 rounded-full bg-primary text-white font-display text-xl tracking-wide hover:bg-[#ff7ebf] hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 border-b-4 border-[#c93b82] active:border-b-0 active:translate-y-1" type="button">
+<span>Subscribe</span>
+<span class="material-symbols-outlined text-2xl">send</span>
+</button>
+</form>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-12">
+<div class="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left space-y-4">
+<a class="inline-block group" href="#">
+<div class="flex items-center gap-2">
+<div class="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-primary font-display text-4xl shadow-lg rotate-3 group-hover:-rotate-3 transition-transform border-2 border-white/30">
+                                    M
+                            </div>
+<span class="font-display text-4xl text-white dark:text-secondary drop-shadow-md">
+                                    My Hayat
+                            </span>
+</div>
+</a>
+<p class="text-white dark:text-gray-300 leading-relaxed font-medium">
+                            Your safe space for mental wellness. An AI companion that listens, understands, and speaks your language. Culturally tuned for you.
+                    </p>
+<div class="flex gap-4 pt-2">
+<a class="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center text-primary hover:bg-secondary hover:text-white transition-all transform hover:-translate-y-1 shadow-md" href="#">
+<span class="material-symbols-outlined">thumb_up</span>
+</a>
+<a class="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center text-primary hover:bg-secondary hover:text-white transition-all transform hover:-translate-y-1 shadow-md" href="#">
+<span class="material-symbols-outlined">smart_display</span>
+</a>
+<a class="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center text-primary hover:bg-secondary hover:text-white transition-all transform hover:-translate-y-1 shadow-md" href="#">
+<span class="material-symbols-outlined">alternate_email</span>
+</a>
+</div>
+</div>
+<div class="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8 text-center md:text-left">
+<div class="space-y-4">
+<h4 class="font-display text-2xl text-secondary dark:text-secondary mb-2 inline-block relative drop-shadow-sm">
+                                Explore
+                                <span class="absolute -bottom-1 left-0 w-full h-1 bg-white/30 rounded-full"></span>
+</h4>
+<ul class="space-y-2">
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Home
+                                </a></li>
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Features
+                                </a></li>
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> About Us
+                                </a></li>
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Blog
+                                </a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="font-display text-2xl text-secondary dark:text-secondary mb-2 inline-block relative drop-shadow-sm">
+                                Support
+                                <span class="absolute -bottom-1 left-0 w-full h-1 bg-white/30 rounded-full"></span>
+</h4>
+<ul class="space-y-2">
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Help Center
+                                </a></li>
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Safety
+                                </a></li>
+<li><a class="text-white dark:text-gray-300 hover:text-secondary dark:hover:text-primary font-bold transition-colors flex items-center gap-2 justify-center md:justify-start group" href="#">
+<span class="w-2 h-2 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span> Contact
+                                </a></li>
+</ul>
+</div>
+<div class="space-y-4 col-span-2 sm:col-span-1">
+<h4 class="font-display text-2xl text-secondary dark:text-secondary mb-2 inline-block relative drop-shadow-sm">
+                                Get App
+                                <span class="absolute -bottom-1 left-0 w-full h-1 bg-white/30 rounded-full"></span>
+</h4>
+<div class="flex flex-col gap-3 items-center sm:items-start">
+<button class="w-36 py-2 px-4 bg-black/20 hover:bg-black/30 backdrop-blur-sm rounded-xl border border-white/20 flex items-center gap-3 transition-all group">
+<span class="material-symbols-outlined text-3xl text-white group-hover:text-secondary transition-colors">phone_iphone</span>
+<div class="text-left">
+<div class="text-[0.6rem] text-white/80 uppercase tracking-wider">Download on</div>
+<div class="text-sm font-bold text-white">App Store</div>
+</div>
+</button>
+<button class="w-36 py-2 px-4 bg-black/20 hover:bg-black/30 backdrop-blur-sm rounded-xl border border-white/20 flex items-center gap-3 transition-all group">
+<span class="material-symbols-outlined text-3xl text-white group-hover:text-secondary transition-colors">android</span>
+<div class="text-left">
+<div class="text-[0.6rem] text-white/80 uppercase tracking-wider">Get it on</div>
+<div class="text-sm font-bold text-white">Google Play</div>
+</div>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-white/20 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-white/80 dark:text-gray-400 gap-4">
+<div>
+                        © 2023 My Hayat. All rights reserved. Made with <span class="text-secondary">♥</span> in Lebanon.
+                </div>
+<div class="flex gap-6 font-bold">
+<a class="hover:text-secondary dark:hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-secondary dark:hover:text-secondary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About My Hayat - Your Lebanese AI Bestie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barriecito&amp;family=Gaegu:wght@300;400;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+:root {
+  --primary-pink: #F85BAA;
+  --primary-yellow: #FEC810;
+  --primary-salmon: #F98181;
+  --text-dark: #4A192C;
+}
+@layer utilities {
+  .font-heading {
+    font-family: 'Barriecito', cursive;
+  }
+  .font-hand {
+    font-family: 'Gaegu', cursive;
+  }
+  .bg-pattern-blocks {
+    background-color: transparent;
+    background-image: 
+      linear-gradient(30deg, #F85BAA 12%, transparent 12.5%, transparent 87%, #F85BAA 87.5%, #F85BAA),
+      linear-gradient(150deg, #F85BAA 12%, transparent 12.5%, transparent 87%, #F85BAA 87.5%, #F85BAA),
+      linear-gradient(30deg, #F85BAA 12%, transparent 12.5%, transparent 87%, #F85BAA 87.5%, #F85BAA),
+      linear-gradient(150deg, #F85BAA 12%, transparent 12.5%, transparent 87%, #F85BAA 87.5%, #F85BAA),
+      linear-gradient(60deg, #FEC810 25%, transparent 25.5%, transparent 75%, #FEC810 75%, #FEC810),
+      linear-gradient(60deg, #FEC810 25%, transparent 25.5%, transparent 75%, #FEC810 75%, #FEC810);
+    background-size: 40px 70px;
+    background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+    opacity: 0.05;
+  }
+  .bg-pattern-blocks-intense {
+    background-color: transparent;
+    background-image: 
+        linear-gradient(30deg, #F98181 12%, transparent 12.5%, transparent 87%, #F98181 87.5%, #F98181),
+        linear-gradient(150deg, #F98181 12%, transparent 12.5%, transparent 87%, #F98181 87.5%, #F98181),
+        linear-gradient(30deg, #F98181 12%, transparent 12.5%, transparent 87%, #F98181 87.5%, #F98181),
+        linear-gradient(150deg, #F98181 12%, transparent 12.5%, transparent 87%, #F98181 87.5%, #F98181),
+        linear-gradient(60deg, #fcebc4 25%, transparent 25.5%, transparent 75%, #fcebc4 75%, #fcebc4),
+        linear-gradient(60deg, #fcebc4 25%, transparent 25.5%, transparent 75%, #fcebc4 75%, #fcebc4);
+    background-size: 20px 35px;
+    background-position: 0 0, 0 0, 10px 17.5px, 10px 17.5px, 0 0, 10px 17.5px;
+  }
+}
+</style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "brand-pink": "#F85BAA",
+            "brand-yellow": "#FEC810",
+            "brand-salmon": "#F98181",
+            "background-light": "#FFF0F5",
+            "background-dark": "#2E1A22",
+            "text-main": "#5D2E46", 
+          },
+          fontFamily: {
+            "body": ["Nunito", "sans-serif"],
+            "heading": ["Barriecito", "cursive"],
+            "hand": ["Gaegu", "cursive"]
+          },
+          boxShadow: {
+            'retro': '4px 4px 0px 0px #4A192C',
+            'retro-salmon': '4px 4px 0px 0px #F98181',
+            'retro-hover': '2px 2px 0px 0px #4A192C',
+            'glow-pink': '0 0 20px rgba(248, 91, 170, 0.5)',
+            'card-float': '0 20px 40px -10px rgba(248, 91, 170, 0.15)',
+          },
+          animation: {
+            'wiggle': 'wiggle 1s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            }
+          }
+        },
+      },
+    }
+</script>
+</head>
+<body class="font-body bg-gradient-to-br from-brand-pink/20 via-[#FFF9F0] to-brand-salmon/20 text-text-main antialiased selection:bg-brand-pink selection:text-white overflow-x-hidden min-h-screen">
+<div class="relative min-h-screen w-full flex flex-col">
+<div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-yellow/30 rounded-full blur-[120px] mix-blend-multiply animate-pulse"></div>
+<div class="absolute top-[20%] right-[-10%] w-[45%] h-[45%] bg-brand-pink/25 rounded-full blur-[100px] mix-blend-multiply"></div>
+<div class="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-brand-salmon/30 rounded-full blur-[100px] mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-pattern-blocks opacity-30"></div>
+</div>
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<div class="w-full flex justify-center pt-6 px-4">
+<header class="w-full max-w-6xl flex items-center justify-between bg-brand-yellow rounded-full border-2 border-white shadow-retro-salmon px-6 py-3 transition-transform hover:-translate-y-0.5">
+<div class="flex items-center gap-3">
+<div class="size-12 text-white bg-gradient-to-br from-brand-pink to-brand-salmon rounded-full flex items-center justify-center p-2 shadow-md transform -rotate-6 border-2 border-white">
+<span class="material-symbols-outlined font-black text-2xl">favorite</span>
+</div>
+<h2 class="text-white text-3xl font-heading tracking-wide drop-shadow-md">My Hayat</h2>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-text-main font-hand text-xl font-bold hover:text-white hover:drop-shadow-md transition-all relative group" href="#">
+                        Features
+                        <span class="absolute -bottom-1 left-0 w-0 h-1 bg-white rounded-full group-hover:w-full transition-all duration-300 shadow-sm"></span>
+</a>
+<a class="text-text-main font-hand text-xl font-bold hover:text-white hover:drop-shadow-md transition-all relative group" href="#">
+                        About
+                        <span class="absolute -bottom-1 left-0 w-0 h-1 bg-white rounded-full group-hover:w-full transition-all duration-300 shadow-sm"></span>
+</a>
+<a class="text-text-main font-hand text-xl font-bold hover:text-white hover:drop-shadow-md transition-all relative group" href="#">
+                        Echoes
+                        <span class="absolute -bottom-1 left-0 w-0 h-1 bg-white rounded-full group-hover:w-full transition-all duration-300 shadow-sm"></span>
+</a>
+</div>
+<button class="hidden md:flex cursor-pointer items-center justify-center rounded-full h-12 px-8 bg-brand-pink hover:bg-brand-salmon border-2 border-transparent hover:border-white transition-all shadow-retro hover:shadow-retro-hover hover:translate-y-[2px] text-white font-bold group">
+<span class="font-hand text-xl">Start Chatting</span>
+<span class="material-symbols-outlined ml-2 text-sm group-hover:rotate-45 transition-transform">send</span>
+</button>
+<button class="md:hidden text-brand-pink p-2 bg-white rounded-full shadow-sm border border-brand-pink/20">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</header>
+</div>
+<main class="flex-grow flex flex-col items-center w-full">
+<div class="w-full max-w-7xl px-4 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12 md:gap-20">
+<div class="flex-1 flex flex-col items-start gap-6 z-10">
+<div class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-white to-brand-yellow/20 border-2 border-brand-yellow shadow-[4px_4px_0px_0px_#FEC810] rotate-[-2deg]">
+<span class="size-3 rounded-full bg-brand-pink animate-ping"></span>
+<span class="text-base font-hand font-bold text-text-main tracking-widest uppercase">Made for Lebanon 🇱🇧</span>
+</div>
+<h1 class="text-6xl md:text-8xl font-heading text-text-main leading-[1] tracking-tight relative">
+                        Your Bestie, <br/>
+<span class="relative inline-block text-brand-pink z-10">
+                             Always There.
+                             <svg class="absolute w-[110%] -left-[5%] -bottom-2 -z-10 text-brand-yellow" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M0,10 C30,18 70,5 100,10 C130,15 170,5 200,10 L200,20 L0,20 Z" fill="#FEC810" opacity="0.6"></path>
+</svg>
+</span>
+</h1>
+<p class="text-xl md:text-2xl text-text-main/80 font-hand font-bold leading-relaxed max-w-lg">
+                        Meet My Hayat, the AI companion that speaks your dialect and gets your vibe. No judging, just chatting like you're having coffee with a friend in Hamra. ☕️
+                    </p>
+<div class="flex flex-wrap gap-4 mt-4">
+<button class="flex items-center justify-center rounded-2xl h-16 px-8 bg-brand-pink text-white text-xl font-hand font-bold shadow-retro hover:shadow-retro-hover hover:translate-y-[2px] transition-all border-2 border-white/20">
+                            Chat in Arabic
+                        </button>
+<button class="flex items-center justify-center rounded-2xl h-16 px-8 bg-gradient-to-r from-white/90 to-brand-salmon/10 border-2 border-brand-salmon text-brand-salmon hover:bg-brand-salmon hover:text-white text-xl font-hand font-bold shadow-retro hover:shadow-retro-hover hover:translate-y-[2px] transition-all">
+<span class="material-symbols-outlined mr-2">play_circle</span>
+                            See The Vibe
+                        </button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-[400px] md:max-w-[480px] relative">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-brand-yellow/40 to-brand-pink/40 rounded-full blur-3xl -z-10 animate-pulse"></div>
+<div class="relative mx-auto bg-gradient-to-br from-white to-[#FFF0F5] rounded-[3rem] p-4 shadow-2xl border-[8px] border-brand-pink rotate-[-3deg] hover:rotate-0 transition-transform duration-500 ease-out animate-float">
+<div class="absolute -top-6 -right-6 size-24 bg-brand-yellow rounded-full flex items-center justify-center z-30 shadow-lg border-4 border-white rotate-12">
+<span class="font-heading text-lg text-center leading-none text-text-main">Say<br/>Hi!</span>
+</div>
+<div class="w-full aspect-[9/19] rounded-[2.25rem] overflow-hidden bg-white relative border-4 border-gray-100">
+<img alt="App Interface Mockup" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL8F48v9ILLPnVIIAjkVFZVDtilavaFt-grD5fxUJeLOBQchZW1DSheiKSoOXqmmjY9mBTrSahnvaSA_EXV6o3R4eTUjcnHjGd3ZRB0J-oE1BaUDn5m7vtkdz0qguTQsvcyqWRejwAaMsMBGYCCfx-pQO5jGKehBpr5ap9itC4zaljXenJcrDunGliQGQffSHJ-Yu6_CWSVRpEDXpDMzfj2AuOX2Q6uC8yTPhJcFAutPTX6P6GWjvNoSQ1203LH1MprGwbUV9h5Nc"/>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full max-w-6xl px-4 py-20 flex flex-col items-center gap-16 relative">
+<div class="absolute top-20 left-10 text-brand-salmon/20 animate-wiggle">
+<span class="material-symbols-outlined text-9xl">favorite</span>
+</div>
+<div class="absolute bottom-20 right-10 text-brand-yellow/20 animate-wiggle" style="animation-delay: 0.5s;">
+<span class="material-symbols-outlined text-9xl">sentiment_satisfied</span>
+</div>
+<div class="text-center max-w-2xl z-10">
+<h2 class="text-brand-salmon font-hand font-bold uppercase tracking-widest text-xl mb-3 bg-white/50 inline-block px-4 py-1 rounded-full">Why My Hayat?</h2>
+<h3 class="text-5xl md:text-6xl font-heading text-text-main mb-6">
+                        Support That Feels Like <span class="relative inline-block text-brand-pink underline decoration-wavy decoration-brand-yellow decoration-4 underline-offset-4">Home</span>
+</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full z-10">
+<div class="bg-gradient-to-br from-white/95 to-brand-pink/10 backdrop-blur-md p-8 rounded-[3rem] border-4 border-brand-pink/20 shadow-card-float hover:shadow-glow-pink hover:border-brand-pink transition-all duration-300 group hover:-translate-y-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-pattern-blocks-intense opacity-30"></div>
+<div class="relative z-10">
+<div class="size-20 rounded-full bg-pink-100 text-brand-pink flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-inner border-2 border-white">
+<span class="material-symbols-outlined text-5xl">favorite_border</span>
+</div>
+<h4 class="text-3xl font-heading text-text-main mb-3">Zero Judgment</h4>
+<p class="text-text-main/70 font-hand text-xl font-bold leading-relaxed">
+                                Pour your heart out in a 100% confidential space. No awkward stares, just pure understanding and empathy. It's safe here.
+                            </p>
+</div>
+</div>
+<div class="bg-gradient-to-br from-white/95 to-brand-yellow/10 backdrop-blur-md p-8 rounded-[3rem] border-4 border-brand-yellow/30 shadow-card-float hover:shadow-[0_0_20px_rgba(254,200,16,0.5)] hover:border-brand-yellow transition-all duration-300 group hover:-translate-y-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-pattern-blocks-intense opacity-30"></div>
+<div class="relative z-10">
+<div class="size-20 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-12 transition-transform shadow-inner border-2 border-white">
+<span class="material-symbols-outlined text-5xl">translate</span>
+</div>
+<h4 class="text-3xl font-heading text-text-main mb-3">Lebanese Dialect</h4>
+<p class="text-text-main/70 font-hand text-xl font-bold leading-relaxed">
+                                "Kifak?" "Ça va?" We speak your language. Express yourself naturally in Lebanese Arabic without translating your feelings.
+                            </p>
+</div>
+</div>
+<div class="bg-gradient-to-br from-white/95 to-brand-salmon/10 backdrop-blur-md p-8 rounded-[3rem] border-4 border-brand-salmon/30 shadow-card-float hover:shadow-[0_0_20px_rgba(249,129,129,0.5)] hover:border-brand-salmon transition-all duration-300 group hover:-translate-y-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-pattern-blocks-intense opacity-30"></div>
+<div class="relative z-10">
+<div class="size-20 rounded-full bg-orange-100 text-brand-salmon flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner border-2 border-white">
+<span class="material-symbols-outlined text-5xl">all_inclusive</span>
+</div>
+<h4 class="text-3xl font-heading text-text-main mb-3">Here 24/7</h4>
+<p class="text-text-main/70 font-hand text-xl font-bold leading-relaxed">
+                                Insomnia at 3 AM? Anxiety before a meeting? My Hayat is always awake and ready to listen whenever you need us.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full max-w-4xl px-4 py-20 flex flex-col items-center">
+<h2 class="text-4xl md:text-5xl font-heading text-text-main mb-16 text-center">
+<span class="bg-brand-yellow px-4 py-1 transform -skew-x-6 inline-block">How to Start Chatting</span>
+</h2>
+<div class="w-full relative">
+<div class="absolute left-[35px] md:left-1/2 top-0 bottom-0 w-1 border-r-4 border-dashed border-brand-pink/30 md:-translate-x-1/2 hidden md:block"></div>
+<div class="absolute left-[35px] top-0 bottom-0 w-1 border-r-4 border-dashed border-brand-pink/30 md:hidden"></div>
+<div class="flex flex-col gap-12">
+<div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 relative group">
+<div class="md:w-1/2 flex md:justify-end order-2 md:order-1">
+<div class="bg-gradient-to-br from-white/95 to-brand-pink/10 backdrop-blur-sm p-6 rounded-[2rem] shadow-retro border-2 border-brand-pink md:text-right w-full max-w-sm hover:scale-105 transition-transform">
+<h4 class="text-2xl font-heading text-brand-pink mb-2">1. Download App</h4>
+<p class="text-text-main font-hand text-lg font-bold">Get My Hayat on iOS or Android. It's free and lighter than a falafel wrap!</p>
+</div>
+</div>
+<div class="flex-shrink-0 order-1 md:order-2 z-10">
+<div class="size-20 rounded-full bg-brand-pink text-white border-4 border-white shadow-xl flex items-center justify-center font-heading text-3xl hover:rotate-12 transition-transform">1</div>
+</div>
+<div class="md:w-1/2 order-3 hidden md:block"></div>
+</div>
+<div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 relative group">
+<div class="md:w-1/2 order-2 md:order-1 hidden md:block"></div>
+<div class="flex-shrink-0 order-1 md:order-2 z-10">
+<div class="size-20 rounded-full bg-brand-yellow text-text-main border-4 border-white shadow-xl flex items-center justify-center font-heading text-3xl hover:-rotate-12 transition-transform">2</div>
+</div>
+<div class="md:w-1/2 flex md:justify-start order-2 md:order-3">
+<div class="bg-gradient-to-br from-white/95 to-brand-yellow/10 backdrop-blur-sm p-6 rounded-[2rem] shadow-retro border-2 border-brand-yellow w-full max-w-sm hover:scale-105 transition-transform">
+<h4 class="text-2xl font-heading text-yellow-600 mb-2">2. Create Profile</h4>
+<p class="text-text-main font-hand text-lg font-bold">Tell us a bit about yourself so we can tailor the experience to your vibe.</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12 relative group">
+<div class="md:w-1/2 flex md:justify-end order-2 md:order-1">
+<div class="bg-gradient-to-br from-white/95 to-brand-salmon/10 backdrop-blur-sm p-6 rounded-[2rem] shadow-retro border-2 border-brand-salmon md:text-right w-full max-w-sm hover:scale-105 transition-transform">
+<h4 class="text-2xl font-heading text-brand-salmon mb-2">3. Start Talking</h4>
+<p class="text-text-main font-hand text-lg font-bold">Say "Marhaba" and let the conversation flow naturally. We're all ears.</p>
+</div>
+</div>
+<div class="flex-shrink-0 order-1 md:order-2 z-10">
+<div class="size-20 rounded-full bg-brand-salmon text-white border-4 border-white shadow-xl flex items-center justify-center font-heading text-3xl hover:rotate-12 transition-transform">3</div>
+</div>
+<div class="md:w-1/2 order-3 hidden md:block"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full max-w-6xl px-4 py-20">
+<div class="bg-brand-pink rounded-[3.5rem] p-8 md:p-16 relative overflow-hidden shadow-2xl border-4 border-white">
+<div class="absolute inset-0 bg-pattern-blocks opacity-20 mix-blend-overlay"></div>
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-yellow/30 rounded-full blur-[80px]"></div>
+<div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-salmon/30 rounded-full blur-[60px]"></div>
+<div class="relative z-10 flex flex-col lg:flex-row gap-16 items-center">
+<div class="flex-1 flex flex-col gap-6 text-center lg:text-left">
+<div>
+<span class="inline-block px-4 py-2 bg-white text-brand-pink rounded-xl text-sm font-black uppercase tracking-wider border-2 border-brand-yellow mb-4 shadow-[4px_4px_0px_0px_#FEC810] rotate-2">
+                                    New Feature
+                                </span>
+<h2 class="text-4xl md:text-6xl font-heading text-white leading-tight drop-shadow-md">
+                                    Reflect &amp; Grow with <span class="text-brand-yellow italic">Echoes</span>
+</h2>
+</div>
+<p class="text-white text-xl leading-relaxed font-hand font-bold drop-shadow-sm">
+                                Track your mood patterns, journal your thoughts, and get personalized insights into your well-being journey. It's like a diary that actually helps you figure things out!
+                            </p>
+<ul class="flex flex-col gap-4 text-white font-bold font-heading text-xl mt-2">
+<li class="flex items-center gap-3 justify-center lg:justify-start">
+<div class="size-8 rounded-full bg-brand-yellow text-brand-pink flex items-center justify-center border-2 border-white"><span class="material-symbols-outlined text-lg font-black">check</span></div>
+                                    Mood Tracking &amp; Analytics
+                                </li>
+<li class="flex items-center gap-3 justify-center lg:justify-start">
+<div class="size-8 rounded-full bg-brand-yellow text-brand-pink flex items-center justify-center border-2 border-white"><span class="material-symbols-outlined text-lg font-black">check</span></div>
+                                    Guided Journaling Prompts
+                                </li>
+<li class="flex items-center gap-3 justify-center lg:justify-start">
+<div class="size-8 rounded-full bg-brand-yellow text-brand-pink flex items-center justify-center border-2 border-white"><span class="material-symbols-outlined text-lg font-black">check</span></div>
+                                    Weekly Wellness Reports
+                                </li>
+</ul>
+<div class="flex justify-center lg:justify-start mt-4">
+<button class="bg-white text-brand-pink font-heading text-xl py-4 px-10 rounded-2xl shadow-retro border-2 border-transparent hover:border-brand-yellow hover:scale-105 transition-all">
+                                    Try Echoes Free
+                                </button>
+</div>
+</div>
+<div class="flex-1 w-full max-w-[600px] perspective-1000">
+<div class="relative transform rotate-y-[-5deg] rotate-x-[5deg] hover:rotate-0 transition-transform duration-700">
+<div class="bg-[#FFFBFD] rounded-xl p-2 pb-8 shadow-2xl border-4 border-gray-200 relative">
+<div class="absolute top-2 left-1/2 -translate-x-1/2 size-1.5 bg-gray-800 rounded-full z-20"></div>
+<div class="bg-gray-100 rounded overflow-hidden aspect-[16/10] relative group border border-gray-300">
+<img alt="My Hayat Echoes Dashboard" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4UOWVhAPHipl0YPGS_58-AyBjSr3lRX6UjC8Hu_jbOi_0CQglaNhYFCYyvllM2_L8q57Vj14lXJSm__s90_Db_8ptwWfDAXRgMNuqRbdVzQQWtfymolLZYB5Kmx5T3M5BkxQkaWwOuMPQeXAAcXYBgpX7D_SRYHzKJK9OXrnhHw9AXMJ0G6TlF_ICRQ6DREByU7APtOKrgH6MR4MsMDe5iMo8BAPclTW0fpUPzBn3JNeMm5wUwuy3HRzAAorEHYl_cS0J7o0JRxM"/>
+</div>
+</div>
+<div class="h-4 bg-gray-200 rounded-b-xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)] mx-4 -mt-2 border border-gray-300"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-gradient-to-t from-brand-pink/10 via-white/80 to-white/80 backdrop-blur-md border-t-4 border-brand-pink/20 py-12 px-6 mt-12 relative z-10">
+<div class="absolute inset-0 bg-pattern-blocks opacity-10"></div>
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+<div class="flex items-center gap-2">
+<span class="text-3xl animate-bounce">🇱🇧</span>
+<span class="text-text-main font-hand font-bold text-lg">Made with love for Lebanon</span>
+</div>
+<div class="flex gap-8 text-lg font-heading text-text-main">
+<a class="hover:text-brand-pink transition-colors hover:underline decoration-wavy decoration-brand-yellow" href="#">Privacy</a>
+<a class="hover:text-brand-pink transition-colors hover:underline decoration-wavy decoration-brand-yellow" href="#">Terms</a>
+<a class="hover:text-brand-pink transition-colors hover:underline decoration-wavy decoration-brand-yellow" href="#">Contact</a>
+</div>
+<div class="flex gap-4">
+<a class="size-12 rounded-full bg-brand-pink/10 flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-all shadow-sm border-2 border-transparent hover:border-brand-yellow" href="#">
+<span class="material-symbols-outlined text-xl">public</span>
+</a>
+<a class="size-12 rounded-full bg-brand-salmon/10 flex items-center justify-center text-brand-salmon hover:bg-brand-salmon hover:text-white transition-all shadow-sm border-2 border-transparent hover:border-brand-yellow" href="#">
+<span class="material-symbols-outlined text-xl">mail</span>
+</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
