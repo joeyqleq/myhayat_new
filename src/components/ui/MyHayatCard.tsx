@@ -1,4 +1,5 @@
 import React from "react";
+import { MagicCard } from "@/components/ui/magic-card";
 
 interface MyHayatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -25,14 +26,15 @@ export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
             // Ensuring the pattern/bg logic works with the class utilities
         }}
       >
-         {/* Internal content wrapper to ensure pattern doesn't interfere with readability if needed, 
-             though the pattern class handles opacity. 
-             If noPattern is false, the background is pinkish with Cubes. 
-             If we want a white card with just the border/shadow, pass className="bg-white" and noPattern.
-          */}
-        <div className={`relative z-10 h-full w-full ${!noPattern ? "" : ""}`}>
-          {children}
-        </div>
+        <MagicCard 
+          gradientColor="var(--color-myhayat-pink)" 
+          gradientOpacity={0.15} 
+          className="w-full h-full border-none shadow-none bg-transparent"
+        >
+          <div className={`relative z-10 h-full w-full ${!noPattern ? "" : ""}`}>
+            {children}
+          </div>
+        </MagicCard>
       </div>
     );
   }

@@ -230,7 +230,7 @@ export function TextAnimate({
       finalVariants.item = {
         ...finalVariants.item,
         ...variants.item,
-      }
+      } as Variants
     }
   }
 
