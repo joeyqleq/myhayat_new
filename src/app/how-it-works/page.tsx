@@ -4,6 +4,7 @@ import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MyHayatCard } from "@/components/ui/MyHayatCard";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { Iphone } from "@/components/ui/iphone";
 import { useTranslation } from "@/lib/i18n";
@@ -26,8 +27,8 @@ export default function HowItWorksPage() {
     {
       num: "02",
       icon: <Brain className="w-8 h-8" />,
-      title: "Purpose-Built Model Training",
-      desc: "Unlike generic AI trained on internet data, our model learns from real clinical conversations. It understands therapeutic questioning techniques, emotional validation patterns, and crisis de-escalation.",
+      title: "The 'Ash' Difference: Fine-Tuning vs. Prompts",
+      desc: "Unlike generic chatbots that just use a 'system prompt' to pretend they are therapists, My Hayat is fine-tuned directly on clinical datasets. Similar to advanced systems like 'Ash', it natively understands therapeutic questioning, emotional validation patterns, and crisis de-escalation because that's what it was built on—not just instructed to do.",
       color: "bg-myhayat-yellow",
       borderColor: "border-myhayat-yellow",
     },
@@ -89,7 +90,13 @@ export default function HowItWorksPage() {
               <span className="text-sm font-bold text-gray-800 dark:text-gray-200 tracking-wider uppercase">The Science Behind My Hayat</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-titan leading-tight">
-              From Clinical <span className="text-myhayat-pink">Sessions</span> to Compassionate <span className="text-myhayat-yellow">Responses</span>
+              <AnimatedGradientText className="!bg-transparent !p-0 inline">
+                <span className="inline animate-gradient bg-gradient-to-r from-[#F85BAA] via-[#FEC810] to-[#F85BAA] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent">
+                  From Clinical Sessions
+                </span>
+              </AnimatedGradientText>
+              <br />
+              to Compassionate <span className="text-myhayat-yellow">Responses</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               A transparent look at how we build an AI that actually understands mental health — not just simulates it.
@@ -145,14 +152,27 @@ export default function HowItWorksPage() {
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-md">
                 Try a simulated conversation with My Hayat. Experience how purpose-built AI responds differently from generic chatbots — with cultural awareness, clinical grounding, and genuine empathy.
               </p>
-              <Link href="/chat-demo">
+              <Link href="/chat">
                 <MyHayatButton size="lg">
                   Try Demo <ArrowRight className="w-5 h-5 ml-2 inline" />
                 </MyHayatButton>
               </Link>
             </div>
             <div className="w-full max-w-[280px] relative">
-              <Iphone src="/phone_mockup_1.png" className="w-full" />
+              <Iphone className="w-full shadow-2xl">
+                <div className="w-full h-full bg-[#1a0a14] flex flex-col items-center p-4">
+                  <div className="mt-12 mb-4">
+                    <img src="/Watermelon.png" alt="Watermelon Logo" className="w-16 h-16 object-contain animate-breathe" />
+                  </div>
+                  <h4 className="font-titan text-myhayat-pink text-2xl mb-6">My Hayat</h4>
+                  <div className="w-full bg-white/10 rounded-2xl p-4 mb-4">
+                    <p className="text-sm text-gray-300">How are you feeling today?</p>
+                  </div>
+                  <div className="w-full bg-myhayat-pink/20 rounded-2xl p-4 ml-8 border border-myhayat-pink/30">
+                    <p className="text-sm text-myhayat-pink">I'm feeling a bit overwhelmed with everything...</p>
+                  </div>
+                </div>
+              </Iphone>
               <img src="/decor_pink_asterisk.svg" alt="" className="absolute -top-6 -right-6 w-12 h-12 animate-spin-slow pointer-events-none" />
               <img src="/decor_twinkle_salmon.svg" alt="" className="absolute -bottom-4 -left-4 w-6 h-6 animate-pulse pointer-events-none" />
             </div>

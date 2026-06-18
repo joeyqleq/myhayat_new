@@ -4,6 +4,7 @@ import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MyHayatCard } from "@/components/ui/MyHayatCard";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { useTranslation } from "@/lib/i18n";
 import { Check, ChevronDown } from "lucide-react";
@@ -87,8 +88,12 @@ export default function PricingPage() {
             <div className="inline-block px-6 py-2 bg-myhayat-yellow text-gray-900 rounded-full font-bold text-sm transform -rotate-2 border-2 border-myhayat-salmon shadow-sm">
               {t("pricing.launching")} 🚀
             </div>
-            <h1 className="text-5xl md:text-7xl font-barriecito leading-tight">
-              {t("pricing.title")}{" "}
+            <h1 className="text-5xl md:text-7xl font-titan leading-tight">
+              <AnimatedGradientText className="!bg-transparent !p-0 inline">
+                <span className="inline animate-gradient bg-gradient-to-r from-[#F85BAA] via-[#FEC810] to-[#F85BAA] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent">
+                  {t("pricing.title")}
+                </span>
+              </AnimatedGradientText>{" "}
               <span className="text-myhayat-pink">{t("pricing.titleHighlight")}</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -111,9 +116,9 @@ export default function PricingPage() {
                   </div>
                 )}
                 <MyHayatCard noPattern className={`p-8 bg-white dark:bg-[#251320] ${plan.borderColor} border-4 ${plan.shadow} hover:-translate-y-2 transition-transform h-full flex flex-col`}>
-                  <h3 className="font-barriecito text-3xl mb-1">{plan.name}</h3>
+                  <h3 className="font-titan text-3xl mb-1">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-2">
-                    <span className="font-barriecito text-5xl text-myhayat-pink dark:text-myhayat-yellow">{plan.price}</span>
+                    <span className="font-titan text-5xl text-myhayat-pink dark:text-myhayat-yellow">{plan.price}</span>
                     <span className="text-gray-500 dark:text-gray-400 text-sm">{plan.period}</span>
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">{plan.desc}</p>
@@ -143,7 +148,7 @@ export default function PricingPage() {
           <img src="/decor_shapes_ring_pattern.svg" alt="" className="absolute -bottom-10 -right-10 w-48 opacity-6 dark:opacity-3 pointer-events-none hidden lg:block" />
 
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-barriecito text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-titan text-center mb-12">
               {t("pricing.faq.title")}
               <img src="/decor_yellow_asterisk.svg" alt="" className="inline-block decor-sm ms-2 animate-twinkle" />
             </h2>

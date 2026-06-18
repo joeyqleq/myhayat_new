@@ -1,86 +1,57 @@
-"use client";
-
 import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { useTranslation } from "@/lib/i18n";
 
 export default function PrivacyPage() {
-  const { t } = useTranslation();
-
   return (
     <div className="min-h-screen flex flex-col bg-myhayat-offwhite dark:bg-[#1a0a14] text-gray-900 dark:text-gray-100 font-sans">
       <Navbar />
-      <main className="flex-grow w-full">
-        <section className="pt-36 pb-20 px-4 md:px-8">
-          <div className="max-w-3xl mx-auto prose dark:prose-invert prose-lg">
-            <h1 className="font-barriecito text-5xl md:text-6xl text-center mb-2">{t("privacy.title")}</h1>
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-12">{t("privacy.lastUpdated")}</p>
+      <main className="flex-grow w-full pt-36 pb-20 px-4 md:px-8">
+        <div className="max-w-3xl mx-auto prose prose-lg dark:prose-invert">
+          <h1 className="font-titan text-5xl mb-8 text-myhayat-pink">Privacy Policy</h1>
+          <p className="text-sm text-gray-500 mb-8">Last updated: {new Date().toLocaleDateString()}</p>
+          
+          <p>
+            At My Hayat, accessible from myhayat.app, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by My Hayat and how we use it.
+          </p>
 
-            <h2 className="font-barriecito">1. Your Privacy Matters</h2>
-            <p>
-              At My Hayat, your privacy isn&apos;t just a policy — it&apos;s a promise. We understand that mental health conversations 
-              are among the most personal interactions you can have. That&apos;s why we&apos;ve built our entire platform with privacy as the foundation.
-            </p>
+          <h2>1. Information We Collect</h2>
+          <p>
+            The personal information that you are asked to provide, and the reasons why you are asked to provide it, will be made clear to you at the point we ask you to provide your personal information.
+            If you contact us directly, we may receive additional information about you such as your name, email address, phone number, the contents of the message and/or attachments you may send us, and any other information you may choose to provide.
+          </p>
 
-            <h2 className="font-barriecito">2. What We Collect</h2>
-            <ul>
-              <li><strong>Email address</strong> — Only if you sign up for a premium account or join our waitlist.</li>
-              <li><strong>Conversation data</strong> — Encrypted and stored securely. You can delete it at any time.</li>
-              <li><strong>Usage analytics</strong> — Anonymous, aggregated data to improve our service. No personal identifiers.</li>
-              <li><strong>Echoes voice data</strong> — Premium Plus only. Stored with AES-256 encryption. Never shared. Deletable at any time.</li>
-            </ul>
+          <h2>2. How We Use Your Information</h2>
+          <p>We use the information we collect in various ways, including to:</p>
+          <ul>
+            <li>Provide, operate, and maintain our website</li>
+            <li>Improve, personalize, and expand our website</li>
+            <li>Understand and analyze how you use our website</li>
+            <li>Develop new products, services, features, and functionality</li>
+            <li>Communicate with you for customer service, updates, and marketing</li>
+            <li>Find and prevent fraud</li>
+          </ul>
 
-            <h2 className="font-barriecito">3. What We Never Do</h2>
-            <ul>
-              <li>We <strong>never</strong> sell your data to third parties.</li>
-              <li>We <strong>never</strong> use your conversations to train our models without explicit consent.</li>
-              <li>We <strong>never</strong> share your information with insurance companies, employers, or government agencies.</li>
-              <li>We <strong>never</strong> require your real name, phone number, or location to use our free service.</li>
-            </ul>
+          <h2>3. Clinical Data and Privacy</h2>
+          <p>
+            Because we are an AI mental health companion, protecting the privacy of your conversations is our highest priority. All conversations are processed using secure encryption and are heavily anonymized. We do not sell your personal data or conversation history to third-party data brokers.
+          </p>
 
-            <h2 className="font-barriecito">4. Data Security</h2>
-            <p>
-              All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Our infrastructure is hosted on Azure 
-              with SOC 2 Type II compliance. Voice data from Echoes is stored in isolated, encrypted containers 
-              with access logs.
-            </p>
+          <h2>4. GDPR Data Protection Rights</h2>
+          <p>
+            We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:
+          </p>
+          <ul>
+            <li><strong>The right to access</strong> – You have the right to request copies of your personal data.</li>
+            <li><strong>The right to rectification</strong> – You have the right to request that we correct any information you believe is inaccurate.</li>
+            <li><strong>The right to erasure</strong> – You have the right to request that we erase your personal data, under certain conditions.</li>
+          </ul>
 
-            <h2 className="font-barriecito">5. Your Rights</h2>
-            <p>Inspired by GDPR, we grant all users — regardless of location — the following rights:</p>
-            <ul>
-              <li><strong>Right to Access</strong> — Request a copy of all data we have about you.</li>
-              <li><strong>Right to Deletion</strong> — Delete your account and all associated data at any time.</li>
-              <li><strong>Right to Portability</strong> — Export your data in standard formats.</li>
-              <li><strong>Right to Correction</strong> — Update or correct any information we hold.</li>
-              <li><strong>Right to Object</strong> — Opt out of analytics at any time.</li>
-            </ul>
-
-            <h2 className="font-barriecito">6. Crisis Protocol</h2>
-            <p>
-              If our AI detects signs of immediate danger or suicidal ideation, we may display crisis resources 
-              (such as local helpline numbers). We do <strong>not</strong> contact anyone on your behalf unless 
-              you explicitly request it.
-            </p>
-
-            <h2 className="font-barriecito">7. Cookie Policy</h2>
-            <p>
-              We use only essential cookies: language preference and theme preference. No tracking cookies, 
-              no advertising cookies, no third-party cookies.
-            </p>
-
-            <h2 className="font-barriecito">8. Contact Us</h2>
-            <p>
-              Questions about our privacy practices? Reach out at <a href="mailto:privacy@myhayat.app" className="text-myhayat-pink hover:underline">privacy@myhayat.app</a> or 
-              visit our <a href="/contact" className="text-myhayat-pink hover:underline">contact page</a>.
-            </p>
-
-            <hr />
-            <p className="text-sm text-gray-400">
-              This privacy policy is effective as of June 2026. We will notify all registered users of any material changes.
-            </p>
-          </div>
-        </section>
+          <h2>5. Contact Us</h2>
+          <p>
+            If you have any questions about this Privacy Policy, please contact us at privacy@myhayat.app.
+          </p>
+        </div>
       </main>
       <Footer />
     </div>

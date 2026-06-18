@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Quicksand, Titan_One, Satisfy, Noto_Kufi_Arabic, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { AuroraBackground } from "@/components/Backgrounds/AuroraBackground";
+import { ClientBackground } from "@/components/layout/ClientBackground";
 import { cn } from "@/lib/utils";
+import { ContactModal } from "@/components/ui/ContactModal";
+import { CookieConsent } from "@/components/ui/CookieConsent";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -44,11 +46,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn("dark font-mono", jetbrainsMono.variable)}>
       <body
-        className={`${quicksand.variable} ${titanOne.variable} ${satisfy.variable} ${notoKufi.variable} antialiased font-sans bg-[#251320] text-white`}
+        className={`${quicksand.variable} ${titanOne.variable} ${satisfy.variable} ${notoKufi.variable} antialiased font-sans bg-transparent text-gray-900 dark:text-white min-h-screen`}
       >
         <Providers>
-          <AuroraBackground />
+          <ClientBackground />
           {children}
+          <ContactModal />
+          <CookieConsent />
         </Providers>
       </body>
     </html>

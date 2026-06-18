@@ -19,7 +19,7 @@ export const Navbar = () => {
     { name: t("nav.howItWorks"), href: "/how-it-works" },
     { name: t("nav.echoes"), href: "/echoes" },
     { name: t("nav.pricing"), href: "/pricing" },
-    { name: t("nav.chatDemo"), href: "/chat-demo" },
+    { name: t("nav.chatDemo"), href: "/chat" },
     { name: "Education Hub", href: "/education-hub" },
     { name: t("nav.contact"), href: "#contact-modal" },
   ];
@@ -28,7 +28,7 @@ export const Navbar = () => {
 
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-7xl px-4 md:px-8">
-      <div className="relative flex items-center justify-between rounded-[2rem] bg-myhayat-yellow/90 backdrop-blur-md border-4 border-myhayat-salmon shadow-[var(--shadow-curved)] p-2 md:p-3 transition-all duration-300 dark:bg-[#2d1825]/90 dark:border-myhayat-pink/50 overflow-hidden">
+      <div className="relative flex items-center justify-between rounded-[2rem] bg-myhayat-yellow/90 backdrop-blur-md border-4 border-myhayat-salmon shadow-[var(--shadow-curved)] py-1 px-3 md:py-1.5 md:px-4 transition-all duration-300 dark:bg-[#2d1825]/90 dark:border-myhayat-pink/50 overflow-hidden">
         <div className="absolute inset-0 bg-japanese-cubes opacity-20 pointer-events-none mix-blend-overlay" />
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 pl-4 group shrink-0">
@@ -47,11 +47,12 @@ export const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
+              data-text={link.name}
               className={`
-                px-3 py-1.5 rounded-full font-titan text-base transition-all duration-200
+                nav-pixel-hover px-4 py-1.5 rounded-full font-titan text-base transition-all duration-200
                 ${isActive(link.href) 
-                  ? "bg-myhayat-salmon text-white shadow-sm dark:bg-myhayat-pink" 
-                  : "text-myhayat-salmon hover:bg-white/50 hover:text-myhayat-pink dark:text-myhayat-pink dark:hover:bg-white/10"
+                  ? "active-nav text-white dark:text-white" 
+                  : "text-myhayat-salmon hover:text-white dark:text-myhayat-pink dark:hover:text-white"
                 }
               `}
             >
@@ -72,8 +73,7 @@ export const Navbar = () => {
               {t("language.switch")}
             </button>
 
-
-            <MyHayatButton size="sm" variant="primary" className="text-sm h-9 px-4">
+            <MyHayatButton size="sm" variant="primary" className="text-sm h-9 px-4 nav-pixel-hover border-none bg-myhayat-pink text-white hover:bg-myhayat-pink/90 drop-shadow-[2px_2px_0_rgba(254,200,16,1)]" data-text={t("nav.joinNow")}>
                 {t("nav.joinNow")}
             </MyHayatButton>
         </div>

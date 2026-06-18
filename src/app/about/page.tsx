@@ -255,7 +255,7 @@ export default function AboutPage() {
                     Education Hub <ArrowRight className="w-5 h-5 ml-2 inline" />
                   </MyHayatButton>
                 </Link>
-                <Link href="/chat-demo">
+                <Link href="/chat">
                   <MyHayatButton size="lg" variant="secondary" className="bg-transparent text-white border-white hover:bg-white/10">
                     Try Demo
                   </MyHayatButton>

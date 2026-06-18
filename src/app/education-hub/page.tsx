@@ -10,7 +10,7 @@ import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { useTranslation } from "@/lib/i18n";
 import { Search, BookOpen, Brain, Heart, Shield, Users, Mic, Sparkles, ArrowRight, Filter, Clock, Tag } from "lucide-react";
 
-type ContentCategory = "all" | "clinical-research" | "wellness" | "lebanese-context" | "guides" | "community" | "science";
+type ContentCategory = "all" | "clinical-research" | "wellness" | "lebanese-context" | "guides" | "community" | "science" | "cbt-worksheets";
 
 interface ContentItem {
   id: string;
@@ -458,6 +458,77 @@ const CONTENT_ITEMS: ContentItem[] = [
     author: "Dr. Fatima Khoury, Perinatal Specialist",
     date: "February 2026",
   },
+  // ── CBT Worksheets & Resources ──
+  {
+    id: "what-is-rebt",
+    title: "What Is Rational Emotive Behavior Therapy (REBT)?",
+    excerpt: "Understand the core principles of REBT, a form of cognitive behavioral therapy that helps identify and change irrational beliefs.",
+    category: "cbt-worksheets",
+    categoryLabel: "CBT Resource",
+    readTime: "5 min",
+    icon: <BookOpen className="w-6 h-6" />,
+    accent: "from-blue-500 to-indigo-500",
+    borderColor: "border-blue-400",
+    shadowColor: "shadow-[6px_6px_0px_0px_#60a5fa]",
+    author: "Clinical Team (via Psychology Tools)",
+    date: "June 2026",
+  },
+  {
+    id: "tact-using-pauses-assertively",
+    title: "TACT – Using Pauses Assertively",
+    excerpt: "Learn how intentional pausing can de-escalate tension and help you respond assertively rather than reactively.",
+    category: "cbt-worksheets",
+    categoryLabel: "CBT Resource",
+    readTime: "4 min",
+    icon: <BookOpen className="w-6 h-6" />,
+    accent: "from-teal-400 to-cyan-400",
+    borderColor: "border-teal-400",
+    shadowColor: "shadow-[6px_6px_0px_0px_#2dd4bf]",
+    author: "Clinical Team (via Psychology Tools)",
+    date: "June 2026",
+  },
+  {
+    id: "what-is-dbt",
+    title: "What Is Dialectical Behavior Therapy (DBT)?",
+    excerpt: "An introduction to DBT, focusing on emotional regulation, mindfulness, distress tolerance, and interpersonal effectiveness.",
+    category: "cbt-worksheets",
+    categoryLabel: "CBT Resource",
+    readTime: "7 min",
+    icon: <BookOpen className="w-6 h-6" />,
+    accent: "from-myhayat-pink to-myhayat-lavender",
+    borderColor: "border-myhayat-pink",
+    shadowColor: "shadow-[var(--shadow-curved-pink)]",
+    author: "Clinical Team (via Psychology Tools)",
+    date: "June 2026",
+  },
+  {
+    id: "stop-ending-conversations-assertively",
+    title: "STOP – Ending Conversations Assertively",
+    excerpt: "A practical worksheet guiding you on how to set boundaries and end difficult conversations with respect and clarity.",
+    category: "cbt-worksheets",
+    categoryLabel: "CBT Resource",
+    readTime: "3 min",
+    icon: <BookOpen className="w-6 h-6" />,
+    accent: "from-amber-400 to-orange-400",
+    borderColor: "border-amber-400",
+    shadowColor: "shadow-[6px_6px_0px_0px_#fbbf24]",
+    author: "Clinical Team (via Psychology Tools)",
+    date: "June 2026",
+  },
+  {
+    id: "lace-using-empathy-assertively",
+    title: "LACE – Using Empathy Assertively",
+    excerpt: "Balance assertiveness with empathy using the LACE technique, improving interpersonal communication.",
+    category: "cbt-worksheets",
+    categoryLabel: "CBT Resource",
+    readTime: "5 min",
+    icon: <BookOpen className="w-6 h-6" />,
+    accent: "from-emerald-400 to-green-500",
+    borderColor: "border-emerald-400",
+    shadowColor: "shadow-[6px_6px_0px_0px_#34d399]",
+    author: "Clinical Team (via Psychology Tools)",
+    date: "June 2026",
+  },
 ];
 
 const CATEGORIES: { value: ContentCategory; label: string; icon: React.ReactNode }[] = [
@@ -468,6 +539,7 @@ const CATEGORIES: { value: ContentCategory; label: string; icon: React.ReactNode
   { value: "guides", label: "Practical Guides", icon: <BookOpen className="w-4 h-4" /> },
   { value: "community", label: "Community Stories", icon: <Mic className="w-4 h-4" /> },
   { value: "science", label: "Science & Tech", icon: <Sparkles className="w-4 h-4" /> },
+  { value: "cbt-worksheets", label: "CBT Worksheets", icon: <BookOpen className="w-4 h-4" /> },
 ];
 
 export default function EducationHub() {
@@ -570,25 +642,27 @@ export default function EducationHub() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featuredItems.map((item) => (
-                <MyHayatCard key={item.id} noPattern className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-2 transition-all duration-300`}>
-                  <div className={`h-3 bg-gradient-to-r ${item.accent}`} />
-                  <div className="p-6 space-y-4">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
-                      {item.icon}
-                      {item.categoryLabel}
+                <Link key={item.id} href={`/education-hub/${item.id}`}>
+                  <MyHayatCard noPattern className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-2 transition-all duration-300 h-full`}>
+                    <div className={`h-3 bg-gradient-to-r ${item.accent}`} />
+                    <div className="p-6 space-y-4">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
+                        {item.icon}
+                        {item.categoryLabel}
+                      </div>
+                      <h3 className="font-titan text-xl leading-tight group-hover:text-myhayat-pink transition-colors">{item.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">{item.excerpt}</p>
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800 mt-auto">
+                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {item.readTime}
+                        </span>
+                        <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Read <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="font-titan text-xl leading-tight group-hover:text-myhayat-pink transition-colors">{item.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">{item.excerpt}</p>
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {item.readTime}
-                      </span>
-                      <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
-                        Read <ArrowRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                  </div>
-                </MyHayatCard>
+                  </MyHayatCard>
+                </Link>
               ))}
             </div>
           </section>
@@ -615,41 +689,42 @@ export default function EducationHub() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredItems.map((item, i) => (
-                <MyHayatCard
-                  key={item.id}
-                  noPattern
-                  className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-1 transition-all duration-200`}
-                  style={{ animationDelay: `${i * 50}ms` }}
-                >
-                  <div className={`h-2 bg-gradient-to-r ${item.accent}`} />
-                  <div className="p-5 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
-                        <Tag className="w-3 h-3" />
-                        {item.categoryLabel}
-                      </span>
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {item.readTime}
-                      </span>
-                    </div>
-                    <h3 className="font-titan text-lg leading-tight group-hover:text-myhayat-pink transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">
-                      {item.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
-                      <div className="text-xs text-gray-400">
-                        <span className="font-medium">{item.author}</span>
-                        <span className="mx-1">·</span>
-                        <span>{item.date}</span>
+                <Link key={item.id} href={`/education-hub/${item.id}`}>
+                  <MyHayatCard
+                    noPattern
+                    className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-1 transition-all duration-200 h-full flex flex-col`}
+                    style={{ animationDelay: `${i * 50}ms` }}
+                  >
+                    <div className={`h-2 bg-gradient-to-r ${item.accent}`} />
+                    <div className="p-5 space-y-3 flex-grow flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
+                          <Tag className="w-3 h-3" />
+                          {item.categoryLabel}
+                        </span>
+                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {item.readTime}
+                        </span>
                       </div>
-                      <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Read <ArrowRight className="w-3 h-3" />
-                      </span>
+                      <h3 className="font-titan text-lg leading-tight group-hover:text-myhayat-pink transition-colors">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 flex-grow">
+                        {item.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800 mt-auto">
+                        <div className="text-xs text-gray-400">
+                          <span className="font-medium">{item.author}</span>
+                          <span className="mx-1">·</span>
+                          <span>{item.date}</span>
+                        </div>
+                        <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          Read <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </MyHayatCard>
+                  </MyHayatCard>
+                </Link>
               ))}
             </div>
           )}
@@ -671,7 +746,7 @@ export default function EducationHub() {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="/chat-demo">
+                <Link href="/chat">
                   <MyHayatButton size="lg" className="bg-white text-myhayat-pink border-white hover:bg-gray-50 text-lg px-10">
                     Try a Free Demo
                   </MyHayatButton>
