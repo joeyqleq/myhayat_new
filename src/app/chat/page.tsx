@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -32,11 +32,26 @@ function ChatBubble({ role, text }: { role: "user" | "assistant"; text: string }
 export default function ChatPage() {
   const { t } = useTranslation();
   
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append, setMessages } = useChat({
+  const [input, setInput] = useState("");
+  
+  const { messages, sendMessage, status, stop, setMessages } = useChat({
     // @ts-ignore: Next AI SDK version mismatch
     api: "/api/chat",
     initialMessages: [],
   }) as any;
+
+  const isLoading = status === "submitted" || status === "streaming";
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value);
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    sendMessage({ role: "user", content: input });
+    setInput("");
+  };
+
+  const append = (msg: { role: string; content: string }) => sendMessage(msg);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

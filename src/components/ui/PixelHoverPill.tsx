@@ -44,12 +44,9 @@ export const PixelHoverPill = ({ children, className, active }: { children: Reac
          </div>
       </div>
       
-      {/* The brutalist border and shadow that fade in slightly after the pixels start */}
-      <motion.div 
+      {/* The brutalist border and shadow that are always visible */}
+      <div 
          className="absolute inset-0 z-0 rounded-full border-2 border-black dark:border-white shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,1)] pointer-events-none"
-         initial={{ opacity: 0 }}
-         animate={{ opacity: showBackground ? 1 : 0 }}
-         transition={{ duration: 0.2, delay: showBackground ? 0.2 : 0 }}
       />
 
       <span className={cn("relative z-10 transition-colors duration-200", showBackground ? "text-white dark:text-black font-bold" : "")}>
