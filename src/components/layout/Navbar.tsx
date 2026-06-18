@@ -8,6 +8,7 @@ import { PixelHoverPill } from "../ui/PixelHoverPill";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { Menu, X, Globe } from "lucide-react";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +31,7 @@ export const Navbar = () => {
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-7xl px-4 md:px-8">
       <div className="relative flex items-center justify-between rounded-[2rem] bg-myhayat-yellow/90 backdrop-blur-md border-4 border-myhayat-salmon shadow-[var(--shadow-curved)] py-1 px-3 md:py-1.5 md:px-4 transition-all duration-300 dark:bg-[#2d1825]/90 dark:border-myhayat-pink/50 overflow-hidden">
-        <div className="absolute inset-0 bg-japanese-cubes opacity-20 pointer-events-none mix-blend-overlay" />
+        <JapaneseCubesPattern size={60} opacity={0.2} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 pl-4 group shrink-0">
            <Image 

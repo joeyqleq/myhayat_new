@@ -9,6 +9,7 @@ import { useTranslation } from "@/lib/i18n";
 import { Shield, Heart, BookOpen, Clock, Brain, Users, Sparkles, ArrowRight, Database, Lock, Stethoscope } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export default function AboutPage() {
   const { t } = useTranslation();
@@ -237,7 +238,7 @@ export default function AboutPage() {
         {/* Research CTA */}
         <section className="mx-4 md:mx-8 mb-20">
           <div className="max-w-6xl mx-auto relative rounded-[3rem] bg-myhayat-pink dark:bg-myhayat-pink/90 p-12 md:p-16 overflow-hidden border-4 border-myhayat-salmon shadow-[var(--shadow-curved)]">
-            <div className="absolute inset-0 bg-japanese-cubes opacity-10 mix-blend-overlay" />
+            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             <img src="/decor_shooting_star.svg" alt="" className="absolute top-10 right-10 w-20 opacity-20 animate-drift hidden md:block" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">

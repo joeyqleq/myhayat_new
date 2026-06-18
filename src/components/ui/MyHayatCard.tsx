@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { MagicCard } from "@/components/ui/magic-card";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 interface MyHayatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -11,6 +12,20 @@ interface MyHayatCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
   ({ className, children, noPattern = false, ...props }, ref) => {
     const cardRef = useRef<HTMLDivElement>(null);
+    const [patternSize, setPatternSize] = useState(40);
+
+    useEffect(() => {
+      if (!cardRef.current) return;
+      const observer = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          const width = entry.contentRect.width;
+          // Scale pattern size based on card width (e.g., width / 12, min 20, max 80)
+          setPatternSize(Math.min(80, Math.max(20, width / 12)));
+        }
+      });
+      observer.observe(cardRef.current);
+      return () => observer.disconnect();
+    }, []);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
       const el = cardRef.current;
@@ -46,7 +61,6 @@ export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
           bg-white/70 dark:bg-black/20 backdrop-blur-xl
           shadow-[var(--shadow-curved)]
           transition-transform duration-300 hover:-translate-y-1
-          ${!noPattern ? "bg-japanese-cubes" : ""}
           ${className || ""}
         `}
         style={{
@@ -82,7 +96,14 @@ export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
           gradientOpacity={1} 
           className="w-full h-full border-none shadow-none bg-transparent rounded-none"
         >
-          <div className={`relative z-20 h-full w-full ${!noPattern ? "" : ""}`}>
+          <div className="relative z-20 h-full w-full">
+            {!noPattern && (
+              <JapaneseCubesPattern 
+                size={patternSize} 
+                opacity={0.08} 
+                className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay"
+              />
+            )}
             {children}
           </div>
         </MagicCard>

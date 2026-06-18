@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { MyHayatCard } from "@/components/ui/MyHayatCard";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+
 import { useTranslation } from "@/lib/i18n";
 import { ArrowRight, Heart, Sparkles, MessageCircle, Shield, Globe2 } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
@@ -17,6 +17,7 @@ import { SparklesText } from "@/components/ui/sparkles-text";
 import { HyperText } from "@/components/ui/hyper-text";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import SoftAurora from "@/components/ui/ReactBits/SoftAurora";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -191,7 +192,7 @@ export default function Home() {
         <section className="mb-32 mx-4 md:mx-8">
             <div className="relative rounded-[3rem] bg-myhayat-pink dark:bg-myhayat-pink/90 p-8 md:p-16 overflow-hidden border-4 border-myhayat-salmon shadow-[var(--shadow-curved)]">
                  {/* Bg Pattern */}
-                 <div className="absolute inset-0 bg-japanese-cubes opacity-15 mix-blend-overlay" />
+                 <JapaneseCubesPattern size={60} opacity={0.15} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
                  
                  <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
                      <div className="flex-1 space-y-6 text-center lg:text-start text-white">
@@ -283,7 +284,7 @@ export default function Home() {
               { q: "How much does it cost?", a: "We believe mental health support should be accessible. The core companion features are completely free. We also offer Premium plans with advanced features like Echoes and unlimited session memory to support the platform." },
             ].map((faq, i) => (
               <div key={i} className="animate-tilt relative overflow-hidden p-6 bg-white dark:bg-[#251320] border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 text-left rounded-[2rem] shadow-[4px_4px_0px_0px_var(--color-myhayat-salmon)]">
-                <div className="absolute inset-0 bg-japanese-cubes opacity-5 mix-blend-multiply pointer-events-none" />
+                <JapaneseCubesPattern size={60} opacity={0.05} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply"} />
                 <div className="relative z-10 flex flex-col gap-2">
                   <div className="flex items-start gap-4">
                     <span className="font-titan text-3xl text-myhayat-yellow opacity-50 shrink-0">Q.</span>
@@ -301,7 +302,7 @@ export default function Home() {
 
         {/* WAITLIST / CTA SECTION */}
         <section className="relative py-24 px-4 md:px-8 overflow-hidden bg-myhayat-pink dark:bg-myhayat-pink/90">
-             <div className="absolute inset-0 bg-japanese-cubes opacity-8 mix-blend-multiply" />
+             <JapaneseCubesPattern size={60} opacity={0.08} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply"} />
              
              {/* Decorative Heart Background */}
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none">

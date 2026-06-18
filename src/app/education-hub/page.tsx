@@ -9,6 +9,7 @@ import { MyHayatCard } from "@/components/ui/MyHayatCard";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { useTranslation } from "@/lib/i18n";
 import { Search, BookOpen, Brain, Heart, Shield, Users, Mic, Sparkles, ArrowRight, Filter, Clock, Tag } from "lucide-react";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 type ContentCategory = "all" | "clinical-research" | "wellness" | "lebanese-context" | "guides" | "community" | "science" | "cbt-worksheets";
 
@@ -733,7 +734,7 @@ export default function EducationHub() {
         {/* CTA BANNER */}
         <section className="mx-4 md:mx-8 mb-24">
           <div className="max-w-7xl mx-auto relative rounded-[3rem] bg-gradient-to-r from-myhayat-pink via-myhayat-salmon to-myhayat-yellow p-12 md:p-16 overflow-hidden border-4 border-white/20">
-            <div className="absolute inset-0 bg-japanese-cubes opacity-10 mix-blend-overlay" />
+            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             <img src="/decor_cloud_1.svg" alt="" className="absolute -bottom-20 -right-20 w-96 opacity-10" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">

@@ -33,9 +33,10 @@ export default function ChatPage() {
   const { t } = useTranslation();
   
   const { messages, input, handleInputChange, handleSubmit, isLoading, append, setMessages } = useChat({
+    // @ts-ignore: Next AI SDK version mismatch
     api: "/api/chat",
     initialMessages: [],
-  });
+  }) as any;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -125,7 +126,7 @@ export default function ChatPage() {
                   </div>
                 ) : (
                   <>
-                    {messages.map((m) => (
+                    {messages.map((m: any) => (
                       <ChatBubble key={m.id} role={m.role as "user" | "assistant"} text={m.content} />
                     ))}
                     {isLoading && (

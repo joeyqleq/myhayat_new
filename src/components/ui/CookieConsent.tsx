@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { MyHayatButton } from "./MyHayatButton";
 import { ShieldAlert } from "lucide-react";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +34,7 @@ export function CookieConsent() {
     <div className="fixed bottom-0 left-0 w-full z-50 p-4 md:p-6 animate-in slide-in-from-bottom-10 fade-in duration-500">
       <div className="max-w-5xl mx-auto bg-white/90 dark:bg-[#251320]/95 backdrop-blur-xl border-2 border-myhayat-salmon dark:border-myhayat-pink/30 rounded-3xl p-6 shadow-2xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
         {/* Decorative background */}
-        <div className="absolute inset-0 bg-japanese-cubes opacity-5 pointer-events-none" />
+        <JapaneseCubesPattern size={60} opacity={0.05} className={"absolute inset-0 pointer-events-none -z-10" + ""} />
 
         <div className="flex-shrink-0 w-12 h-12 bg-myhayat-yellow/20 rounded-full flex items-center justify-center text-myhayat-salmon dark:text-myhayat-yellow">
           <ShieldAlert className="w-6 h-6" />

@@ -11,6 +11,7 @@ import { useTranslation } from "@/lib/i18n";
 import { MessageCircle, Sparkles, TrendingUp, Lock, ShieldCheck, Download, FileCheck, Database, Brain, Shield, Eye, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export default function HowItWorksPage() {
   const { t } = useTranslation();
@@ -235,7 +236,7 @@ export default function HowItWorksPage() {
         {/* Education Hub CTA */}
         <section className="mx-4 md:mx-8 mb-20">
           <div className="max-w-6xl mx-auto relative rounded-[3rem] bg-gradient-to-r from-myhayat-yellow via-myhayat-salmon to-myhayat-pink p-12 md:p-16 overflow-hidden border-4 border-white/20">
-            <div className="absolute inset-0 bg-japanese-cubes opacity-10 mix-blend-overlay" />
+            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             
             <div className="relative z-10 text-center space-y-6">
               <h2 className="text-3xl md:text-5xl font-titan text-white">
