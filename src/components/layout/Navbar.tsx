@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MyHayatButton } from "../ui/MyHayatButton";
+import { PixelHoverPill } from "../ui/PixelHoverPill";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { Menu, X, Globe } from "lucide-react";
@@ -47,16 +48,13 @@ export const Navbar = () => {
             <Link
               key={link.href}
               href={link.href}
-              data-text={link.name}
-              className={`
-                nav-pixel-hover px-4 py-1.5 rounded-full font-titan text-base transition-all duration-200
-                ${isActive(link.href) 
-                  ? "active-nav text-white dark:text-white" 
-                  : "text-myhayat-salmon hover:text-white dark:text-myhayat-pink dark:hover:text-white"
-                }
-              `}
             >
-              {link.name}
+              <PixelHoverPill 
+                active={isActive(link.href)} 
+                className={`font-titan text-base ${!isActive(link.href) ? "text-myhayat-salmon dark:text-myhayat-pink" : ""}`}
+              >
+                {link.name}
+              </PixelHoverPill>
             </Link>
           ))}
         </div>
@@ -73,7 +71,7 @@ export const Navbar = () => {
               {t("language.switch")}
             </button>
 
-            <MyHayatButton size="sm" variant="primary" className="text-sm h-9 px-4 nav-pixel-hover border-none bg-myhayat-pink text-white hover:bg-myhayat-pink/90 drop-shadow-[2px_2px_0_rgba(254,200,16,1)]" data-text={t("nav.joinNow")}>
+            <MyHayatButton size="sm" variant="primary" className="text-sm border-2 border-black dark:border-white text-black dark:text-white hover:bg-myhayat-pink/90 drop-shadow-[2px_2px_0_rgba(254,200,16,1)]">
                 {t("nav.joinNow")}
             </MyHayatButton>
         </div>

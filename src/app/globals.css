@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -283,49 +284,7 @@ body {
   animation: sequence-float 8s ease-in-out infinite;
 }
 
-/* Glitch Hover Effect */
-.nav-pixel-hover {
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-}
-
-@keyframes glitch-anim {
-  0% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 2px); }
-  20% { clip-path: inset(80% 0 10% 0); transform: translate(2px, -2px); }
-  40% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, -2px); }
-  60% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 2px); }
-  80% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 2px); }
-  100% { clip-path: inset(0% 0 0% 0); transform: translate(0); }
-}
-
-.nav-pixel-hover::before, .nav-pixel-hover::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  color: var(--color-myhayat-pink);
-  z-index: -1;
-}
-
-.nav-pixel-hover:hover::before {
-  opacity: 0.8;
-  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both;
-  color: var(--color-myhayat-pink);
-  left: -2px;
-  text-shadow: -1px 0 var(--color-myhayat-yellow);
-}
-
-.nav-pixel-hover:hover::after {
-  opacity: 0.8;
-  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both reverse;
-  color: var(--color-myhayat-teal);
-  left: 2px;
-  text-shadow: 1px 0 var(--color-myhayat-salmon);
-}
+/* Removed obsolete nav-pixel-hover and bg-japanese-cubes */
 
 .nav-pixel-hover.active-nav {
   color: var(--color-myhayat-pink);

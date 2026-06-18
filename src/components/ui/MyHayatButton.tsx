@@ -17,19 +17,19 @@ interface MyHayatButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const MyHayatButton = React.forwardRef<HTMLButtonElement, MyHayatButtonProps>(
   ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
     
-    const baseStyles = "relative inline-flex items-center justify-center font-barriecito tracking-wider transition-all duration-300 ease-out border-4 shadow-[var(--shadow-curved)] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] active:scale-95 disabled:pointer-events-none disabled:opacity-50";
+    const baseStyles = "relative inline-flex items-center justify-center font-titan tracking-wider transition-all duration-300 ease-out border-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none active:scale-95 disabled:pointer-events-none disabled:opacity-50";
     
     const variants = {
-      primary: "bg-myhayat-pink border-myhayat-salmon text-white bg-japanese-cubes",
-      secondary: "bg-myhayat-yellow border-myhayat-salmon text-myhayat-salmon", // No pattern, just solid pop
+      primary: "bg-myhayat-pink border-black dark:border-white text-black dark:text-white",
+      secondary: "bg-myhayat-yellow border-black dark:border-white text-black dark:text-white",
       outline: "bg-transparent border-myhayat-pink text-myhayat-pink hover:bg-myhayat-pink/10",
       ghost: "border-transparent shadow-none hover:bg-myhayat-pink/20 text-myhayat-pink hover:translate-x-0 hover:translate-y-0",
     };
 
     const sizes = {
-      sm: "h-10 px-6 text-lg rounded-[1.5rem]",
-      md: "h-14 px-8 text-xl rounded-[2rem]",
-      lg: "h-16 px-10 text-2xl rounded-[2.5rem]",
+      sm: "h-9 px-4 text-sm rounded-full",
+      md: "h-11 px-6 text-base rounded-full",
+      lg: "h-14 px-8 text-lg rounded-full",
     };
 
     return (
