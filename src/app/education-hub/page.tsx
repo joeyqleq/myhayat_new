@@ -644,20 +644,27 @@ export default function EducationHub() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featuredItems.map((item) => (
                 <Link key={item.id} href={`/education-hub/${item.id}`}>
-                  <MyHayatCard noPattern className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-2 transition-all duration-300 h-full`}>
+                  <MyHayatCard noPattern className={`group p-0 overflow-hidden ${item.borderColor} ${item.shadowColor} hover-lift hover-border-beam hover-glow transition-all duration-300 h-full
+                    ${item.category === 'clinical-research' ? 'bg-gray-900 dark:bg-[#11050d]' : 
+                      item.category === 'community' ? 'bg-amber-50 dark:bg-[#2c1d11]' : 
+                      item.category === 'wellness' ? 'bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-[#112420] dark:to-[#0f1f1d]' : 
+                      item.category === 'cbt-worksheets' ? 'bg-[#FDFBF7] dark:bg-[#2A241E] bg-[repeating-linear-gradient(transparent,transparent_27px,#e5e7eb_28px)] dark:bg-[repeating-linear-gradient(transparent,transparent_27px,#3f3f46_28px)]' : 
+                      'bg-white dark:bg-[#251320]'}
+                  `}>
+                    <JapaneseCubesPattern variant={item.category === 'clinical-research' ? 'hexagons' : 'diamonds'} colorScheme="mixed" size={28} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                     <div className={`h-3 bg-gradient-to-r ${item.accent}`} />
                     <div className="p-6 space-y-4">
-                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
+                      <div className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wider ${item.category === 'clinical-research' ? 'text-myhayat-yellow' : 'text-myhayat-pink'}`}>
                         {item.icon}
                         {item.categoryLabel}
                       </div>
-                      <h3 className="font-titan text-xl leading-tight group-hover:text-myhayat-pink transition-colors">{item.title}</h3>
+                      <h3 className={`font-titan text-xl leading-tight transition-colors ${item.category === 'clinical-research' ? 'text-white group-hover:text-myhayat-pink' : 'text-gray-900 dark:text-white group-hover:text-myhayat-pink'}`}>{item.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3">{item.excerpt}</p>
                       <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-800 mt-auto">
                         <span className="text-xs text-gray-400 flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {item.readTime}
                         </span>
-                        <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                        <span className={`text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all ${item.category === 'clinical-research' ? 'text-myhayat-yellow' : 'text-myhayat-pink'}`}>
                           Read <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
@@ -693,13 +700,20 @@ export default function EducationHub() {
                 <Link key={item.id} href={`/education-hub/${item.id}`}>
                   <MyHayatCard
                     noPattern
-                    className={`group p-0 bg-white dark:bg-[#251320] overflow-hidden ${item.borderColor} ${item.shadowColor} hover:-translate-y-1 transition-all duration-200 h-full flex flex-col`}
+                    className={`group p-0 overflow-hidden ${item.borderColor} ${item.shadowColor} hover-lift hover-border-beam transition-all duration-200 h-full flex flex-col
+                      ${item.category === 'clinical-research' ? 'bg-gray-900 dark:bg-[#11050d]' : 
+                        item.category === 'community' ? 'bg-amber-50 dark:bg-[#2c1d11]' : 
+                        item.category === 'wellness' ? 'bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-[#112420] dark:to-[#0f1f1d]' : 
+                        item.category === 'cbt-worksheets' ? 'bg-[#FDFBF7] dark:bg-[#2A241E] bg-[repeating-linear-gradient(transparent,transparent_27px,#e5e7eb_28px)] dark:bg-[repeating-linear-gradient(transparent,transparent_27px,#3f3f46_28px)]' : 
+                        'bg-white dark:bg-[#251320]'}
+                    `}
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
+                    <JapaneseCubesPattern variant={item.category === 'cbt-worksheets' ? 'triangles' : 'waves'} colorScheme="mixed" size={18} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                     <div className={`h-2 bg-gradient-to-r ${item.accent}`} />
                     <div className="p-5 space-y-3 flex-grow flex flex-col">
                       <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-myhayat-pink">
+                        <span className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider ${item.category === 'clinical-research' ? 'text-myhayat-yellow' : 'text-myhayat-pink'}`}>
                           <Tag className="w-3 h-3" />
                           {item.categoryLabel}
                         </span>
@@ -707,7 +721,7 @@ export default function EducationHub() {
                           <Clock className="w-3 h-3" /> {item.readTime}
                         </span>
                       </div>
-                      <h3 className="font-titan text-lg leading-tight group-hover:text-myhayat-pink transition-colors">
+                      <h3 className={`font-titan text-lg leading-tight transition-colors ${item.category === 'clinical-research' ? 'text-white group-hover:text-myhayat-pink' : 'text-gray-900 dark:text-white group-hover:text-myhayat-pink'}`}>
                         {item.title}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 flex-grow">
@@ -719,7 +733,7 @@ export default function EducationHub() {
                           <span className="mx-1">·</span>
                           <span>{item.date}</span>
                         </div>
-                        <span className="text-xs text-myhayat-pink font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className={`text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${item.category === 'clinical-research' ? 'text-myhayat-yellow' : 'text-myhayat-pink'}`}>
                           Read <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
@@ -734,7 +748,7 @@ export default function EducationHub() {
         {/* CTA BANNER */}
         <section className="mx-4 md:mx-8 mb-24">
           <div className="max-w-7xl mx-auto relative rounded-[3rem] bg-gradient-to-r from-myhayat-pink via-myhayat-salmon to-myhayat-yellow p-12 md:p-16 overflow-hidden border-4 border-white/20">
-            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
+            <JapaneseCubesPattern size={28} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             <img src="/decor_cloud_1.svg" alt="" className="absolute -bottom-20 -right-20 w-96 opacity-10" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
@@ -746,12 +760,13 @@ export default function EducationHub() {
                   My Hayat combines clinical expertise with AI to offer support that understands your culture, your language, and your story.
                 </p>
               </div>
-              <div className="shrink-0">
+              <div className="shrink-0 flex flex-col sm:flex-row gap-4 items-center">
                 <Link href="/chat">
                   <MyHayatButton size="lg" className="bg-white text-myhayat-pink border-white hover:bg-gray-50 text-lg px-10">
                     Try a Free Demo
                   </MyHayatButton>
                 </Link>
+                <img src="/Illustrations/mom and her daughter are painting a picture.svg" alt="Mom and daughter painting" className="w-48 h-auto hidden md:block" />
               </div>
             </div>
           </div>

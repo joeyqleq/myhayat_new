@@ -10,13 +10,11 @@ import { MyHayatCard } from "@/components/ui/MyHayatCard";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 
 import { useTranslation } from "@/lib/i18n";
-import { ArrowRight, Heart, Sparkles, MessageCircle, Shield, Globe2 } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
 import { Iphone } from "@/components/ui/iphone";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { HyperText } from "@/components/ui/hyper-text";
 import { TypingAnimation } from "@/components/ui/typing-animation";
-import SoftAurora from "@/components/ui/ReactBits/SoftAurora";
 import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export default function Home() {
@@ -44,19 +42,9 @@ export default function Home() {
 
       <main className="flex-grow w-full">
         
-        {/* HERO SECTION - Solid background to block global ColorBends */}
-        <section className="relative h-[100dvh] flex items-center pt-20 pb-0 px-4 md:px-8 overflow-hidden bg-myhayat-offwhite dark:bg-[#1a0a14]">
-          {/* Soft Aurora Background */}
-          <div className="absolute inset-0 z-0 opacity-60 dark:opacity-30 pointer-events-none">
-            <SoftAurora 
-              color1="#F85BAA" 
-              color2="#FEC810" 
-              speed={0.5} 
-              scale={1.2} 
-              enableMouseInteraction={false} 
-            />
-          </div>
-          <div className="absolute inset-0 gradient-warm opacity-70 z-0 pointer-events-none" />
+        {/* HERO SECTION */}
+        <section className="relative h-[100dvh] flex items-center pt-20 pb-0 px-4 md:px-8 overflow-hidden">
+          <div className="absolute inset-0 gradient-warm opacity-50 z-0 pointer-events-none" />
           
           <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center gap-12 md:gap-20 relative z-20">
             
@@ -135,18 +123,27 @@ export default function Home() {
                       />
                  </div>
 
-                 {/* Floating Badge */}
-                 <div className="absolute -bottom-4 -start-4 md:-start-10 z-20 animate-tilt" style={{ animationDuration: '5s' }}>
-                     <MyHayatCard noPattern className="p-4 bg-white/90 dark:bg-[#251320]/90 backdrop-blur-sm rotate-[-6deg] max-w-[180px] border-myhayat-pink">
-                         <p className="font-titan text-xl text-myhayat-salmon dark:text-myhayat-pink text-center leading-none relative">
-                             {t("hero.available")}
-                             <img src="/decor_flower_1.svg" alt="" className="absolute -top-4 -end-4 w-6 h-6 animate-spin-slow" />
-                         </p>
-                     </MyHayatCard>
+                 {/* Orbiting cubes — playful depth without covering hero copy */}
+                 <div className="hero-cube-orbit -bottom-8 -start-2 md:-start-12 z-20 hidden sm:block" aria-hidden="true">
+                    <div className="hero-cube-orbit__track">
+                      <div className="hero-cube-orbit__cube">
+                        <Image src="/decor_cube_1.svg" alt="" width={96} height={96} />
+                      </div>
+                    </div>
+                    <div className="hero-cube-orbit__track hero-cube-orbit__track--reverse">
+                      <div className="hero-cube-orbit__cube">
+                        <Image src="/decor_cube_2.svg" alt="" width={96} height={96} />
+                      </div>
+                    </div>
                  </div>
             </div>
           </div>
         </section>
+
+        {/* Cloud transition between hero and features */}
+        <div className="relative -mt-8 z-30 pointer-events-none">
+          <img src="/decor_cloud_1.svg" alt="" className="w-80 mx-auto opacity-20 dark:opacity-10 animate-drift" />
+        </div>
 
         {/* NON-HERO SECTIONS CONTAINER */}
         <div className="relative">
@@ -186,13 +183,24 @@ export default function Home() {
                      </p>
                  </MyHayatCard>
              </div>
+
+             {/* Decoration: Cherry blossom between sections */}
+             <div className="flex justify-center mt-12 opacity-30 dark:opacity-15">
+               <img src="/Cherry blossom branch.svg" alt="" className="w-48 animate-sway dark:hidden" />
+               <img src="/Cherry blossom branch black.svg" alt="" className="w-48 animate-sway hidden dark:block" />
+             </div>
+
+             {/* Illustration accent */}
+             <div className="flex justify-center mt-8">
+               <img src="/Illustrations/mom and daughter are going on a trip.svg" alt="Starting a journey together" className="w-64 h-auto" />
+             </div>
         </section>
 
         {/* ECHOES TEASER SECTION */}
         <section className="mb-32 mx-4 md:mx-8">
             <div className="relative rounded-[3rem] bg-myhayat-pink dark:bg-myhayat-pink/90 p-8 md:p-16 overflow-hidden border-4 border-myhayat-salmon shadow-[var(--shadow-curved)]">
-                 {/* Bg Pattern */}
-                 <JapaneseCubesPattern size={60} opacity={0.15} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
+                 {/* Bg Pattern — hexagons variant */}
+                 <JapaneseCubesPattern variant="hexagons" colorScheme="warm" size={28} opacity={0.15} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
                  
                  <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
                      <div className="flex-1 space-y-6 text-center lg:text-start text-white">
@@ -231,16 +239,22 @@ export default function Home() {
             </div>
         </section>
 
-        {/* TESTIMONIALS SECTION */}
-        <section className="mb-32 px-4 md:px-8 max-w-7xl mx-auto relative z-20">
-             <div className="text-center mb-16 space-y-4">
+        {/* TESTIMONIALS SECTION — full-width marquee */}
+        <section className="mb-32 relative z-20">
+             {/* Decorations: clouds floating above testimonials */}
+             <img src="/decor_cloud_2.svg" alt="" className="absolute -top-12 left-[10%] w-40 opacity-15 dark:opacity-8 animate-drift pointer-events-none hidden md:block" />
+             <img src="/decor_cloud_3.svg" alt="" className="absolute -top-8 right-[15%] w-32 opacity-10 dark:opacity-5 animate-drift pointer-events-none hidden lg:block" style={{ animationDelay: '3s' }} />
+
+             <div className="text-center mb-16 space-y-4 px-4 md:px-8 max-w-7xl mx-auto">
                  <h2 className="text-4xl md:text-5xl font-titan">
-                     {t("testimonials.title")} <span className="text-myhayat-pink">{t("testimonials.titleHighlight")}</span>
+                     {t("testimonials.title")} <SparklesText className="inline" sparklesCount={5}>{t("testimonials.titleHighlight")}</SparklesText>
                  </h2>
                  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                      {t("testimonials.subtitle")}
                  </p>
-               <Marquee pauseOnHover className="[--duration:30s] py-4">
+             </div>
+             {/* Full-width marquee — guaranteed screen edge to edge */}
+             <Marquee pauseOnHover className="[--duration:35s] [--gap:1.5rem] py-4 w-[100vw] relative left-1/2 -translate-x-1/2">
                  {[
                    { name: t("testimonials.1.name"), loc: t("testimonials.1.location"), quote: t("testimonials.1.quote"), img: "/lebanese_avatar_1_1781367906379.png", border: "border-myhayat-yellow", shadow: "shadow-[6px_6px_0px_0px_var(--color-myhayat-yellow)]" },
                    { name: t("testimonials.2.name"), loc: t("testimonials.2.location"), quote: t("testimonials.2.quote"), img: "/lebanese_avatar_2_1781367921995.png", border: "border-myhayat-pink", shadow: "shadow-[var(--shadow-curved-pink)]" },
@@ -249,7 +263,7 @@ export default function Home() {
                    { name: t("testimonials.5.name"), loc: t("testimonials.5.location"), quote: t("testimonials.5.quote"), img: "/lebanese_avatar_5_1781367986645.png", border: "border-[#C4A6E8]", shadow: "shadow-[6px_6px_0px_0px_#C4A6E8]" },
                    { name: t("testimonials.6.name"), loc: t("testimonials.6.location"), quote: t("testimonials.6.quote"), img: "/lebanese_avatar_6_1781368001775.png", border: "border-myhayat-yellow", shadow: "shadow-[6px_6px_0px_0px_var(--color-myhayat-yellow)]" },
                  ].map((item, i) => (
-                   <MyHayatCard key={i} noPattern className={`w-[350px] p-6 shrink-0 bg-white dark:bg-[#251320] mx-4 ${item.border} ${item.shadow}`}>
+                   <MyHayatCard key={i} noPattern className={`w-[350px] p-6 shrink-0 bg-white dark:bg-[#251320] ${item.border} ${item.shadow}`}>
                      <div className="flex items-center gap-4 mb-4">
                          <div className={`w-12 h-12 rounded-full overflow-hidden border-2 ${item.border} bg-gray-100 dark:bg-gray-800`}>
                              <Image src={item.img} alt={item.name} width={100} height={100} className="object-cover w-full h-full" />
@@ -262,14 +276,19 @@ export default function Home() {
                      <p className="text-gray-600 dark:text-gray-400 italic">"{item.quote}"</p>
                    </MyHayatCard>
                  ))}
-             </Marquee>             </div>
+             </Marquee>
         </section>
 
         {/* FAQ SECTION */}
-        <section className="mb-32 px-4 md:px-8 max-w-4xl mx-auto relative z-20">
+        <section className="mb-32 px-4 md:px-8 max-w-5xl mx-auto relative z-20">
+          {/* Decorative: Rocking chair illustration for calm feel */}
+          <img src="/Illustrations/woman in a rocking chair and a fireplace.svg" alt="Resting by the fireplace" className="absolute -right-20 top-0 w-72 opacity-80 dark:opacity-60 pointer-events-none hidden xl:block" />
+          {/* Decorative: daisy for growth */}
+          <img src="/Spring Daisy Icon.svg" alt="" className="absolute -left-12 bottom-20 w-20 opacity-15 dark:opacity-8 animate-wiggle pointer-events-none hidden lg:block" />
+
           <div className="text-center mb-12 space-y-4">
             <h2 className="text-4xl md:text-5xl font-titan">
-              {t("faq.title") || "Frequently Asked"} <span className="text-myhayat-pink">{t("faq.titleHighlight") || "Questions"}</span>
+              {t("faq.title") || "Frequently Asked"} <SparklesText className="inline" sparklesCount={4}>{t("faq.titleHighlight") || "Questions"}</SparklesText>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
               {t("faq.subtitle") || "Everything you need to know about My Hayat and how it works."}
@@ -278,13 +297,13 @@ export default function Home() {
           
           <div className="space-y-4">
             {[
-              { q: "Is this a replacement for real therapy?", a: "No. My Hayat is an accessible companion for emotional support, grounding, and guidance. It is not a replacement for professional clinical therapy. We act as a bridge, and we provide resources to connect you with human professionals when needed." },
-              { q: "Is my data private and secure?", a: "Absolutely. Your privacy is our priority. Conversation data is encrypted at rest and in transit. We never sell your data, and we do not use your personal conversations to train our models without your explicit consent. You can delete your account and data at any time." },
-              { q: "Does the AI understand Lebanese Arabic?", a: "Yes. Our model is fine-tuned to understand and respond in Lebanese dialect, grasping the cultural nuances, idioms, and context that generic AI often misses." },
-              { q: "How much does it cost?", a: "We believe mental health support should be accessible. The core companion features are completely free. We also offer Premium plans with advanced features like Echoes and unlimited session memory to support the platform." },
+              { q: "Is this a replacement for real therapy?", a: "No. My Hayat is an accessible companion for emotional support, grounding, and guidance. It is not a replacement for professional clinical therapy. We act as a bridge, and we provide resources to connect you with human professionals when needed.", variant: "waves" as const, color: "pink" as const },
+              { q: "Is my data private and secure?", a: "Absolutely. Your privacy is our priority. Conversation data is encrypted at rest and in transit. We never sell your data, and we do not use your personal conversations to train our models without your explicit consent. You can delete your account and data at any time.", variant: "diamonds" as const, color: "teal" as const },
+              { q: "Does the AI understand Lebanese Arabic?", a: "Yes. Our model is fine-tuned to understand and respond in Lebanese dialect, grasping the cultural nuances, idioms, and context that generic AI often misses.", variant: "triangles" as const, color: "yellow" as const },
+              { q: "How much does it cost?", a: "We believe mental health support should be accessible. The core companion features are completely free. We also offer Premium plans with advanced features like Echoes and unlimited session memory to support the platform.", variant: "hexagons" as const, color: "lavender" as const },
             ].map((faq, i) => (
-              <div key={i} className="animate-tilt relative overflow-hidden p-6 bg-white dark:bg-[#251320] border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 text-left rounded-[2rem] shadow-[4px_4px_0px_0px_var(--color-myhayat-salmon)]">
-                <JapaneseCubesPattern size={60} opacity={0.05} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply"} />
+              <div key={i} className="animate-tilt relative overflow-hidden p-6 bg-white dark:bg-[#251320] border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 text-left rounded-[2rem] shadow-[4px_4px_0px_0px_var(--color-myhayat-salmon)] hover-lift border-glow-card">
+                <JapaneseCubesPattern variant={faq.variant} colorScheme={faq.color} size={28} opacity={0.05} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply dark:mix-blend-overlay"} />
                 <div className="relative z-10 flex flex-col gap-2">
                   <div className="flex items-start gap-4">
                     <span className="font-titan text-3xl text-myhayat-yellow opacity-50 shrink-0">Q.</span>
@@ -302,7 +321,7 @@ export default function Home() {
 
         {/* WAITLIST / CTA SECTION */}
         <section className="relative py-24 px-4 md:px-8 overflow-hidden bg-myhayat-pink dark:bg-myhayat-pink/90">
-             <JapaneseCubesPattern size={60} opacity={0.08} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply"} />
+             <JapaneseCubesPattern variant="stars" colorScheme="warm" size={28} opacity={0.08} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply"} />
              
              {/* Decorative Heart Background */}
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none">

@@ -9,11 +9,13 @@ import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { useTranslation } from "@/lib/i18n";
 import { Check, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
+import { SparklesText } from "@/components/ui/sparkles-text";
 
 function FAQ({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = React.useState(false);
   return (
-    <div className="border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 rounded-2xl overflow-hidden">
+    <div className="border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 rounded-2xl overflow-hidden border-glow-card">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left hover:bg-myhayat-pink/5 transition-colors">
         <span className="font-bold text-lg">{question}</span>
         <ChevronDown className={`w-5 h-5 text-myhayat-salmon dark:text-myhayat-pink transition-transform ${open ? "rotate-180" : ""}`} />
@@ -94,7 +96,7 @@ export default function PricingPage() {
                   {t("pricing.title")}
                 </span>
               </AnimatedGradientText>{" "}
-              <span className="text-myhayat-pink">{t("pricing.titleHighlight")}</span>
+              <SparklesText className="inline text-myhayat-pink" sparklesCount={4}>{t("pricing.titleHighlight")}</SparklesText>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {t("pricing.subtitle")}
@@ -111,11 +113,12 @@ export default function PricingPage() {
             {plans.map((plan, i) => (
               <div key={i} className={`relative ${plan.popular ? "md:-mt-4 md:mb-4" : ""}`}>
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-myhayat-pink text-white rounded-full text-sm font-bold z-10 border-2 border-white shadow-md">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-myhayat-pink text-white rounded-full text-sm font-bold z-10 border-2 border-white shadow-md animate-pulse">
                     {t("pricing.premium.popular")} ⭐
                   </div>
                 )}
-                <MyHayatCard noPattern className={`p-8 bg-white dark:bg-[#251320] ${plan.borderColor} border-4 ${plan.shadow} hover:-translate-y-2 transition-transform h-full flex flex-col`}>
+                <MyHayatCard noPattern className={`p-8 bg-white dark:bg-[#251320] ${plan.borderColor} border-4 ${plan.shadow} hover-lift hover-border-beam ${plan.popular ? "hover-glow" : ""} transition-transform h-full flex flex-col`}>
+                  <JapaneseCubesPattern variant={plan.popular ? "stars" : "diamonds"} colorScheme={plan.popular ? "pink" : "mixed"} size={18} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                   <h3 className="font-titan text-3xl mb-1">{plan.name}</h3>
                   <div className="flex items-baseline gap-1 mb-2">
                     <span className="font-titan text-5xl text-myhayat-pink dark:text-myhayat-yellow">{plan.price}</span>
@@ -156,6 +159,11 @@ export default function PricingPage() {
               {faqs.map((faq, i) => (
                 <FAQ key={i} question={faq.q} answer={faq.a} />
               ))}
+            </div>
+            
+            {/* Added Illustration */}
+            <div className="mt-16 flex justify-center relative z-0">
+               <img src="/Illustrations/family enjoys a delicious breakfast.svg" alt="Family wellbeing" className="w-80 h-auto" />
             </div>
           </div>
         </section>

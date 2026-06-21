@@ -52,11 +52,11 @@ export default function EchoesPage() {
       <main className="flex-grow w-full">
 
         {/* Hero */}
-        <section className="relative pt-36 pb-20 px-4 md:px-8 overflow-x-clip">
+        <section className="relative pt-36 pb-20 px-4 md:px-8">
           {/* Decorative: Lips — expression of voice/speech */}
-          <img src="/decor_lips.svg" alt="" className="absolute -top-10 -right-32 w-[400px] opacity-8 dark:opacity-4 pointer-events-none rotate-12 hidden lg:block" />
+          <img src="/decor_lips.svg" alt="" className="absolute -top-10 -right-10 w-[400px] opacity-8 dark:opacity-4 pointer-events-none rotate-12 hidden lg:block" />
           {/* Decorative: Flame — emotional intensity, love that doesn't die */}
-          <img src="/decor_flame.svg" alt="" className="absolute -bottom-20 -left-16 w-48 opacity-10 dark:opacity-5 pointer-events-none hidden lg:block animate-breathe" />
+          <img src="/decor_flame.svg" alt="" className="absolute bottom-0 -left-10 w-48 opacity-10 dark:opacity-5 pointer-events-none hidden lg:block animate-breathe" />
 
           <div className="max-w-4xl mx-auto text-center space-y-8 relative z-10">
             <div className="inline-block px-6 py-2 bg-myhayat-lavender/30 text-myhayat-lavender dark:text-myhayat-lavender rounded-full font-bold text-sm border-2 border-myhayat-lavender/30">
@@ -141,7 +141,7 @@ export default function EchoesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {phases.map((phase, i) => (
-                <MyHayatCard key={i} noPattern className="p-6 bg-white dark:bg-[#251320] hover:-translate-y-2 transition-transform">
+                <MyHayatCard key={i} noPattern className="p-6 bg-white dark:bg-[#251320] hover:-translate-y-2 transition-transform border-glow-card">
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-12 h-12 rounded-full ${phase.color} text-white flex items-center justify-center shadow-md`}>
                       {phase.icon}
@@ -173,7 +173,7 @@ export default function EchoesPage() {
                 { title: "Cultural Respect", desc: "Rooted in Lebanese mourning traditions — sitting with grief, not rushing through it." },
                 { title: "User Control", desc: "Pause, delete, or export your Echoes data at any time. You're always in control." },
               ].map((item, i) => (
-                <div key={i} className="p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-lavender/20 hover:border-myhayat-lavender/50 transition-colors">
+                <div key={i} className="p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-lavender/20 hover:border-myhayat-lavender/50 transition-colors border-glow-card">
                   <h4 className="font-titan text-xl mb-2 text-myhayat-lavender">{item.title}</h4>
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                 </div>
@@ -195,6 +195,9 @@ export default function EchoesPage() {
             <Link href="/pricing">
               <MyHayatButton size="lg" className="mx-auto">{t("pricing.plus.cta")}</MyHayatButton>
             </Link>
+            <div className="mt-12 flex justify-center">
+              <img src="/Illustrations/couple lying in a hammock under the stars.svg" alt="Peaceful remembrance" className="w-80 h-auto" />
+            </div>
           </div>
         </section>
 

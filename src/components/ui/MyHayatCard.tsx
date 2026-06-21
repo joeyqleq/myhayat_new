@@ -12,15 +12,14 @@ interface MyHayatCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
   ({ className, children, noPattern = false, ...props }, ref) => {
     const cardRef = useRef<HTMLDivElement>(null);
-    const [patternSize, setPatternSize] = useState(40);
+    const [patternSize, setPatternSize] = useState(18);
 
     useEffect(() => {
       if (!cardRef.current) return;
       const observer = new ResizeObserver((entries) => {
         for (let entry of entries) {
           const width = entry.contentRect.width;
-          // Scale pattern size based on card width (e.g., width / 12, min 20, max 80)
-          setPatternSize(Math.min(80, Math.max(20, width / 12)));
+          setPatternSize(Math.min(30, Math.max(12, width / 20)));
         }
       });
       observer.observe(cardRef.current);
@@ -56,11 +55,12 @@ export const MyHayatCard = React.forwardRef<HTMLDivElement, MyHayatCardProps>(
         onMouseLeave={handleMouseLeave}
         className={`
           group relative overflow-hidden
-          rounded-[var(--radius-curved)] 
+          rounded-[var(--radius-curved)]
           border-4 border-myhayat-salmon/20 dark:border-myhayat-pink/20
           bg-white/70 dark:bg-black/20 backdrop-blur-xl
           shadow-[var(--shadow-curved)]
           transition-transform duration-300 hover:-translate-y-1
+          border-glow-card
           ${className || ""}
         `}
         style={{

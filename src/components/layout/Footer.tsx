@@ -28,7 +28,7 @@ export const Footer = () => {
     <footer className="relative mt-24 pb-12 px-4 md:px-8">
       <div className="relative max-w-7xl mx-auto bg-gradient-to-tr from-myhayat-pink via-myhayat-salmon to-myhayat-yellow backdrop-blur-sm border-4 border-white rounded-[3rem] shadow-[var(--shadow-curved)] p-8 md:p-12 overflow-hidden text-white">
         {/* Interior Pattern Overlay */}
-        <JapaneseCubesPattern size={60} opacity={0.3} className={"absolute inset-0 pointer-events-none -z-10" + ""} />
+        <JapaneseCubesPattern size={28} opacity={0.3} className={"absolute inset-0 pointer-events-none -z-10" + ""} />
 
         {/* Decorative: Sun in corner */}
         <img src="/decor_sun2.svg" alt="" className="absolute -top-8 -right-8 w-32 opacity-10 pointer-events-none animate-spin-slow hidden md:block" />

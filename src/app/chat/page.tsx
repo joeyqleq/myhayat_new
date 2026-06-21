@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { useTranslation } from "@/lib/i18n";
-import { Send, RotateCcw, MessageCircle } from "lucide-react";
+import { Send, RotateCcw, MessageCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 function ChatBubble({ role, text }: { role: "user" | "assistant"; text: string }) {
@@ -31,39 +31,36 @@ function ChatBubble({ role, text }: { role: "user" | "assistant"; text: string }
 
 export default function ChatPage() {
   const { t } = useTranslation();
-  
+  const [chatError, setChatError] = useState<string | null>(null);
   const [input, setInput] = useState("");
-  
-  const { messages, sendMessage, status, stop, setMessages } = useChat({
-    // @ts-ignore: Next AI SDK version mismatch
-    api: "/api/chat",
-    initialMessages: [],
-  }) as any;
+
+  const { messages, sendMessage, status, setMessages } = useChat({
+    onError: (error) => {
+      console.error("Chat error:", error);
+      setChatError(error.message || "Something went wrong. Please try again.");
+      setTimeout(() => setChatError(null), 8000);
+    },
+  });
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value);
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    sendMessage({ role: "user", content: input });
-    setInput("");
-  };
-
-  const append = (msg: { role: string; content: string }) => sendMessage(msg);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
+  const handleSend = (text: string) => {
+    if (!text.trim() || isLoading) return;
+    setChatError(null);
+    setInput("");
+    sendMessage({ text: text.trim() });
+  };
+
   const icebreakers = [
-    "مرحبا... عم حس بقلق كتير اليوم", // I'm feeling very anxious today
-    "الساعة ٣ بالليل وما عم اقدر نام", // It's 3 AM and I can't sleep
-    "بس بدي حدا يحكي معي", // I just need someone to talk to
+    "مرحبا... عم حس بقلق كتير اليوم",
+    "الساعة ٣ بالليل وما عم اقدر نام",
+    "بس بدي حدا يحكي معي",
     "Hi, I just feel completely overwhelmed today."
   ];
 
@@ -74,7 +71,6 @@ export default function ChatPage() {
 
         {/* Hero */}
         <section className="relative pt-36 pb-8 px-4 md:px-8 overflow-hidden">
-          {/* Decorative: Planet — represents the AI brain */}
           <img src="/decor_planet_1.svg" alt="" className="absolute -top-10 -right-20 w-48 opacity-8 dark:opacity-4 pointer-events-none hidden lg:block animate-drift" />
 
           <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
@@ -95,8 +91,8 @@ export default function ChatPage() {
         <section className="py-8 px-4 md:px-8">
           <div className="max-w-2xl mx-auto">
             {/* Chat Window */}
-            <div className="rounded-[2rem] border-4 border-myhayat-salmon dark:border-myhayat-pink/50 bg-gradient-to-b from-myhayat-offwhite to-white dark:from-[#1a0a14] dark:to-[#251320] shadow-[var(--shadow-curved)] overflow-hidden flex flex-col h-[600px]">
-              
+            <div className="rounded-[2rem] border-4 border-myhayat-salmon dark:border-myhayat-pink/50 bg-gradient-to-b from-myhayat-offwhite to-white dark:from-[#1a0a14] dark:to-[#251320] shadow-[var(--shadow-curved)] overflow-hidden flex flex-col h-[600px] border-glow-card">
+
               {/* Chat Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 bg-white/50 dark:bg-[#251320]/50 backdrop-blur-sm shrink-0">
                 <div className="flex items-center gap-3">
@@ -110,8 +106,8 @@ export default function ChatPage() {
                   </div>
                 </div>
                 {messages.length > 0 && (
-                  <button 
-                    onClick={() => setMessages([])} 
+                  <button
+                    onClick={() => setMessages([])}
                     className="p-2 rounded-full hover:bg-myhayat-pink/10 text-myhayat-salmon dark:text-myhayat-pink transition-colors flex items-center gap-2 text-sm font-bold"
                     title="Clear Chat"
                   >
@@ -119,6 +115,14 @@ export default function ChatPage() {
                   </button>
                 )}
               </div>
+
+              {/* Error Banner */}
+              {chatError && (
+                <div className="px-6 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 shrink-0">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{chatError}</span>
+                </div>
+              )}
 
               {/* Messages Area */}
               <div className="flex-1 overflow-y-auto p-6 space-y-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-myhayat-pink/30 [&::-webkit-scrollbar-thumb]:rounded-full">
@@ -130,7 +134,7 @@ export default function ChatPage() {
                       {icebreakers.map((text, i) => (
                         <button
                           key={i}
-                          onClick={() => append({ role: "user", content: text })}
+                          onClick={() => handleSend(text)}
                           className="px-4 py-2 rounded-full border-2 border-myhayat-salmon/30 dark:border-myhayat-pink/30 text-sm font-medium hover:bg-myhayat-pink/10 hover:border-myhayat-pink/50 transition-all text-gray-700 dark:text-gray-300 text-left flex items-center gap-2"
                         >
                           <MessageCircle className="w-4 h-4 text-myhayat-pink" />
@@ -142,7 +146,7 @@ export default function ChatPage() {
                 ) : (
                   <>
                     {messages.map((m: any) => (
-                      <ChatBubble key={m.id} role={m.role as "user" | "assistant"} text={m.content} />
+                      <ChatBubble key={m.id} role={m.role as "user" | "assistant"} text={m.parts?.filter((p: any) => p.type === "text").map((p: any) => p.text).join("") || m.content || ""} />
                     ))}
                     {isLoading && (
                       <div className="flex justify-start mb-3">
@@ -162,18 +166,18 @@ export default function ChatPage() {
 
               {/* Input Bar */}
               <div className="px-6 py-4 border-t-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 bg-white/50 dark:bg-[#251320]/50 shrink-0">
-                <form onSubmit={handleSubmit} className="flex items-center gap-3">
+                <form onSubmit={(e) => { e.preventDefault(); handleSend(input); }} className="flex items-center gap-3">
                   <input
                     type="text"
                     value={input}
-                    onChange={handleInputChange}
+                    onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your message here..."
                     className="flex-1 h-12 px-5 rounded-full bg-white dark:bg-[#1a0a14] border-2 border-gray-200 dark:border-white/10 text-sm focus:outline-none focus:border-myhayat-pink transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-600"
                     disabled={isLoading}
                   />
-                  <button 
-                    type="submit" 
-                    disabled={isLoading || !input || !input.trim()} 
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
                     className="w-12 h-12 rounded-full bg-myhayat-pink text-white flex items-center justify-center disabled:opacity-50 hover:bg-pink-500 transition-colors shrink-0 shadow-md"
                   >
                     <Send className="w-5 h-5 -ml-1 mt-0.5" />
@@ -190,6 +194,9 @@ export default function ChatPage() {
           <Link href="/education-hub">
             <MyHayatButton size="lg">Explore Education Hub</MyHayatButton>
           </Link>
+          <div className="mt-12 flex justify-center">
+            <img src="/Illustrations/woman drinking coffee by the duck pond.svg" alt="Peaceful reflection" className="w-72 h-auto opacity-90" />
+          </div>
         </section>
 
       </main>

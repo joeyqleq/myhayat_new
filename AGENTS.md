@@ -170,4 +170,4 @@ The task tracker is maintained at:
 
 ---
 
-*Last updated: 2026-06-18T00:22Z — Checkpoint 3: Completed Phase D (Education Hub full 30 articles + CBT Worksheets integration) and Phase E (MagicUI Polish: shine-border on cards, animated-gradient-text on Hero H1s, interactive iPhone mockups with Watermelon logo). Ready for next phase of highly creative work.*
+*Last updated: 2026-06-20T13:05Z — Corrective checkpoint: rejected Codex nav/button/shader experiment was rolled back. Fixed JapaneseCubesPattern hydration risk with stable SVG IDs/rounded points. Removed the hero 24/7 floating card and replaced it with orbiting decor_cube_1/decor_cube_2 animation. `npx tsc --noEmit` passes; `npm run lint` still fails on pre-existing repo-wide lint errors.*

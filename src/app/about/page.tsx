@@ -10,6 +10,7 @@ import { Shield, Heart, BookOpen, Clock, Brain, Users, Sparkles, ArrowRight, Dat
 import Image from "next/image";
 import Link from "next/link";
 import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
+import { SparklesText } from "@/components/ui/sparkles-text";
 
 export default function AboutPage() {
   const { t } = useTranslation();
@@ -82,9 +83,7 @@ export default function AboutPage() {
             
             <h1 className="text-5xl md:text-7xl font-titan leading-tight">
               {t("about.hero.title")}{" "}
-              <span className="bg-gradient-to-r from-myhayat-pink via-myhayat-salmon to-myhayat-yellow bg-clip-text text-transparent">
-                {t("about.hero.titleHighlight")}
-              </span>
+              <SparklesText className="inline" sparklesCount={5}>{t("about.hero.titleHighlight")}</SparklesText>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
               My Hayat is the first AI mental health companion built specifically for the Lebanese community — trained on real anonymized clinical therapy data, not internet conversations.
@@ -106,7 +105,8 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {differentiators.map((item, i) => (
-                <MyHayatCard key={i} noPattern className="p-8 bg-white dark:bg-[#251320] hover:-translate-y-1 transition-transform group overflow-hidden">
+                <MyHayatCard key={i} noPattern className="p-8 bg-white dark:bg-[#251320] hover-lift hover-border-beam group overflow-hidden">
+                  <JapaneseCubesPattern variant="hexagons" colorScheme="lavender" size={28} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                   <div className={`h-1 bg-gradient-to-r ${item.accent} absolute top-0 left-0 right-0`} />
                   <div className={`w-16 h-16 rounded-2xl border-2 border-current flex items-center justify-center mb-6 ${item.color} group-hover:scale-110 transition-transform`}>
                     {item.icon}
@@ -115,6 +115,10 @@ export default function AboutPage() {
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                 </MyHayatCard>
               ))}
+            </div>
+
+            <div className="mt-12 flex justify-center">
+              <img src="/Illustrations/couple socializing and drinking tea by their pickup truck.svg" alt="Community connection" className="w-72 h-auto" />
             </div>
           </div>
         </section>
@@ -133,7 +137,8 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Generic AI Column */}
-              <MyHayatCard noPattern className="p-8 bg-white dark:bg-[#1a0a14] border-gray-300 dark:border-gray-700 shadow-[6px_6px_0px_0px_#94a3b8]">
+              <MyHayatCard noPattern className="p-8 bg-white dark:bg-[#1a0a14] border-gray-300 dark:border-gray-700 shadow-[6px_6px_0px_0px_#94a3b8] hover-lift">
+                <JapaneseCubesPattern variant="diamonds" colorScheme="cool" size={28} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-3">
                     <span className="text-2xl">🤖</span>
@@ -152,7 +157,8 @@ export default function AboutPage() {
               </MyHayatCard>
 
               {/* My Hayat Column */}
-              <MyHayatCard noPattern className="p-8 bg-white dark:bg-[#251320] border-myhayat-pink shadow-[var(--shadow-curved-pink)] ring-2 ring-myhayat-pink/20">
+              <MyHayatCard noPattern className="p-8 bg-white dark:bg-[#251320] border-myhayat-pink shadow-[var(--shadow-curved-pink)] ring-2 ring-myhayat-pink/20 hover-lift hover-glow">
+                <JapaneseCubesPattern variant="stars" colorScheme="pink" size={28} opacity={0.05} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-myhayat-pink/20 to-myhayat-yellow/20 flex items-center justify-center mx-auto mb-3">
                     <span className="text-2xl">💛</span>
@@ -183,9 +189,10 @@ export default function AboutPage() {
               <img src="/decor_flame.svg" alt="" className="inline-block w-10 h-14 ms-3 -mt-2 animate-breathe" />
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 relative z-10">
               {stats.map((stat, i) => (
-                <MyHayatCard key={i} noPattern className={`p-6 text-center bg-white dark:bg-[#251320] ${stat.color} border-4`}>
+                <MyHayatCard key={i} noPattern className={`p-6 text-center bg-white dark:bg-[#251320] ${stat.color} border-4 hover-lift hover-border-beam`}>
+                  <JapaneseCubesPattern variant="triangles" colorScheme="mixed" size={18} opacity={0.04} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                   <div className="text-4xl md:text-5xl font-titan text-myhayat-pink dark:text-myhayat-yellow mb-2">
                     {stat.value}
                   </div>
@@ -196,9 +203,14 @@ export default function AboutPage() {
               ))}
             </div>
 
-            <p className="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto leading-relaxed relative z-10">
               {t("about.crisis.desc")}
             </p>
+            
+            {/* Added Illustration */}
+            <div className="mt-12 flex justify-center relative z-0">
+               <img src="/Illustrations/couple cuddling on a soft couch.svg" alt="Comfort and warmth" className="w-80 h-auto" />
+            </div>
           </div>
         </section>
 
@@ -218,7 +230,8 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {advisoryBoard.map((member, i) => (
-                <MyHayatCard key={i} noPattern className={`p-6 bg-white dark:bg-[#251320] ${member.color} ${member.shadow} hover:-translate-y-1 transition-transform`}>
+                <MyHayatCard key={i} noPattern className={`p-6 bg-white dark:bg-[#251320] ${member.color} ${member.shadow} hover-lift hover-glow transition-transform`}>
+                  <JapaneseCubesPattern variant="waves" colorScheme="warm" size={18} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                   <div className="flex items-center gap-4 mb-4">
                     <div className={`w-16 h-16 rounded-full overflow-hidden border-3 ${member.color} bg-gray-100 dark:bg-gray-800`}>
                       <Image src={member.img} alt={member.name} width={100} height={100} className="w-full h-full object-cover" />
@@ -238,7 +251,7 @@ export default function AboutPage() {
         {/* Research CTA */}
         <section className="mx-4 md:mx-8 mb-20">
           <div className="max-w-6xl mx-auto relative rounded-[3rem] bg-myhayat-pink dark:bg-myhayat-pink/90 p-12 md:p-16 overflow-hidden border-4 border-myhayat-salmon shadow-[var(--shadow-curved)]">
-            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
+            <JapaneseCubesPattern size={28} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             <img src="/decor_shooting_star.svg" alt="" className="absolute top-10 right-10 w-20 opacity-20 animate-drift hidden md:block" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">

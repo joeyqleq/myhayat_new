@@ -1,32 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import ColorBends from "@/components/ui/ReactBits/ColorBends";
+import React from "react";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 
 export const ClientBackground = () => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Map scroll depth to intensity (1.2 to 3.0) and frequency
-  const intensity = Math.min(3.0, 1.2 + scrollY * 0.001);
-  const frequency = Math.min(3.0, 1.5 + scrollY * 0.0005);
-
   return (
-    <div className="fixed inset-0 z-[-10] opacity-40 dark:opacity-20 pointer-events-none transition-all duration-300">
-      <ColorBends 
-        speed={0.4}
-        intensity={intensity}
-        transparent={true}
-        bandWidth={6}
-        colors={["#F85BAA", "#FEC810", "#F98181", "#5BB8A6"]}
-        frequency={frequency}
+    <div className="fixed inset-0 z-0 pointer-events-none">
+      <BackgroundGradientAnimation
+        gradientBackgroundStart="rgb(255, 250, 253)"
+        gradientBackgroundEnd="rgb(255, 243, 248)"
+        firstColor="248, 91, 170"
+        secondColor="254, 200, 16"
+        thirdColor="249, 129, 129"
+        fourthColor="91, 184, 166"
+        fifthColor="196, 166, 232"
+        pointerColor="248, 91, 170"
+        size="90%"
+        blendingValue="hard-light"
+        interactive={false}
+        containerClassName="!h-full !w-full opacity-25 dark:opacity-12"
       />
     </div>
   );

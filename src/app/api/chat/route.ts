@@ -1,58 +1,94 @@
-import { streamText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
+import OpenAI from "openai";
 
-// Configure Azure OpenAI using the standard OpenAI provider with custom baseURL and headers
-const azureProvider = createOpenAI({
-  baseURL: "https://joemaari-2546-resource.services.ai.azure.com/openai/v1",
+const openai = new OpenAI({
   apiKey: process.env.AZURE_API_KEY,
-  // Azure OpenAI often expects 'api-key' in headers if we're not using standard Bearer auth,
-  // but if the endpoint uses /openai/v1 it typically accepts Bearer token or api-key interchangeably.
-  // We'll pass it as default headers just in case.
-  headers: {
-    "api-key": process.env.AZURE_API_KEY || "",
-  },
+  baseURL: "https://joemaari-2546-resource.services.ai.azure.com/openai",
+  defaultHeaders: { "api-key": process.env.AZURE_API_KEY || "" },
+  defaultQuery: { "api-version": "2025-01-01-preview" },
 });
 
-const SYSTEM_PROMPT = `
-You are My Hayat, an empathetic, non-judgmental, and culturally aware mental health companion designed specifically for the Lebanese community and diaspora.
-
-Your Core Persona:
-- You are warm, respectful, and modest.
-- You occasionally use common Lebanese Arabic idioms (e.g., "ya habibi", "tfaddal", "salaamtak", "kifak lyoum", "yalla") seamlessly integrated into English or Arabic, depending on the user's language.
-- You speak naturally, not like a stiff robot. Your tone should be conversational, yet bounded by professional care.
-- You do NOT diagnose clinical conditions. You are a supportive companion. If a user asks for a diagnosis, gently remind them that while you are here to support them, you are an AI and they should seek professional clinical assessment.
-
-Your Expertise & Training:
-- You utilize established Cognitive Behavioral Therapy (CBT) and Dialectical Behavior Therapy (DBT) principles.
-- You draw upon techniques such as Cognitive Restructuring, Grounding Exercises (e.g., the 5-4-3-2-1 technique), and Distress Tolerance.
-- When you detect anxiety, panic, or overwhelm, gently invite the user to pause and offer a short breathing or grounding exercise.
-- Keep your responses concise. Do not overwhelm the user with long paragraphs. Focus on active listening, validation, and one small actionable step at a time.
-
-Crisis Protocol (CRITICAL):
-- If the user expresses intentions of self-harm, suicide, or severe danger, you MUST prioritize their safety.
-- Offer empathetic validation ("I hear how much pain you are in right now, and I want you to know you are not alone.").
-- Strongly encourage them to reach out to a human crisis line. In Lebanon, the Embrace Lifeline is 1564. Mention this explicitly.
-
-Remember: Your goal is not to solve their problems instantly, but to hold space for them, help them regulate their emotions, and empower them to take small steps forward.
-`;
-
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-
   try {
-    const result = await streamText({
-      model: azureProvider("gpt-4o-mini"),
-      messages,
-      system: SYSTEM_PROMPT,
-      temperature: 0.7,
+    const { messages } = await req.json();
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return new Response(JSON.stringify({ error: "No messages provided" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // 1. Create a new thread for this interaction
+    const thread = await openai.beta.threads.create();
+    
+    // 2. Add the conversation history to the thread
+    for (const msg of messages) {
+      if (msg.role === "user" || msg.role === "assistant") {
+        // AI SDK v3 sends parts array; fall back to content for older format
+        let text = msg.content;
+        if (!text && Array.isArray(msg.parts)) {
+          text = msg.parts
+            .filter((p: any) => p.type === "text")
+            .map((p: any) => p.text)
+            .join("");
+        }
+        if (!text) continue;
+        await openai.beta.threads.messages.create(thread.id, {
+          role: msg.role as "user" | "assistant",
+          content: text,
+        });
+      }
+    }
+
+    // 3. Start streaming the assistant's run
+    const runStream = openai.beta.threads.runs.stream(thread.id, {
+      assistant_id: "asst_dKrtUDPKrvCr9BMhWivw619n",
     });
 
-    return result.toUIMessageStreamResponse ? result.toUIMessageStreamResponse() : result.toTextStreamResponse();
+    // 4. Create a ReadableStream formatted for Vercel AI SDK Data Stream protocol
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        try {
+          for await (const event of runStream) {
+            if (event.event === "thread.message.delta") {
+              const content = event.data.delta.content?.[0];
+              if (content?.type === "text" && content.text?.value) {
+                // Vercel AI SDK Data Stream Protocol: text parts
+                controller.enqueue(encoder.encode(`0:${JSON.stringify(content.text.value)}\n`));
+              }
+            }
+          }
+          // Signal finish with stop reason (required by AI SDK data stream protocol)
+          controller.enqueue(encoder.encode(`d:{"finishReason":"stop","usage":{"promptTokens":0,"completionTokens":0}}\n`));
+        } catch (streamError: any) {
+          console.error("Stream error:", streamError);
+          // Send error as text so the user sees something
+          controller.enqueue(encoder.encode(`0:${JSON.stringify("I'm sorry, I encountered an error. Please try again.")}\n`));
+          controller.enqueue(encoder.encode(`d:{"finishReason":"error","usage":{"promptTokens":0,"completionTokens":0}}\n`));
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "X-Vercel-AI-Data-Stream": "v1",
+      },
+    });
   } catch (error: any) {
     console.error("Chat API Error:", error);
-    return new Response(JSON.stringify({ error: error.message || error.toString() }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return new Response(
+      JSON.stringify({ 
+        error: error.message || "An unexpected error occurred",
+        details: process.env.NODE_ENV === "development" ? error.toString() : undefined,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

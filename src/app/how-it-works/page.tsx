@@ -8,10 +8,10 @@ import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import { Iphone } from "@/components/ui/iphone";
 import { useTranslation } from "@/lib/i18n";
-import { MessageCircle, Sparkles, TrendingUp, Lock, ShieldCheck, Download, FileCheck, Database, Brain, Shield, Eye, ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { Database, Brain, Shield, MessageCircle, Eye, TrendingUp, Lock, ShieldCheck, Download, FileCheck, Sparkles, ArrowRight } from "lucide-react";
 
 export default function HowItWorksPage() {
   const { t } = useTranslation();
@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
                 </span>
               </AnimatedGradientText>
               <br />
-              to Compassionate <span className="text-myhayat-yellow">Responses</span>
+              to Compassionate <SparklesText className="inline text-myhayat-yellow" sparklesCount={5}>Responses</SparklesText>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               A transparent look at how we build an AI that actually understands mental health — not just simulates it.
@@ -120,7 +120,8 @@ export default function HowItWorksPage() {
                     <div className="absolute left-7 top-[calc(100%)] w-0.5 h-6 bg-gradient-to-b from-gray-300 to-transparent dark:from-gray-600 z-0 hidden md:block" />
                   )}
                   
-                  <MyHayatCard noPattern className={`p-6 md:p-8 bg-white dark:bg-[#251320] ${step.borderColor} border-4 hover:-translate-y-1 transition-transform relative z-10`}>
+                  <MyHayatCard noPattern className={`p-6 md:p-8 bg-white dark:bg-[#251320] ${step.borderColor} border-4 hover-lift hover-border-beam transition-transform relative z-10`}>
+                    <JapaneseCubesPattern variant="waves" colorScheme="lavender" size={18} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                     <div className="flex flex-col md:flex-row items-start gap-6">
                       <div className="flex items-center gap-4 shrink-0">
                         <div className={`w-14 h-14 rounded-2xl ${step.color} text-white flex items-center justify-center shadow-md`}>
@@ -197,7 +198,8 @@ export default function HowItWorksPage() {
                 { value: "3.2x", label: "Higher engagement = better outcomes", color: "border-myhayat-yellow" },
                 { value: "24/7", label: "Always available, no waitlist", color: "border-myhayat-salmon" },
               ].map((stat, i) => (
-                <MyHayatCard key={i} noPattern className={`p-6 text-center bg-white dark:bg-[#251320] ${stat.color} border-4`}>
+                <MyHayatCard key={i} noPattern className={`p-6 text-center bg-white dark:bg-[#251320] ${stat.color} border-4 hover-lift hover-border-beam`}>
+                  <JapaneseCubesPattern variant="hexagons" colorScheme="cool" size={18} opacity={0.03} className="absolute inset-0 pointer-events-none -z-10 mix-blend-multiply dark:mix-blend-overlay" />
                   <div className="text-3xl md:text-4xl font-titan text-myhayat-pink dark:text-myhayat-yellow mb-2">
                     {stat.value}
                   </div>
@@ -222,7 +224,7 @@ export default function HowItWorksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {securityItems.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-teal/20 hover:border-myhayat-teal/50 transition-colors">
+                <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-teal/20 hover:border-myhayat-teal/50 hover-lift transition-all border-glow-card">
                   <div className="w-10 h-10 rounded-full bg-myhayat-teal/10 text-myhayat-teal flex items-center justify-center shrink-0">
                     {item.icon}
                   </div>
@@ -230,13 +232,18 @@ export default function HowItWorksPage() {
                 </div>
               ))}
             </div>
+            
+            {/* Added Illustration */}
+            <div className="mt-16 flex justify-center relative z-0">
+               <img src="/Illustrations/couple relaxing in the garden on the lawn.svg" alt="Peaceful reflection" className="w-80 h-auto" />
+            </div>
           </div>
         </section>
 
         {/* Education Hub CTA */}
         <section className="mx-4 md:mx-8 mb-20">
           <div className="max-w-6xl mx-auto relative rounded-[3rem] bg-gradient-to-r from-myhayat-yellow via-myhayat-salmon to-myhayat-pink p-12 md:p-16 overflow-hidden border-4 border-white/20">
-            <JapaneseCubesPattern size={60} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
+            <JapaneseCubesPattern size={28} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
             
             <div className="relative z-10 text-center space-y-6">
               <h2 className="text-3xl md:text-5xl font-titan text-white">

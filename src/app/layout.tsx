@@ -50,9 +50,11 @@ export default function RootLayout({
       >
         <Providers>
           <ClientBackground />
-          {children}
-          <ContactModal />
-          <CookieConsent />
+          <div className="relative z-10">
+            {children}
+            <ContactModal />
+            <CookieConsent />
+          </div>
         </Providers>
       </body>
     </html>

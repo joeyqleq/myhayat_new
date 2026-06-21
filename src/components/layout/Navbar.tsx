@@ -13,7 +13,7 @@ import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { t, toggleLocale, locale } = useTranslation();
+  const { t, toggleLocale } = useTranslation();
 
   const navLinks = [
     { name: t("nav.home"), href: "/" },
@@ -29,30 +29,32 @@ export const Navbar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-7xl px-4 md:px-8">
-      <div className="relative flex items-center justify-between rounded-[2rem] bg-myhayat-yellow/90 backdrop-blur-md border-4 border-myhayat-salmon shadow-[var(--shadow-curved)] py-1 px-3 md:py-1.5 md:px-4 transition-all duration-300 dark:bg-[#2d1825]/90 dark:border-myhayat-pink/50 overflow-hidden">
-        <JapaneseCubesPattern size={60} opacity={0.2} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
+    <nav className="fixed top-4 left-0 right-0 z-50 mx-auto max-w-[94rem] px-3 md:px-5">
+      <div className="relative flex items-center gap-3 rounded-[2rem] bg-myhayat-yellow/90 backdrop-blur-md border-4 border-myhayat-salmon shadow-[var(--shadow-curved)] py-1 px-3 md:py-1.5 md:px-4 transition-all duration-300 dark:bg-[#2d1825]/90 dark:border-myhayat-pink/50 overflow-hidden">
+        <JapaneseCubesPattern size={28} opacity={0.2} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 pl-4 group shrink-0">
+        <Link href="/" className="flex items-center gap-2 pl-2 md:pl-3 group shrink-0">
            <Image 
              src="/myhayat-logo.png" 
              alt="My Hayat Logo" 
              width={150} 
              height={50} 
-             className="w-auto h-10 md:h-12 hover:scale-105 transition-transform drop-shadow-[2px_2px_0px_rgba(255,255,255,0.5)]"
+             className="w-auto h-10 xl:h-12 hover:scale-105 transition-transform drop-shadow-[2px_2px_0px_rgba(255,255,255,0.5)]"
            />
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-0.5 relative z-10">
+        <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-1.5 xl:gap-2 relative z-10">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              className="shrink-0"
+              title={link.name}
             >
               <PixelHoverPill 
                 active={isActive(link.href)} 
-                className={`font-titan text-base ${!isActive(link.href) ? "text-myhayat-salmon dark:text-myhayat-pink" : ""}`}
+                className="font-titan text-[0.78rem] xl:text-[0.9rem]"
               >
                 {link.name}
               </PixelHoverPill>
