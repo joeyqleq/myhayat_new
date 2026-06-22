@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Terms of Service",
+  description: "Review the My Hayat terms of service, medical disclaimer, and legal conditions for using the website and product.",
+  path: "/terms",
+  keywords: ["My Hayat terms", "mental health chatbot disclaimer", "AI therapy terms of service"],
+});
 
 export default function TermsPage() {
   return (

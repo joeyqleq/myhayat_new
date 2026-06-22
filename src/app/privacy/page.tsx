@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Privacy Policy",
+  description: "Read how My Hayat handles personal information, conversation privacy, and data protection for visitors and users.",
+  path: "/privacy",
+  keywords: ["My Hayat privacy", "mental health privacy policy", "AI mental health data privacy"],
+});
 
 export default function PrivacyPage() {
   return (

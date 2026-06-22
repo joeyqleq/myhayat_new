@@ -11,6 +11,7 @@ import { Check, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 import { SparklesText } from "@/components/ui/sparkles-text";
+import { faqJsonLd } from "@/lib/seo";
 
 function FAQ({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = React.useState(false);
@@ -75,10 +76,17 @@ export default function PricingPage() {
     { q: t("pricing.faq.q4"), a: t("pricing.faq.a4") },
   ];
 
+  const pricingFaqSchema = faqJsonLd(faqs.map((faq) => ({ question: faq.q, answer: faq.a })));
+
   return (
-    <div className="min-h-screen flex flex-col bg-myhayat-offwhite dark:bg-[#1a0a14] text-gray-900 dark:text-gray-100 font-sans">
-      <Navbar />
-      <main className="flex-grow w-full">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingFaqSchema) }}
+      />
+      <div className="min-h-screen flex flex-col bg-myhayat-offwhite dark:bg-[#1a0a14] text-gray-900 dark:text-gray-100 font-sans">
+        <Navbar />
+        <main className="flex-grow w-full">
 
         {/* Hero */}
         <section className="relative pt-36 pb-12 px-4 md:px-8 overflow-hidden">
@@ -168,8 +176,9 @@ export default function PricingPage() {
           </div>
         </section>
 
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }

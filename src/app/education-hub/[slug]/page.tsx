@@ -3,10 +3,11 @@
 import React from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MyHayatButton } from "@/components/ui/MyHayatButton";
 import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { ARTICLES } from "@/lib/content/articles";
+import { ARTICLE_SEO_MAP } from "@/lib/content/article-seo";
+import { articleJsonLd } from "@/lib/seo";
 import { useTranslation } from "@/lib/i18n";
 
 export default function EducationHubArticlePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,11 +21,31 @@ export default function EducationHubArticlePage({ params }: { params: Promise<{ 
     title: slug.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" "),
     body: <p className="lead">Content coming soon...</p>
   };
-  
+
+  const articleSeo = ARTICLE_SEO_MAP[slug];
+  const articleSchema = articleSeo
+    ? articleJsonLd({
+        slug,
+        title: articleSeo.title,
+        description: articleSeo.description,
+        category: articleSeo.category,
+        publishedTime: articleSeo.publishedTime,
+        modifiedTime: articleSeo.modifiedTime,
+        locale: locale as "en" | "ar",
+      })
+    : null;
+
   const isAr = locale === "ar";
 
   return (
-    <div className="min-h-screen flex flex-col bg-myhayat-offwhite dark:bg-[#1a0a14] text-gray-900 dark:text-gray-100 font-sans">
+    <>
+      {articleSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
+      ) : null}
+      <div className="min-h-screen flex flex-col bg-myhayat-offwhite dark:bg-[#1a0a14] text-gray-900 dark:text-gray-100 font-sans">
       <Navbar />
       <main className="flex-grow w-full relative">
         {/* Decorative background */}
@@ -60,10 +81,10 @@ export default function EducationHubArticlePage({ params }: { params: Promise<{ 
             </div>
 
             <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center">
-              <div className="flex gap-2">
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm">#MentalHealth</span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm">#Lebanon</span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm">#AI</span>
+              <div className="flex gap-2 flex-wrap">
+                {(articleSeo?.keywords ?? ["mental health", "Lebanon", "AI"]).slice(0, 3).map((keyword) => (
+                  <span key={keyword} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm">#{keyword.replace(/\s+/g, "-")}</span>
+                ))}
               </div>
             </div>
           </div>
@@ -71,5 +92,6 @@ export default function EducationHubArticlePage({ params }: { params: Promise<{ 
       </main>
       <Footer />
     </div>
+    </>
   );
 }
