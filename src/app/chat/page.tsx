@@ -44,10 +44,14 @@ export default function ChatPage() {
 
   const isLoading = status === "submitted" || status === "streaming";
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
   }, [messages, isLoading]);
 
   const handleSend = (text: string) => {
@@ -125,7 +129,7 @@ export default function ChatPage() {
               )}
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-myhayat-pink/30 [&::-webkit-scrollbar-thumb]:rounded-full">
+              <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 space-y-1 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-myhayat-pink/30 [&::-webkit-scrollbar-thumb]:rounded-full">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
                     <img src="/decor_melting_smiley.svg" alt="" className="w-20 h-20 opacity-40 animate-float" />

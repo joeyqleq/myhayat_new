@@ -1,3 +1,5 @@
+export const maxDuration = 60;
+
 import OpenAI from "openai";
 
 const openai = new OpenAI({
@@ -18,13 +20,10 @@ export async function POST(req: Request) {
       });
     }
 
-    // 1. Create a new thread for this interaction
     const thread = await openai.beta.threads.create();
-    
-    // 2. Add the conversation history to the thread
+
     for (const msg of messages) {
       if (msg.role === "user" || msg.role === "assistant") {
-        // AI SDK v3 sends parts array; fall back to content for older format
         let text = msg.content;
         if (!text && Array.isArray(msg.parts)) {
           text = msg.parts
@@ -40,33 +39,48 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Start streaming the assistant's run
     const runStream = openai.beta.threads.runs.stream(thread.id, {
       assistant_id: "asst_dKrtUDPKrvCr9BMhWivw619n",
     });
 
-    // 4. Create a ReadableStream formatted for Vercel AI SDK Data Stream protocol
+    let partId = 0;
+    const nextId = () => `part-${partId++}`;
+
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
+        const send = (chunk: object) => {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`));
+        };
+
         try {
+          const textId = nextId();
+          send({ type: "start" });
+          send({ type: "start-step" });
+          send({ type: "text-start", id: textId });
+
           for await (const event of runStream) {
             if (event.event === "thread.message.delta") {
               const content = event.data.delta.content?.[0];
               if (content?.type === "text" && content.text?.value) {
-                // Vercel AI SDK Data Stream Protocol: text parts
-                controller.enqueue(encoder.encode(`0:${JSON.stringify(content.text.value)}\n`));
+                send({ type: "text-delta", id: textId, delta: content.text.value });
               }
             }
           }
-          // Signal finish with stop reason (required by AI SDK data stream protocol)
-          controller.enqueue(encoder.encode(`d:{"finishReason":"stop","usage":{"promptTokens":0,"completionTokens":0}}\n`));
+
+          send({ type: "text-end", id: textId });
+          send({ type: "finish-step" });
+          send({ type: "finish", finishReason: "stop" });
         } catch (streamError: any) {
           console.error("Stream error:", streamError);
-          // Send error as text so the user sees something
-          controller.enqueue(encoder.encode(`0:${JSON.stringify("I'm sorry, I encountered an error. Please try again.")}\n`));
-          controller.enqueue(encoder.encode(`d:{"finishReason":"error","usage":{"promptTokens":0,"completionTokens":0}}\n`));
+          const errId = nextId();
+          send({ type: "text-start", id: errId });
+          send({ type: "text-delta", id: errId, delta: "I'm sorry, I encountered an error. Please try again." });
+          send({ type: "text-end", id: errId });
+          send({ type: "finish-step" });
+          send({ type: "finish", finishReason: "error" });
         } finally {
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
         }
       },
@@ -74,14 +88,17 @@ export async function POST(req: Request) {
 
     return new Response(stream, {
       headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "X-Vercel-AI-Data-Stream": "v1",
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "x-vercel-ai-ui-message-stream": "v1",
+        "X-Accel-Buffering": "no",
       },
     });
   } catch (error: any) {
     console.error("Chat API Error:", error);
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: error.message || "An unexpected error occurred",
         details: process.env.NODE_ENV === "development" ? error.toString() : undefined,
       }),
