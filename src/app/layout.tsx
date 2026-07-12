@@ -3,6 +3,7 @@ import { Quicksand, Titan_One, Satisfy, Noto_Kufi_Arabic, JetBrains_Mono } from 
 import "./globals.css";
 import { Providers } from "./providers";
 import { ClientBackground } from "@/components/layout/ClientBackground";
+import { TianjiTracker } from "@/components/analytics/TianjiTracker";
 import { cn } from "@/lib/utils";
 import { ContactModal } from "@/components/ui/ContactModal";
 import { CookieConsent } from "@/components/ui/CookieConsent";
@@ -117,6 +118,7 @@ export default function RootLayout({
           />
         ))}
         <Providers>
+          <TianjiTracker />
           <ClientBackground />
           <div className="relative z-10">
             {children}
