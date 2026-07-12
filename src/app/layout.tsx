@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Quicksand, Titan_One, Satisfy, Noto_Kufi_Arabic, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ClientBackground } from "@/components/layout/ClientBackground";
-import { TianjiTracker } from "@/components/analytics/TianjiTracker";
 import { cn } from "@/lib/utils";
 import { ContactModal } from "@/components/ui/ContactModal";
 import { CookieConsent } from "@/components/ui/CookieConsent";
@@ -118,7 +118,6 @@ export default function RootLayout({
           />
         ))}
         <Providers>
-          <TianjiTracker />
           <ClientBackground />
           <div className="relative z-10">
             {children}
@@ -126,6 +125,12 @@ export default function RootLayout({
             <CookieConsent />
           </div>
         </Providers>
+        <Script
+          src="https://numbers.trumpstein.me/tracker.js"
+          data-website-id="cmrhp5kpu000dlftpai7v0hzd"
+          data-domains="myhayat.app,www.myhayat.app"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

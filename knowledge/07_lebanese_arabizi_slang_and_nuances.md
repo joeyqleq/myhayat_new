@@ -31,9 +31,10 @@ Decades of war, sectarian conflict, and economic collapse have introduced severe
 
 *   **Kis ekht hal 3eeshi:** Literally "The sister's v**** of this life." A profound expression of misery and exhaustion with living conditions.
 *   **Khara 3lek / Khara 3a hal dawle:** "Sh*t on you" / "Sh*t on this state (government)." 
-*   **Ayre b...:** "My d*** in..." Used to express ultimate disdain for a concept, group, or situation. 
-*   **A5o sharmouta:** "Son of a wh*re." Can be used aggressively or even descriptively for a terrible situation.
-*   **Mish na2isna naseb w ser2a:** "We aren't missing any more scams and theft" (We have had enough of being robbed by the government/factions).
+*   **Ayre bel shaghle...:** "My dick in that" Used to express ultimate disdain for a concept, group, or situation. 
+*   **Akho sharmouta (negative context):** "Son of a whore." Can be used aggressively or even descriptively for a terrible situation.
+*   **Akho sharmouta (positive  context):** "Son of a whore." Sometimes used to express satisfaction and happiness for an idea, a physical object or result. Judging whether it's a praise or a curse depends on the topic.
+*   **Mish na2isna naseb w ser2a:** "We aren't missing any more scams and theft" (We have had enough of being robbed by the government/factions).Lebanese society has a deep mistrust of the governmen and factions.
 
 ---
 
