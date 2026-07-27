@@ -3,44 +3,95 @@ export const maxDuration = 60;
 import fs from "fs";
 import path from "path";
 
-// Load system prompt once at module load (cached across requests)
-let SYSTEM_PROMPT: string;
+// Slim system prompt loaded once — ~2K tokens
+let SYSTEM_PROMPT_TEMPLATE: string;
 try {
-  SYSTEM_PROMPT = fs.readFileSync(
-    path.join(process.cwd(), "knowledge", "system_prompt_cf.txt"),
+  SYSTEM_PROMPT_TEMPLATE = fs.readFileSync(
+    path.join(process.cwd(), "knowledge", "system_prompt_slim.txt"),
     "utf-8"
   );
 } catch {
-  SYSTEM_PROMPT = `You are My Hayat (حياتي), an empathetic mental health companion for the Lebanese community.
-Respond warmly in the user's language (Arabic, Arabizi, or English). Never diagnose. In crisis situations, always mention Embrace Lifeline: 1564.`;
+  SYSTEM_PROMPT_TEMPLATE = `You are My Hayat, a warm Lebanese mental health companion. Reply in Lebanese Arabizi. Never diagnose. Crisis: Embrace Lifeline 1564.\n\n---\n{{CONTEXT}}\n---`;
 }
 
-// Cloudflare Workers AI accounts — round-robin with 429 fallback
+// CF infra — central account for embedding + Vectorize
+const CF_CENTRAL_ID = process.env.CF_CENTRAL_ACCOUNT_ID!;
+const CF_CENTRAL_KEY = process.env.CF_CENTRAL_KEY!;
+
+// CF AI accounts — round-robin for inference quota
 const CF_ACCOUNTS = [
-  {
-    id: process.env.CF_ACCT_2_ID!,
-    token: process.env.CF_ACCT_2_TOKEN!,
-  },
-  {
-    id: process.env.CF_ACCT_3_ID!,
-    token: process.env.CF_ACCT_3_TOKEN!,
-  },
-  {
-    id: process.env.CF_ACCT_4_ID!,
-    token: process.env.CF_ACCT_4_TOKEN!,
-  },
+  { id: process.env.CF_ACCT_2_ID!, token: process.env.CF_ACCT_2_TOKEN! },
+  { id: process.env.CF_ACCT_3_ID!, token: process.env.CF_ACCT_3_TOKEN! },
+  { id: process.env.CF_ACCT_4_ID!, token: process.env.CF_ACCT_4_TOKEN! },
 ];
 
-// Models in order of preference (Arabizi quality)
+// Models: fastest with good dialect support first
 const CF_MODELS = [
-  "@cf/zai-org/glm-5.2",
   "@cf/qwen/qwen3-30b-a3b-fp8",
   "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "@cf/zai-org/glm-5.2",
 ];
 
-// Stateless rotation: use minute-of-day to spread load across accounts
 function getStartAccountIndex(): number {
   return Math.floor(Date.now() / 60000) % CF_ACCOUNTS.length;
+}
+
+// Embed a query string using CF bge-base — returns 768-dim vector
+async function embedQuery(text: string): Promise<number[] | null> {
+  if (!CF_CENTRAL_ID || !CF_CENTRAL_KEY) return null;
+  try {
+    const res = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${CF_CENTRAL_ID}/ai/run/@cf/baai/bge-base-en-v1.5`,
+      {
+        method: "POST",
+        headers: {
+          "X-Auth-Email": "joe.maari@coyotes.usd.edu",
+          "X-Auth-Key": CF_CENTRAL_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: [text.slice(0, 512)] }),
+      }
+    );
+    if (!res.ok) return null;
+    const data: any = await res.json();
+    return data?.result?.data?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// Query Vectorize for top-K relevant chunks
+async function retrieveContext(query: string, topK = 5): Promise<string> {
+  if (!CF_CENTRAL_ID || !CF_CENTRAL_KEY) return "";
+  const vector = await embedQuery(query);
+  if (!vector) return "";
+  try {
+    const res = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${CF_CENTRAL_ID}/vectorize/v2/indexes/myhayat-kb/query`,
+      {
+        method: "POST",
+        headers: {
+          "X-Auth-Email": "joe.maari@coyotes.usd.edu",
+          "X-Auth-Key": CF_CENTRAL_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          vector,
+          topK,
+          returnMetadata: "all",
+        }),
+      }
+    );
+    if (!res.ok) return "";
+    const data: any = await res.json();
+    const matches = data?.result?.matches ?? [];
+    return matches
+      .map((m: any) => m?.metadata?.text ?? "")
+      .filter(Boolean)
+      .join("\n\n---\n\n");
+  } catch {
+    return "";
+  }
 }
 
 async function callWorkersAI(
@@ -51,7 +102,6 @@ async function callWorkersAI(
   systemPrompt: string
 ): Promise<ReadableStream | null> {
   const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
-
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -62,21 +112,17 @@ async function callWorkersAI(
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
       max_tokens: 1024,
-      temperature: 0.8,
+      temperature: 0.75,
     }),
   });
-
-  if (response.status === 429) return null; // quota exhausted
+  if (response.status === 429) return null;
   if (!response.ok) {
-    const err = await response.text();
-    console.error(`CF AI error ${response.status}:`, err);
+    console.error(`CF AI error ${response.status}:`, await response.text());
     return null;
   }
-
   return response.body;
 }
 
-// Convert CF SSE stream → AI SDK UIMessage stream format
 function transformCFStream(cfStream: ReadableStream): ReadableStream {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -97,30 +143,20 @@ function transformCFStream(cfStream: ReadableStream): ReadableStream {
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split("\n");
           buffer = lines.pop() ?? "";
-
           for (const line of lines) {
             const trimmed = line.trim();
             if (!trimmed || !trimmed.startsWith("data: ")) continue;
             const data = trimmed.slice(6);
             if (data === "[DONE]") continue;
-
             try {
               const parsed = JSON.parse(data);
-              // Handle OpenAI-compatible choices format
               const delta =
-                parsed?.choices?.[0]?.delta?.content ??
-                parsed?.response ??
-                "";
-              if (delta) {
-                send({ type: "text-delta", id: textId, delta });
-              }
-            } catch {
-              // non-JSON SSE line, skip
-            }
+                parsed?.choices?.[0]?.delta?.content ?? parsed?.response ?? "";
+              if (delta) send({ type: "text-delta", id: textId, delta });
+            } catch { /* non-JSON SSE */ }
           }
         }
       } catch (err) {
@@ -139,7 +175,6 @@ function transformCFStream(cfStream: ReadableStream): ReadableStream {
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
-
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "No messages provided" }), {
         status: 400,
@@ -147,7 +182,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Build clean message array for CF (extract text from AI SDK parts format)
     const cfMessages = messages
       .filter((m: any) => m.role === "user" || m.role === "assistant")
       .map((m: any) => {
@@ -162,29 +196,33 @@ export async function POST(req: Request) {
       })
       .filter((m: any) => m.content);
 
-    // Round-robin with fallback: try each account, then try next model on failure
-    const startIdx = getStartAccountIndex();
+    // Build RAG query from last 2 user turns
+    const recentUserText = cfMessages
+      .filter((m: any) => m.role === "user")
+      .slice(-2)
+      .map((m: any) => m.content)
+      .join(" ");
 
+    // Retrieve context and build system prompt (in parallel with first model attempt)
+    const contextPromise = retrieveContext(recentUserText);
+    const context = await contextPromise;
+    const systemPrompt = SYSTEM_PROMPT_TEMPLATE.replace(
+      "{{CONTEXT}}",
+      context || "No specific knowledge retrieved — use general Lebanese mental health guidance."
+    );
+
+    const startIdx = getStartAccountIndex();
     for (const model of CF_MODELS) {
       for (let i = 0; i < CF_ACCOUNTS.length; i++) {
         const acct = CF_ACCOUNTS[(startIdx + i) % CF_ACCOUNTS.length];
         if (!acct.id || !acct.token) continue;
-
-        const cfStream = await callWorkersAI(
-          acct.id,
-          acct.token,
-          model,
-          cfMessages,
-          SYSTEM_PROMPT
-        );
-
+        const cfStream = await callWorkersAI(acct.id, acct.token, model, cfMessages, systemPrompt);
         if (cfStream) {
-          const uiStream = transformCFStream(cfStream);
-          return new Response(uiStream, {
+          return new Response(transformCFStream(cfStream), {
             headers: {
               "Content-Type": "text/event-stream",
               "Cache-Control": "no-cache",
-              "Connection": "keep-alive",
+              Connection: "keep-alive",
               "x-vercel-ai-ui-message-stream": "v1",
               "X-Accel-Buffering": "no",
             },
@@ -193,7 +231,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // All accounts/models failed — fallback error stream
+    // All failed
     const encoder = new TextEncoder();
     const errStream = new ReadableStream({
       start(controller) {
@@ -211,19 +249,14 @@ export async function POST(req: Request) {
         controller.close();
       },
     });
-
     return new Response(errStream, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        "x-vercel-ai-ui-message-stream": "v1",
-      },
+      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "x-vercel-ai-ui-message-stream": "v1" },
     });
   } catch (error: any) {
     console.error("Chat API Error:", error);
-    return new Response(
-      JSON.stringify({ error: error.message || "Unexpected error" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: error.message || "Unexpected error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
