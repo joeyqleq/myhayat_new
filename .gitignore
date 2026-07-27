@@ -29,12 +29,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+/.firecrawl/
 
 # env files (can opt-in for committing if needed)
 .env*
 
 # vercel
 .vercel
+
+# large raw datasets (not needed in repo)
+knowledge/azure_downloads/
+scratch_*.py
+scratch_*.json
+scratch_*.md
 
 # typescript
 *.tsbuildinfo
