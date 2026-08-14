@@ -17,6 +17,7 @@ try {
 // CF infra — central account for embedding + Vectorize
 const CF_CENTRAL_ID = process.env.CF_CENTRAL_ACCOUNT_ID!;
 const CF_CENTRAL_KEY = process.env.CF_CENTRAL_KEY!;
+const CF_CENTRAL_EMAIL = process.env.CF_CENTRAL_EMAIL ?? "joemaari@gmail.com";
 
 // CF AI accounts — round-robin for inference quota
 const CF_ACCOUNTS = [
@@ -29,7 +30,7 @@ const CF_ACCOUNTS = [
 const CF_MODELS = [
   "@cf/qwen/qwen3-30b-a3b-fp8",
   "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-  "@cf/zai-org/glm-5.2",
+  "@cf/meta/llama-3.1-8b-instruct",
 ];
 
 function getStartAccountIndex(): number {
@@ -45,7 +46,7 @@ async function embedQuery(text: string): Promise<number[] | null> {
       {
         method: "POST",
         headers: {
-          "X-Auth-Email": "joe.maari@coyotes.usd.edu",
+          "X-Auth-Email": CF_CENTRAL_EMAIL,
           "X-Auth-Key": CF_CENTRAL_KEY,
           "Content-Type": "application/json",
         },
@@ -71,7 +72,7 @@ async function retrieveContext(query: string, topK = 5): Promise<string> {
       {
         method: "POST",
         headers: {
-          "X-Auth-Email": "joe.maari@coyotes.usd.edu",
+          "X-Auth-Email": CF_CENTRAL_EMAIL,
           "X-Auth-Key": CF_CENTRAL_KEY,
           "Content-Type": "application/json",
         },
