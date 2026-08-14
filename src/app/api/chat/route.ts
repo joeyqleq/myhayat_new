@@ -19,22 +19,27 @@ const CF_CENTRAL_ID = process.env.CF_CENTRAL_ACCOUNT_ID!;
 const CF_CENTRAL_KEY = process.env.CF_CENTRAL_KEY!;
 const CF_CENTRAL_EMAIL = process.env.CF_CENTRAL_EMAIL ?? "joemaari@gmail.com";
 
-// CF AI accounts — round-robin for inference quota
+// CF AI accounts — 7-account round-robin for maximum quota (70K neurons/day)
 const CF_ACCOUNTS = [
   { id: process.env.CF_ACCT_2_ID!, token: process.env.CF_ACCT_2_TOKEN! },
   { id: process.env.CF_ACCT_3_ID!, token: process.env.CF_ACCT_3_TOKEN! },
   { id: process.env.CF_ACCT_4_ID!, token: process.env.CF_ACCT_4_TOKEN! },
+  { id: process.env.CF_ACCT_5_ID!, token: process.env.CF_ACCT_5_TOKEN! },
+  { id: process.env.CF_ACCT_6_ID!, token: process.env.CF_ACCT_6_TOKEN! },
+  { id: process.env.CF_ACCT_7_ID!, token: process.env.CF_ACCT_7_TOKEN! },
+  { id: process.env.CF_ACCT_8_ID!, token: process.env.CF_ACCT_8_TOKEN! },
 ];
 
-// Models: fastest with good dialect support first
+// Best free-tier models ranked by Arabic quality + reasoning
 const CF_MODELS = [
-  "@cf/qwen/qwen3-30b-a3b-fp8",
-  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-  "@cf/meta/llama-3.1-8b-instruct",
+  "@cf/qwen/qwen2.5-72b-instruct",          // strongest Arabic, 72B dense
+  "@cf/qwen/qwen3-30b-a3b-fp8",             // fast MoE, solid Arabic
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast", // best instruction following
+  "@cf/meta/llama-3.1-8b-instruct",          // last resort, always available
 ];
 
 function getStartAccountIndex(): number {
-  return Math.floor(Date.now() / 60000) % CF_ACCOUNTS.length;
+  return Math.floor(Date.now() / 60000) % 7;
 }
 
 // Embed a query string using CF bge-base — returns 768-dim vector
