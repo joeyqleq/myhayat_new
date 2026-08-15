@@ -90,6 +90,8 @@ export function detectLanguage(text: string): DetectResult {
 
   const empty: DetectResult = {
     dominantLanguage: "english",
+    dominant: "english",
+    usesDigits: false,
     englishRatio: 0,
     arabiziRatio: 0,
     arabicRatio: 0,
