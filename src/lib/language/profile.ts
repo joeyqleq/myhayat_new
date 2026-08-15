@@ -1,15 +1,16 @@
 import { detectLanguage } from "./detect";
-import { normalizeArabizi, toSemanticEnglish } from "./normalize";
-import { VARIANT_TO_CANONICAL, CANONICAL_TO_PREF_KEY, SPELLING_CLUSTERS } from "./lexicon";
+import { toSemanticEnglish } from "./normalize";
+import { VARIANT_TO_CANONICAL, CANONICAL_TO_PREF_KEY } from "./lexicon";
 import type { LanguageProfile, SessionLanguageProfile, SpellingPreferences } from "./types";
 
-const EMA_ALPHA = 0.3; // weight for the most recent message
+const EMA_ALPHA = 0.3;
 
-/** Extract which spelling variants the user actually used for tracked clusters. */
+/** Extract known spelling variants the user actually used. Unknown/malformed words are ignored. */
 function extractSpellingPrefs(text: string): SpellingPreferences {
   const prefs: SpellingPreferences = {};
   const words = text.toLowerCase().split(/\s+/);
-  for (const word of words) {
+  for (const rawWord of words) {
+    const word = rawWord.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "");
     const canonical = VARIANT_TO_CANONICAL[word];
     if (!canonical) continue;
     const prefKey = CANONICAL_TO_PREF_KEY[canonical];
@@ -18,9 +19,6 @@ function extractSpellingPrefs(text: string): SpellingPreferences {
   return prefs;
 }
 
-/**
- * Fully analyse a single message and return a complete LanguageProfile.
- */
 export function analyzeMessage(text: string): LanguageProfile {
   const detected = detectLanguage(text);
   const spellingPreferences = extractSpellingPrefs(text);
@@ -33,15 +31,13 @@ export function analyzeMessage(text: string): LanguageProfile {
   };
 }
 
-/** Exponential moving average helper. */
 function ema(prev: number, next: number): number {
   return EMA_ALPHA * next + (1 - EMA_ALPHA) * prev;
 }
 
 /**
  * Update a session-level profile with a new user message.
- * Recent messages are weighted more heavily (α=0.3 EMA).
- * Pass null as session to create a fresh profile from the first message.
+ * Callers that want current-turn language should pass null and only the latest turn.
  */
 export function updateSessionProfile(
   session: SessionLanguageProfile | null,
@@ -57,17 +53,15 @@ export function updateSessionProfile(
     };
   }
 
-  // Merge spelling preferences: most recent occurrence wins
   const spellingPreferences: SpellingPreferences = {
     ...session.spellingPreferences,
     ...msg.spellingPreferences,
   };
-
-  // Merge preserve terms (union)
   const preserveSet = new Set([...session.preserveTerms, ...msg.preserveTerms]);
 
   return {
-    dominantLanguage: msg.dominantLanguage, // use latest message's dominant
+    // The current turn controls the output language. Ratios remain useful as context.
+    dominantLanguage: msg.dominantLanguage,
     englishRatio: ema(session.englishRatio, msg.englishRatio),
     arabiziRatio: ema(session.arabiziRatio, msg.arabiziRatio),
     arabicRatio: ema(session.arabicRatio, msg.arabicRatio),
@@ -76,7 +70,6 @@ export function updateSessionProfile(
     spellingPreferences,
     preserveTerms: [...preserveSet],
     semanticEnglish: msg.semanticEnglish,
-    // Digit flags: once true, stay true for the session
     uses2: session.uses2 || msg.uses2,
     uses3: session.uses3 || msg.uses3,
     uses5: session.uses5 || msg.uses5,
@@ -89,67 +82,59 @@ export function updateSessionProfile(
 }
 
 /**
- * Returns a SHORT (2-3 sentence) language directive for the LLM system prompt.
- * Encodes the user's exact dialect style so the model mirrors it precisely.
+ * Short generation directive. The always-on Lebanese surface guide handles grammar;
+ * this function only controls current-turn script/mix and light spelling preferences.
  */
 export function getLanguageInstruction(profile: SessionLanguageProfile): string {
   const {
-    dominantLanguage, englishRatio, arabiziRatio, arabicRatio,
-    spellingPreferences, uses2, uses3, uses5, uses7, uses8, uses9,
+    dominantLanguage,
+    spellingPreferences,
+    uses2, uses3, uses5, uses7, uses8, uses9,
     preserveTerms,
   } = profile;
 
-  if (dominantLanguage === "english" || englishRatio > 0.8) {
-    return "Respond in English only. Do not use Arabic script or Arabizi.";
+  if (dominantLanguage === "english") {
+    return "Respond in English only for this turn. Do not switch to Arabizi because earlier messages used it.";
   }
 
-  if (dominantLanguage === "arabic" || arabicRatio > 0.7) {
-    return "Respond in Lebanese Arabic script. Do not use Latin Arabizi.";
+  if (dominantLanguage === "arabic") {
+    return "Respond in natural Lebanese Arabic script for this turn. Do not use MSA/Egyptian wording unless the user explicitly asks for it.";
   }
 
-  if (dominantLanguage === "arabizi" || arabiziRatio > 0.45) {
-    const usedDigitList = (
-      [uses2 && "2", uses3 && "3", uses5 && "5", uses7 && "7", uses8 && "8", uses9 && "9"] as (string | false)[]
-    ).filter(Boolean).join(", ");
+  const digitList = (
+    [uses2 && "2", uses3 && "3", uses5 && "5", uses7 && "7", uses8 && "8", uses9 && "9"] as (string | false)[]
+  ).filter(Boolean).join(", ");
 
-    const styleNotes: string[] = [];
-    // Build "use X, not Y/Z" notes from the cluster variants — exclude the preferred from the avoidance list
-    const buildStyleNote = (preferred: string, clusterKey: string): string => {
-      const allVariants = SPELLING_CLUSTERS[clusterKey] ?? [];
-      const others = allVariants.filter(v => v !== preferred).slice(0, 3);
-      return others.length > 0
-        ? `'${preferred}' (avoid: ${others.join("/")}) for ${clusterKey === "shu" ? "what" : clusterKey === "mish" ? "negation" : clusterKey}`
-        : `'${preferred}'`;
-    };
-    if (spellingPreferences.what) styleNotes.push(buildStyleNote(spellingPreferences.what, "shu"));
-    if (spellingPreferences.not) styleNotes.push(buildStyleNote(spellingPreferences.not, "mish"));
-    if (spellingPreferences.now) styleNotes.push(`'${spellingPreferences.now}' for now`);
-    if (spellingPreferences.want) styleNotes.push(`'${spellingPreferences.want}' for want`);
+  const prefs = Object.entries(spellingPreferences)
+    .filter(([, value]) => Boolean(value))
+    .slice(0, 4)
+    .map(([key, value]) => `${key}=${value}`)
+    .join(", ");
 
-    let instr = "Respond in Lebanese Arabizi ONLY. No Arabic script. Match the user's exact spellings.";
-    if (styleNotes.length > 0) {
-      instr += ` IMPORTANT: use ${styleNotes.join("; ")}.`;
-    }
-    if (usedDigitList) {
-      instr += ` Mirror their digit-phoneme usage (${usedDigitList}).`;
-    }
-    if (preserveTerms.length > 0) {
-      instr += ` Keep their English terms unchanged: ${preserveTerms.slice(0, 6).join(", ")}.`;
-    }
-    return instr;
+  const styleBits: string[] = [];
+  if (prefs) {
+    styleBits.push(`Known valid user spelling preferences: ${prefs}. Mirror them only when natural; never bend grammar to force them.`);
   }
-
-  // Mixed — explicit enforcement: response MUST contain both languages
-  const engPct = Math.round(englishRatio * 100);
-  const aziPct = Math.round(arabiziRatio * 100);
-  let instr = `MIXED LANGUAGE REQUIRED: your response MUST contain both English words AND Lebanese Arabizi — NOT Arabizi only. Approximate ratio: ${engPct}% English, ${aziPct}% Lebanese Arabizi.`;
+  if (digitList) {
+    styleBits.push(`The user uses digit phonemes (${digitList}); match that style lightly.`);
+  }
   if (preserveTerms.length > 0) {
-    instr += ` Keep their English mental-health terms: ${preserveTerms.slice(0, 6).join(", ")}.`;
+    styleBits.push(`Keep these user-chosen English terms unchanged when relevant: ${preserveTerms.slice(0, 6).join(", ")}.`);
   }
-  return instr;
+
+  if (dominantLanguage === "arabizi") {
+    return [
+      "Respond in clear, meaningful Lebanese Arabizi. Correct meaning, syntax, conjugation and agreement are more important than exact spelling mirroring. Never invent Arabizi tokens.",
+      ...styleBits,
+    ].join(" ");
+  }
+
+  return [
+    "The current turn is genuinely mixed. Respond with a natural English/Lebanese-Arabizi mix; do not force a numeric ratio or translate every clause. Correct meaning and Lebanese grammar come first.",
+    ...styleBits,
+  ].join(" ");
 }
 
-/** Summarise a session profile for logging. Contains no sensitive user content. */
 export function summarizeProfile(profile: SessionLanguageProfile): string {
   const { dominantLanguage, englishRatio, arabiziRatio, arabicRatio, digitDensity, messageCount } = profile;
   const digits = [
