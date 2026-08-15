@@ -6,6 +6,8 @@ import { getRouter } from "@/lib/router";
 import { classifySafety } from "@/lib/safety/classify";
 import { retrieveContext } from "@/lib/retrieval";
 import { updateSessionProfile, getLanguageInstruction } from "@/lib/language";
+import { validateResponse } from "@/lib/language/validate";
+import type { SessionLanguageProfile } from "@/lib/language/types";
 
 // ---------------------------------------------------------------------------
 // System prompt template — loaded once at module init
@@ -48,13 +50,20 @@ function buildInlineStream(text: string, finishReason = "stop"): ReadableStream 
 
 // ---------------------------------------------------------------------------
 // CF SSE → AI SDK UIMessage stream transform
+// Accumulates the full response text and runs validateResponse() at the end (non-blocking).
 // ---------------------------------------------------------------------------
 
-function transformCFStream(cfStream: ReadableStream): ReadableStream {
+function transformCFStream(
+  cfStream: ReadableStream,
+  langProfile: SessionLanguageProfile,
+  historyTexts: string[],
+  onValidation?: (fullText: string) => void,
+): ReadableStream {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const textId = `part-${Date.now()}`;
   let buffer = "";
+  let fullText = "";
 
   return new ReadableStream({
     async start(controller) {
@@ -84,7 +93,10 @@ function transformCFStream(cfStream: ReadableStream): ReadableStream {
               const delta = (choices?.[0]?.delta as Record<string, unknown>)?.content as string
                 ?? (parsed?.response as string)
                 ?? "";
-              if (delta) send({ type: "text-delta", id: textId, delta });
+              if (delta) {
+                fullText += delta;
+                send({ type: "text-delta", id: textId, delta });
+              }
             } catch { /* non-JSON SSE line */ }
           }
         }
@@ -96,6 +108,9 @@ function transformCFStream(cfStream: ReadableStream): ReadableStream {
         send({ type: "finish", finishReason: "stop" });
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();
+
+        // Non-blocking post-stream validation — logs issues, does not affect response
+        if (onValidation) onValidation(fullText);
       }
     },
   });
@@ -134,6 +149,7 @@ export async function POST(req: Request): Promise<Response> {
   let usedModel: string | null = null;
   let usedAccount: string | null = null;
   let logErrorClass: string | null = null;
+  let langProfile: SessionLanguageProfile | null = null;
 
   try {
     const body = await req.json() as Record<string, unknown>;
@@ -186,7 +202,7 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     // --- Language analysis (single-message session profile) -----------------
-    const langProfile = updateSessionProfile(null, queryText);
+    langProfile = updateSessionProfile(null, queryText);
     dominantLanguage = langProfile.dominantLanguage;
     const languageInstruction = getLanguageInstruction(langProfile);
     const semanticEnglish = langProfile.semanticEnglish;
@@ -227,22 +243,49 @@ export async function POST(req: Request): Promise<Response> {
 
     usedModel = result.model;
     usedAccount = result.accountAlias;
-    validationOk = true;
 
+    // Build history text list for loop detection (assistant turns only)
+    const historyTexts = cfMessages
+      .filter(m => m.role === "assistant")
+      .map(m => m.content);
+
+    // Validation callback — runs after stream completes, logs without blocking response
+    const onValidation = (fullText: string) => {
+      if (!langProfile) return;
+      const vr = validateResponse(fullText, langProfile, historyTexts);
+      validationOk = vr.valid;
+      if (!vr.valid) {
+        console.warn(JSON.stringify({
+          event: "validation_failed",
+          requestId,
+          issues: vr.issues,
+        }));
+      }
+      // Final structured log (after stream — latency here reflects full generation time)
+      console.log(JSON.stringify({
+        requestId,
+        model: usedModel,
+        accountAlias: usedAccount,
+        latencyMs: Date.now() - startMs,
+        safetyCategory,
+        dominantLanguage,
+        retrievedChunks,
+        validationOk,
+        fallbackUsed,
+        errorClass: logErrorClass,
+        validationIssues: vr.issues.length,
+      }));
+    };
+
+    // Log start of stream immediately (TTFB latency)
     console.log(JSON.stringify({
-      requestId,
-      model: usedModel,
-      accountAlias: usedAccount,
+      requestId, event: "stream_start",
+      model: usedModel, accountAlias: usedAccount,
       latencyMs: Date.now() - startMs,
-      safetyCategory,
-      dominantLanguage,
-      retrievedChunks,
-      validationOk,
-      fallbackUsed,
-      errorClass: logErrorClass,
+      safetyCategory, dominantLanguage, retrievedChunks,
     }));
 
-    return sseResponse(transformCFStream(result.stream));
+    return sseResponse(transformCFStream(result.stream, langProfile, historyTexts, onValidation));
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unexpected error";
     console.error("Chat API Error:", msg, { requestId, latencyMs: Date.now() - startMs });

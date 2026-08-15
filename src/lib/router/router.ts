@@ -71,6 +71,9 @@ export class ModelRouter {
           stream: true,
           max_tokens: opts.maxTokens ?? 1024,
           temperature: opts.temperature ?? 0.75,
+          repetition_penalty: 1.15,
+          // Disable chain-of-thought reasoning output for models that support it (e.g. Qwen3)
+          thinking: { type: "disabled" },
         }),
       });
       if (response.ok) return { ok: true, response };

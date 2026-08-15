@@ -113,30 +113,30 @@ export function getLanguageInstruction(profile: SessionLanguageProfile): string 
     ).filter(Boolean).join(", ");
 
     const styleNotes: string[] = [];
-    if (spellingPreferences.what) styleNotes.push(`'${spellingPreferences.what}' for what`);
-    if (spellingPreferences.not) styleNotes.push(`'${spellingPreferences.not}' for not`);
+    if (spellingPreferences.what) styleNotes.push(`'${spellingPreferences.what}' for what (NOT shu/chou/shou variants)`);
+    if (spellingPreferences.not) styleNotes.push(`'${spellingPreferences.not}' for not/negation (NOT mesh/mish variants)`);
     if (spellingPreferences.now) styleNotes.push(`'${spellingPreferences.now}' for now`);
     if (spellingPreferences.want) styleNotes.push(`'${spellingPreferences.want}' for want`);
 
-    let instr = "Respond in Lebanese Arabizi matching the user's exact style.";
+    let instr = "Respond in Lebanese Arabizi ONLY. No Arabic script. Match the user's exact spellings.";
     if (styleNotes.length > 0) {
-      instr += ` Use ${styleNotes.join(", ")}.`;
+      instr += ` IMPORTANT: use ${styleNotes.join("; ")}.`;
     }
     if (usedDigitList) {
-      instr += ` Use number-phonemes (${usedDigitList}) as the user does.`;
+      instr += ` Mirror their digit-phoneme usage (${usedDigitList}).`;
     }
     if (preserveTerms.length > 0) {
-      instr += ` Keep their English terms: ${preserveTerms.slice(0, 6).join(", ")}.`;
+      instr += ` Keep their English terms unchanged: ${preserveTerms.slice(0, 6).join(", ")}.`;
     }
     return instr;
   }
 
-  // Mixed
+  // Mixed — explicit enforcement: response MUST contain both languages
   const engPct = Math.round(englishRatio * 100);
   const aziPct = Math.round(arabiziRatio * 100);
-  let instr = `Mirror the user's mix: ~${engPct}% English and ~${aziPct}% Lebanese Arabizi.`;
+  let instr = `MIXED LANGUAGE REQUIRED: your response MUST contain both English words AND Lebanese Arabizi — NOT Arabizi only. Approximate ratio: ${engPct}% English, ${aziPct}% Lebanese Arabizi.`;
   if (preserveTerms.length > 0) {
-    instr += ` Preserve their English mental-health terms: ${preserveTerms.slice(0, 6).join(", ")}.`;
+    instr += ` Keep their English mental-health terms: ${preserveTerms.slice(0, 6).join(", ")}.`;
   }
   return instr;
 }
