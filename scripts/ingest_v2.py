@@ -258,7 +258,9 @@ def _embed_and_upsert(
     vectors = []
     for i, (emb, text, heading) in enumerate(zip(all_embeddings, texts, headings)):
         section_slug = slug(heading) if heading else "body"
-        chunk_id = f"{stem}_{section_slug}_{i}"
+        # Vectorize max ID = 64 bytes. Reserve 10 chars for _{section_slug}_{i}
+        safe_stem = slug(stem, max_len=30)
+        chunk_id = f"{safe_stem}_{section_slug}_{i}"[:64]
         metadata: dict = {
             "text": text,
             "source": source_name,
