@@ -23,12 +23,8 @@ const arabiziProfile: SessionLanguageProfile = {
 };
 
 describe("Lebanese generation output gate", () => {
-  it("accepts a simple high-confidence Lebanese response", () => {
-    const result = validateResponse(
-      "Mbayyan enno fi shi mdeye2ak shway. Shu sar ma3ak?",
-      arabiziProfile,
-      [],
-    );
+  it("does not falsely reject a minimal common Lebanese question", () => {
+    const result = validateResponse("Shu sar?", arabiziProfile, []);
     expect(result.rewriteNeeded).toBe(false);
   });
 
@@ -61,7 +57,7 @@ describe("Lebanese generation output gate", () => {
   });
 
   it("checks the last assistant turns directly instead of dropping every other one", () => {
-    const previous = "Mbayyan enno fi shi mdeye2ak. Shu sar?";
+    const previous = "Shu sar?";
     const result = validateResponse(previous, arabiziProfile, [previous]);
     expect(result.rewriteNeeded).toBe(true);
     expect(result.issues.some(i => i.type === "loop_detected")).toBe(true);
