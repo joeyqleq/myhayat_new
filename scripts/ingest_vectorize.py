@@ -9,14 +9,17 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
-ACCOUNT_ID = "0228e3fe174bbc185f30b1d4eaf5f166"
-AUTH_EMAIL = "joe.maari@coyotes.usd.edu"
-AUTH_KEY = "8d7c3a9b1e90846a143170e4696a93be960ee"
+ACCOUNT_ID = os.environ["CF_CENTRAL_ACCOUNT_ID"]
+AUTH_EMAIL = os.environ["CF_CENTRAL_EMAIL"]
+AUTH_KEY = os.environ["CF_CENTRAL_KEY"]
 
-EMBEDDING_URL = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/@cf/baai/bge-base-en-v1.5"
-VECTORIZE_URL = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/vectorize/v2/indexes/myhayat-kb/upsert"
+INDEX_NAME = os.environ.get("VECTORIZE_INDEX", "myhayat-kb-v2")
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "@cf/baai/bge-m3")
 
-KNOWLEDGE_DIR = Path("/home/jq/Desktop/myhayat_new/knowledge")
+EMBEDDING_URL = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/{EMBEDDING_MODEL}"
+VECTORIZE_URL = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/vectorize/v2/indexes/{INDEX_NAME}/upsert"
+
+KNOWLEDGE_DIR = Path(os.environ.get("KNOWLEDGE_DIR", str(Path(__file__).parent.parent / "knowledge")))
 CHUNK_SIZE = 1600
 MIN_CHUNK_LEN = 100
 BATCH_SIZE = 100
