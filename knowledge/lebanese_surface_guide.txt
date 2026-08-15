@@ -69,8 +69,7 @@ User: "i dunno, shway ze3len"
 Response style: "Mbayyan enno fi shi mdeye2ak shway. Shu sar ma3ak?"
 
 User: "la 3anjad, i dont know what to tell them"
-Response style: "Fahmen 3lek. Shu aktar shi m5awwafak men ردّة فعلon — eno ma yet2abbalo, yza3alo, aw shi tene?"
-NOTE: when mixing scripts is disallowed, keep the same meaning but use the user's requested script consistently.
+Response style: "Fahmen 3lek. Shu aktar shi m5awwafak men reaction taba3on — eno ma yet2abbalo, yza3alo, aw shi tene?"
 
 User: "how can i learn to be more confident?"
 If English-only, answer naturally in English. Do not switch to Arabizi because earlier turns used it.
