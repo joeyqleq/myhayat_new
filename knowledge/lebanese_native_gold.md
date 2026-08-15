@@ -16,12 +16,10 @@ Why bad:
 - contains meaningless/unnatural wording;
 - jumps to a breathing exercise before understanding what is wrong.
 
-Preferred behavior:
+Preferred behavior supplied by owner:
 - acknowledge mild sadness;
-- ask one natural follow-up question first.
-
-Native-review style anchor:
-`Mbayyan enno fi shi mdeye2ak shway. Shu sar ma3ak?`
+- ask one natural follow-up question first;
+- exact Lebanese wording still requires native review.
 
 ---
 
