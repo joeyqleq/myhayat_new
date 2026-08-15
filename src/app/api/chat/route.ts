@@ -10,7 +10,7 @@ import { validateResponse } from "@/lib/language/validate";
 import type { SessionLanguageProfile } from "@/lib/language/types";
 
 // ---------------------------------------------------------------------------
-// System prompt template — loaded once at module init
+// Prompt resources — loaded once at module init
 // ---------------------------------------------------------------------------
 
 let SYSTEM_PROMPT_TEMPLATE: string;
@@ -21,11 +21,21 @@ try {
   );
 } catch {
   SYSTEM_PROMPT_TEMPLATE =
-    "You are My Hayat, a warm Lebanese mental health companion. Reply in Lebanese Arabizi. Never diagnose. Crisis: Embrace Lifeline 1564.\n\n---\n{{CONTEXT}}\n---";
+    "You are My Hayat, a warm Lebanese mental health companion. Never diagnose. Crisis: Embrace Lifeline 1564.\n\n---\n{{CONTEXT}}\n---";
+}
+
+let LEBANESE_SURFACE_GUIDE = "";
+try {
+  LEBANESE_SURFACE_GUIDE = fs.readFileSync(
+    path.join(process.cwd(), "knowledge", "lebanese_surface_guide.txt"),
+    "utf-8"
+  );
+} catch {
+  // The chat still works without the guide, but Arabizi quality will be lower.
 }
 
 // ---------------------------------------------------------------------------
-// Inline SSE stream builder (crisis / error responses that bypass the router)
+// Inline SSE stream builder
 // ---------------------------------------------------------------------------
 
 function buildInlineStream(text: string, finishReason = "stop"): ReadableStream {
@@ -48,9 +58,58 @@ function buildInlineStream(text: string, finishReason = "stop"): ReadableStream 
   });
 }
 
+function extractDelta(parsed: Record<string, unknown>): string {
+  const choices = parsed?.choices as Array<Record<string, unknown>> | undefined;
+  return ((choices?.[0]?.delta as Record<string, unknown>)?.content as string)
+    ?? (parsed?.response as string)
+    ?? "";
+}
+
+/** Buffer a CF Workers AI SSE response into text so dialect checks can run BEFORE display. */
+async function readCFStreamToText(cfStream: ReadableStream): Promise<string> {
+  const decoder = new TextDecoder();
+  const reader = cfStream.getReader();
+  let buffer = "";
+  let fullText = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data: ")) continue;
+      const data = trimmed.slice(6);
+      if (!data || data === "[DONE]") continue;
+      try {
+        fullText += extractDelta(JSON.parse(data) as Record<string, unknown>);
+      } catch {
+        // Ignore non-JSON SSE lines.
+      }
+    }
+  }
+
+  // Some providers finish without a trailing newline.
+  const tail = buffer.trim();
+  if (tail.startsWith("data: ")) {
+    const data = tail.slice(6);
+    if (data && data !== "[DONE]") {
+      try {
+        fullText += extractDelta(JSON.parse(data) as Record<string, unknown>);
+      } catch {
+        // Ignore malformed tail.
+      }
+    }
+  }
+
+  return fullText.trim();
+}
+
 // ---------------------------------------------------------------------------
-// CF SSE → AI SDK UIMessage stream transform
-// Accumulates the full response text and runs validateResponse() at the end (non-blocking).
+// Streaming transform used for non-dialect-gated responses
 // ---------------------------------------------------------------------------
 
 function transformCFStream(
@@ -88,16 +147,14 @@ function transformCFStream(
             const data = trimmed.slice(6);
             if (data === "[DONE]") continue;
             try {
-              const parsed = JSON.parse(data) as Record<string, unknown>;
-              const choices = parsed?.choices as Array<Record<string, unknown>> | undefined;
-              const delta = (choices?.[0]?.delta as Record<string, unknown>)?.content as string
-                ?? (parsed?.response as string)
-                ?? "";
+              const delta = extractDelta(JSON.parse(data) as Record<string, unknown>);
               if (delta) {
                 fullText += delta;
                 send({ type: "text-delta", id: textId, delta });
               }
-            } catch { /* non-JSON SSE line */ }
+            } catch {
+              // non-JSON SSE line
+            }
           }
         }
       } catch (err) {
@@ -109,7 +166,6 @@ function transformCFStream(
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();
 
-        // Non-blocking post-stream validation — logs issues, does not affect response
         if (onValidation) onValidation(fullText);
       }
     },
@@ -117,7 +173,7 @@ function transformCFStream(
 }
 
 // ---------------------------------------------------------------------------
-// Shared response headers
+// Shared helpers
 // ---------------------------------------------------------------------------
 
 const SSE_HEADERS: HeadersInit = {
@@ -132,6 +188,26 @@ function sseResponse(stream: ReadableStream): Response {
   return new Response(stream, { headers: SSE_HEADERS });
 }
 
+function serviceErrorText(profile: SessionLanguageProfile): string {
+  if (profile.dominantLanguage === "english") {
+    return "I'm having trouble responding right now. Please try again in a moment. 💛";
+  }
+  if (profile.dominantLanguage === "arabic") {
+    return "في مشكلة صغيرة هلّق. جرّب ابعتلي كمان مرّة بعد شوي. 💛";
+  }
+  if (profile.dominantLanguage === "mixed") {
+    return "Sorry, fi meshkle zghire hala2. Jarrib marra tene ba3d shway. 💛";
+  }
+  return "Fi meshkle zghire hala2. Jarrib marra tene ba3d shway. 💛";
+}
+
+function dialectFailureFallback(profile: SessionLanguageProfile): string {
+  if (profile.dominantLanguage === "mixed") {
+    return "Sorry, ma fhemet 3lek mnih. Fik t2oula bi tari2a tene?";
+  }
+  return "Ma fhemet 3lek mnih. Fik t2oula bi tari2a tene?";
+}
+
 // ---------------------------------------------------------------------------
 // POST handler
 // ---------------------------------------------------------------------------
@@ -140,7 +216,6 @@ export async function POST(req: Request): Promise<Response> {
   const requestId = Math.random().toString(36).slice(2, 10);
   const startMs = Date.now();
 
-  // Log fields collected throughout the handler
   let safetyCategory = "normal";
   let dominantLanguage = "unknown";
   let retrievedChunks = 0;
@@ -162,7 +237,6 @@ export async function POST(req: Request): Promise<Response> {
       });
     }
 
-    // Normalize to { role, content }
     const cfMessages = (rawMessages as Array<Record<string, unknown>>)
       .filter(m => m.role === "user" || m.role === "assistant")
       .map(m => {
@@ -177,15 +251,25 @@ export async function POST(req: Request): Promise<Response> {
       })
       .filter(m => m.content);
 
-    // Build query text from last 2 user turns
-    const queryText = cfMessages
-      .filter(m => m.role === "user")
-      .slice(-2)
-      .map(m => m.content)
-      .join(" ");
+    const userMessages = cfMessages.filter(m => m.role === "user");
+    const latestUserText = userMessages.at(-1)?.content ?? "";
+    const recentSafetyText = userMessages.slice(-2).map(m => m.content).join(" ");
 
-    // --- Safety classification (deterministic — no LLM call) ----------------
-    const safety = classifySafety(queryText);
+    if (!latestUserText) {
+      return new Response(JSON.stringify({ error: "No user message provided" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Language must follow the CURRENT turn. Concatenating earlier turns here caused
+    // English questions to receive Arabizi answers after an Arabizi conversation.
+    langProfile = updateSessionProfile(null, latestUserText);
+    dominantLanguage = langProfile.dominantLanguage;
+    const languageInstruction = getLanguageInstruction(langProfile);
+    const semanticEnglish = langProfile.semanticEnglish;
+
+    const safety = classifySafety(recentSafetyText || latestUserText);
     safetyCategory = safety.category;
 
     if (safety.category === "crisis" || safety.category === "immediate_danger") {
@@ -194,44 +278,43 @@ export async function POST(req: Request): Promise<Response> {
       console.log(JSON.stringify({
         requestId, model: null, accountAlias: null,
         latencyMs: Date.now() - startMs,
-        safetyCategory, dominantLanguage: "arabic",
+        safetyCategory, dominantLanguage,
         retrievedChunks: 0, validationOk: true,
         fallbackUsed: false, errorClass: null,
       }));
       return sseResponse(buildInlineStream(crisisText));
     }
 
-    // --- Language analysis (single-message session profile) -----------------
-    langProfile = updateSessionProfile(null, queryText);
-    dominantLanguage = langProfile.dominantLanguage;
-    const languageInstruction = getLanguageInstruction(langProfile);
-    const semanticEnglish = langProfile.semanticEnglish;
-
-    // --- Parallel: RAG retrieval + (other work if needed) -------------------
-    const [context] = await Promise.all([
-      retrieveContext(queryText, semanticEnglish).catch(() => ({ text: "", chunks: 0 })),
-    ]);
-
+    const context = await retrieveContext(latestUserText, semanticEnglish)
+      .catch(() => ({ text: "", chunks: 0 }));
     retrievedChunks = context.chunks;
 
-    // --- Build compact system prompt ----------------------------------------
     const contextBlock = context.text ||
-      "No specific knowledge retrieved — use general Lebanese mental health guidance.";
+      "No specific knowledge retrieved — use general mental-health support guidance.";
+
+    const dialectMode = dominantLanguage === "arabizi" || dominantLanguage === "mixed";
+    const surfaceGuide = dialectMode && LEBANESE_SURFACE_GUIDE
+      ? `\n\n## ALWAYS-ON LEBANESE GENERATION GUIDE\n${LEBANESE_SURFACE_GUIDE}`
+      : "";
 
     const systemPrompt = [
       SYSTEM_PROMPT_TEMPLATE.replace("{{CONTEXT}}", contextBlock),
-      languageInstruction ? `\n## Language guidance\n${languageInstruction}` : "",
-      `\n## Response guidance\n${safety.responseGuidance}`,
+      surfaceGuide,
+      languageInstruction ? `\n\n## CURRENT-TURN LANGUAGE GUIDANCE\n${languageInstruction}` : "",
+      `\n\n## RESPONSE GUIDANCE\n${safety.responseGuidance}`,
     ].join("");
 
-    // --- Router: try all models/accounts with smart fallback ----------------
     const router = getRouter();
-    const result = await router.callWithFallback(cfMessages, systemPrompt);
+    const generationOptions = {
+      maxTokens: dialectMode ? 512 : 1024,
+      temperature: dialectMode ? 0.35 : 0.6,
+    };
+    let result = await router.callWithFallback(cfMessages, systemPrompt, generationOptions);
 
     if (!result) {
       fallbackUsed = true;
       logErrorClass = "all_models_failed";
-      const errText = "مع الأسف في مشكلة هلق. جرب معي بعد شوي يا حبيبي 💙";
+      const errText = serviceErrorText(langProfile);
       console.log(JSON.stringify({
         requestId, model: null, accountAlias: null,
         latencyMs: Date.now() - startMs,
@@ -244,16 +327,75 @@ export async function POST(req: Request): Promise<Response> {
     usedModel = result.model;
     usedAccount = result.accountAlias;
 
-    // Build history text list for loop detection (assistant turns only)
     const historyTexts = cfMessages
       .filter(m => m.role === "assistant")
       .map(m => m.content);
 
-    // Validation callback — runs after stream completes, logs without blocking response
+    // Arabizi/mixed replies are deliberately buffered. The old implementation
+    // validated only after nonsense had already streamed to the user.
+    if (dialectMode) {
+      let fullText = await readCFStreamToText(result.stream);
+      let vr = validateResponse(fullText, langProfile, historyTexts);
+
+      if (vr.rewriteNeeded) {
+        fallbackUsed = true;
+        console.warn(JSON.stringify({
+          event: "dialect_gate_retry",
+          requestId,
+          model: usedModel,
+          issues: vr.issues,
+        }));
+
+        const retryPrompt = `${systemPrompt}\n\n## RETRY CONSTRAINT\nYour previous draft failed deterministic Lebanese quality checks. Rewrite from scratch using only simple, high-confidence Lebanese wording. Do not use Egyptian forms, invented Arabizi, repeated filler, or malformed words. Preserve the intended meaning.`;
+        const retry = await router.callWithFallback(cfMessages, retryPrompt, {
+          maxTokens: 512,
+          temperature: 0.2,
+        });
+
+        if (retry) {
+          usedModel = retry.model;
+          usedAccount = retry.accountAlias;
+          const retryText = await readCFStreamToText(retry.stream);
+          const retryVr = validateResponse(retryText, langProfile, historyTexts);
+          if (!retryVr.rewriteNeeded && retryText) {
+            fullText = retryText;
+            vr = retryVr;
+          } else {
+            vr = retryVr;
+          }
+        }
+      }
+
+      if (!fullText || vr.rewriteNeeded) {
+        fullText = dialectFailureFallback(langProfile);
+        logErrorClass = "dialect_validation_failed";
+        validationOk = false;
+      } else {
+        validationOk = true;
+      }
+
+      console.log(JSON.stringify({
+        requestId,
+        model: usedModel,
+        accountAlias: usedAccount,
+        latencyMs: Date.now() - startMs,
+        safetyCategory,
+        dominantLanguage,
+        retrievedChunks,
+        validationOk,
+        fallbackUsed,
+        errorClass: logErrorClass,
+        validationIssues: vr.issues.length,
+      }));
+
+      return sseResponse(buildInlineStream(fullText, logErrorClass ? "error" : "stop"));
+    }
+
+    // English / Arabic-script responses can keep low-latency streaming.
     const onValidation = (fullText: string) => {
       if (!langProfile) return;
       const vr = validateResponse(fullText, langProfile, historyTexts);
-      validationOk = vr.valid;
+      validationOk = !vr.rewriteNeeded;
       if (!vr.valid) {
         console.warn(JSON.stringify({
           event: "validation_failed",
@@ -261,7 +403,6 @@ export async function POST(req: Request): Promise<Response> {
           issues: vr.issues,
         }));
       }
-      // Final structured log (after stream — latency here reflects full generation time)
       console.log(JSON.stringify({
         requestId,
         model: usedModel,
@@ -277,7 +418,6 @@ export async function POST(req: Request): Promise<Response> {
       }));
     };
 
-    // Log start of stream immediately (TTFB latency)
     console.log(JSON.stringify({
       requestId, event: "stream_start",
       model: usedModel, accountAlias: usedAccount,

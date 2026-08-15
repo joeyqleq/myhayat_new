@@ -1,11 +1,15 @@
-import { detectLanguage } from "./detect";
-import { SPELLING_CLUSTERS } from "./lexicon";
+import {
+  SPELLING_CLUSTERS,
+  NON_LEBANESE_GENERATION_FORMS,
+  SUSPECT_GENERATION_FORMS,
+} from "./lexicon";
 import type { SessionLanguageProfile } from "./types";
 
 export interface ValidationIssue {
   type:
     | "script_mismatch"
     | "style_inconsistency"
+    | "dialect_contamination"
     | "gibberish"
     | "empty"
     | "prompt_leak"
@@ -22,10 +26,8 @@ export interface ValidationResult {
 
 const ARABIC_RE = /[؀-ۿ]/;
 const LATIN_RE = /[a-zA-Z]/;
-// Digit phoneme embedded in a word
 const DIGIT_PHONEME_RE = /[a-zA-Z][2357890]|[2357890][a-zA-Z]/;
 
-/** Rough Arabic-script ratio in a response (by character proportion in words). */
 function arabicScriptRatio(text: string): number {
   const words = text.split(/\s+/).filter((w) => w.length > 0);
   if (!words.length) return 0;
@@ -33,7 +35,6 @@ function arabicScriptRatio(text: string): number {
   return arabicWords.length / words.length;
 }
 
-/** Rough Arabizi ratio in a response (words with embedded digit-phonemes or in lexicon variants). */
 function arabiziRatio(text: string): number {
   const words = text.split(/\s+/).filter((w) => w.length > 0);
   if (!words.length) return 0;
@@ -41,12 +42,26 @@ function arabiziRatio(text: string): number {
   return arabizi.length / words.length;
 }
 
-/** Count occurrences of a cluster variant set in text. */
+function latinTokens(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[^a-z0-9']+/)
+    .filter(Boolean);
+}
+
+function findForbiddenTokens(text: string, set: Set<string>): string[] {
+  const seen = new Set<string>();
+  for (const token of latinTokens(text)) {
+    if (set.has(token)) seen.add(token);
+  }
+  return [...seen];
+}
+
 function countVariantOccurrences(text: string, variants: string[]): Map<string, number> {
   const lower = text.toLowerCase();
   const counts = new Map<string, number>();
   for (const v of variants) {
-    const re = new RegExp(`\\b${escapeRe(v)}\\b`, "g");
+    const re = new RegExp(`\\b${escapeRe(v.toLowerCase())}\\b`, "g");
     const matches = lower.match(re);
     if (matches) counts.set(v, matches.length);
   }
@@ -57,17 +72,37 @@ function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/** Heuristic: high gibberish = many question-marks AND many short non-word tokens. */
+function hasRepeatedTokenPattern(text: string): boolean {
+  return latinTokens(text).some((token) => /(.{2,4})\1{2,}/i.test(token));
+}
+
+function hasRepeatedPhraseLoop(text: string): boolean {
+  const words = latinTokens(text);
+  if (words.length < 12) return false;
+
+  const seen = new Map<string, number>();
+  for (let i = 0; i <= words.length - 3; i++) {
+    const gram = words.slice(i, i + 3).join(" ");
+    if (gram.length < 10) continue;
+    const count = (seen.get(gram) ?? 0) + 1;
+    if (count >= 2) return true;
+    seen.set(gram, count);
+  }
+  return false;
+}
+
 function looksGibberish(text: string): boolean {
   const qmarks = (text.match(/\?/g) ?? []).length;
-  const tokens = text.split(/\s+/);
-  const shortGarbled = tokens.filter((t) => t.length <= 2 && !/\w/.test(t)).length;
-  return qmarks > 4 && shortGarbled / Math.max(tokens.length, 1) > 0.4;
+  const tokens = text.split(/\s+/).filter(Boolean);
+  const punctuationOnly = tokens.filter((t) => t.length <= 2 && !/\w/.test(t)).length;
+  const punctuationGarble = qmarks > 4 && punctuationOnly / Math.max(tokens.length, 1) > 0.3;
+  return punctuationGarble || hasRepeatedTokenPattern(text);
 }
 
 /**
- * Validate that a generated response matches the expected language profile.
- * Rule violations are collected as issues; any fatal issue sets rewriteNeeded=true.
+ * Deterministic response gate. This cannot prove that Lebanese grammar is good,
+ * but it can stop known dialect contamination, obvious synthetic tokens, script
+ * mismatches, prompt leaks, and repetition failures before they reach the user.
  */
 export function validateResponse(
   response: string,
@@ -76,26 +111,21 @@ export function validateResponse(
 ): ValidationResult {
   const issues: ValidationIssue[] = [];
 
-  // Rule 4 — empty / too short
   if (!response || response.trim().length < 5) {
     issues.push({ type: "empty", detail: "Response is empty or too short.", severity: "fatal" });
   }
 
-  // Rule 5 — prompt leak
-  if (response.includes("{{CONTEXT}}") || /\bsystem:/i.test(response)) {
+  if (response.includes("{{CONTEXT}}") || /\bsystem:/i.test(response) || /\bthe user (wrote|said)\b/i.test(response)) {
     issues.push({
       type: "prompt_leak",
-      detail: "Response contains prompt template artifacts.",
+      detail: "Response contains prompt/reasoning artifacts.",
       severity: "fatal",
     });
   }
 
-  // Rule 6 — loop detection (identical to either of the last 2 assistant turns)
-  const recentAssistant = conversationHistory
-    .filter((_, i) => i % 2 === 1)
-    .slice(-2);
-  for (const prior of recentAssistant) {
-    if (prior.trim() === response.trim()) {
+  // conversationHistory already contains assistant turns only.
+  for (const prior of conversationHistory.slice(-2)) {
+    if (prior.trim() && prior.trim() === response.trim()) {
       issues.push({
         type: "loop_detected",
         detail: "Response is identical to a recent assistant message.",
@@ -105,10 +135,17 @@ export function validateResponse(
     }
   }
 
+  if (hasRepeatedPhraseLoop(response)) {
+    issues.push({
+      type: "loop_detected",
+      detail: "Response repeats the same multi-word phrase within a short answer.",
+      severity: "fatal",
+    });
+  }
+
   const arRatio = arabicScriptRatio(response);
   const aziRatio = arabiziRatio(response);
 
-  // Rule 1 — English-only profile gets Arabic script
   if (
     (profile.dominantLanguage === "english" || profile.englishRatio > 0.8) &&
     arRatio > 0.1
@@ -120,8 +157,7 @@ export function validateResponse(
     });
   }
 
-  // Rule 2 — Arabizi profile gets >30% Arabic script
-  if (profile.dominantLanguage === "arabizi" && arRatio > 0.3) {
+  if (profile.dominantLanguage === "arabizi" && arRatio > 0.15) {
     issues.push({
       type: "script_mismatch",
       detail: `Arabizi user received ${(arRatio * 100).toFixed(0)}% Arabic-script response.`,
@@ -129,21 +165,38 @@ export function validateResponse(
     });
   }
 
-  // Rule 3 — Arabic-script profile gets Latin Arabizi response
   if (profile.dominantLanguage === "arabic" && aziRatio > 0.5) {
     issues.push({
       type: "script_mismatch",
-      detail: `Arabic-script user received predominantly Latin Arabizi response.`,
+      detail: "Arabic-script user received predominantly Latin Arabizi response.",
       severity: "fatal",
     });
   }
 
-  // Rule 7 — style inconsistency: user's spelling preference ignored in response
+  if (profile.dominantLanguage === "arabizi" || profile.dominantLanguage === "mixed") {
+    const nonLebanese = findForbiddenTokens(response, NON_LEBANESE_GENERATION_FORMS);
+    if (nonLebanese.length > 0) {
+      issues.push({
+        type: "dialect_contamination",
+        detail: `Known non-Lebanese generation forms: ${nonLebanese.join(", ")}.`,
+        severity: "fatal",
+      });
+    }
+
+    const suspect = findForbiddenTokens(response, SUSPECT_GENERATION_FORMS);
+    if (suspect.length > 0) {
+      issues.push({
+        type: "gibberish",
+        detail: `Known contaminated/synthetic tokens: ${suspect.join(", ")}.`,
+        severity: "fatal",
+      });
+    }
+  }
+
   for (const [prefKey, preferredVariant] of Object.entries(profile.spellingPreferences)) {
     if (!preferredVariant) continue;
-    // Find the canonical cluster for this pref key
     const canonical = Object.keys(SPELLING_CLUSTERS).find(
-      (c) => SPELLING_CLUSTERS[c].includes(preferredVariant)
+      (c) => SPELLING_CLUSTERS[c].some((v) => v.toLowerCase() === preferredVariant.toLowerCase())
     );
     if (!canonical) continue;
 
@@ -152,12 +205,14 @@ export function validateResponse(
     if (responseCounts.size === 0) continue;
 
     const total = [...responseCounts.values()].reduce((a, b) => a + b, 0);
-    const preferredCount = responseCounts.get(preferredVariant) ?? 0;
+    const preferredCount = [...responseCounts.entries()]
+      .filter(([v]) => v.toLowerCase() === preferredVariant.toLowerCase())
+      .reduce((sum, [, count]) => sum + count, 0);
     const mismatchRatio = total > 0 ? 1 - preferredCount / total : 0;
 
     if (mismatchRatio > 0.5) {
       const used = [...responseCounts.entries()]
-        .filter(([v]) => v !== preferredVariant)
+        .filter(([v]) => v.toLowerCase() !== preferredVariant.toLowerCase())
         .map(([v]) => `'${v}'`)
         .join(", ");
       issues.push({
@@ -168,12 +223,11 @@ export function validateResponse(
     }
   }
 
-  // Rule 8 — gibberish heuristic
   if (looksGibberish(response)) {
     issues.push({
       type: "gibberish",
-      detail: "Response has abnormally high question-mark and garbled-token density.",
-      severity: "warning",
+      detail: "Response contains an obvious repeated-token or punctuation garble pattern.",
+      severity: "fatal",
     });
   }
 

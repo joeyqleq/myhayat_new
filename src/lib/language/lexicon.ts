@@ -1,10 +1,12 @@
-// Map from canonical form -> known spelling variants (corpus-derived, high-signal clusters)
+// Map from canonical form -> known spelling variants.
+// IMPORTANT: this list is for recognition + user spelling mirroring. A variant
+// being recognized here does NOT automatically make it safe for generation.
 export const SPELLING_CLUSTERS: Record<string, string[]> = {
   // Question words
   shu: ["shu", "shou", "chou", "sho", "chu", "ch"],
   kif: ["kif", "kiff", "keef"],
   kifak: ["kifak", "kifek", "kefak", "kefek", "keefak"],
-  wen: ["wen", "wein", "wayn", "feen", "fin"],
+  wen: ["wen", "wein", "wayn"],
   meen: ["meen", "mene", "min huwe", "min hiye"],
   leish: ["leish", "lesh", "leysho", "laysh"],
 
@@ -18,9 +20,9 @@ export const SPELLING_CLUSTERS: Record<string, string[]> = {
   abel: ["abel", "abli", "ablel", "2abel"],
 
   // Quantity / degree
-  ktir: ["ktir", "kteer", "kter", "kteer"],
-  shway: ["shway", "shwayy", "chwayy", "chwai", "shway"],
-  kell: ["kell", "kel", "kil", "kill"],
+  ktir: ["ktir", "kteer", "kter"],
+  shway: ["shway", "shwayy", "chwayy", "chwai"],
+  kell: ["kell", "kel", "kil"],
 
   // Desire / ability
   baddi: ["baddi", "badde", "bade", "bedde", "biddi"],
@@ -35,12 +37,12 @@ export const SPELLING_CLUSTERS: Record<string, string[]> = {
   // Discourse
   ya3ne: ["ya3ne", "ya3ni", "y3ne", "ye3ne"],
   hek: ["hek", "heik", "hik", "heke"],
-  yalla: ["yalla", "yala", "ya2la"],
+  yalla: ["yalla", "yala"],
   khalas: ["khalas", "5alas", "5las", "xalas", "khals"],
   habibi: ["habibi", "7abibi", "habibe", "habibti", "7abibti", "7abib", "habib"],
   la2an: ["la2an", "la2anno", "la2enno", "la2eno", "la2en"],
   bass: ["bass", "bas"],
-  kameh: ["kameh", "kaman", "kemen"],
+  kamen: ["kamen", "kaman", "kemen"],
 
   // Greetings / social
   ahla: ["ahla", "ahlan", "ahleen"],
@@ -52,7 +54,7 @@ export const SPELLING_CLUSTERS: Record<string, string[]> = {
   "7azin": ["7azin", "7azine", "hazin", "hazine"],
   khayef: ["khayef", "khayfe", "5ayef", "5ayfe"],
   far7an: ["far7an", "far7ane", "far7en"],
-  wa7dan: ["wa7dan", "wa7dan", "wa7id", "wa7de"],
+  wa7dan: ["wa7dan", "wa7id", "wa7de"],
 
   // Grammar markers
   "3am": ["3am", "3em", "am"],
@@ -60,50 +62,62 @@ export const SPELLING_CLUSTERS: Record<string, string[]> = {
 };
 
 /**
- * Common Arabizi function words that contain no digit phonemes and would
- * otherwise be misclassified as English by the detector.
- * These are particles, pronouns, prepositions and very common nouns/verbs.
+ * Common high-confidence Lebanese Arabizi function words that contain no digit
+ * phonemes and would otherwise be classified as English. Keep this conservative:
+ * this set is for detection, not a dumping ground for uncertain generated forms.
  */
 export const ARABIZI_FUNCTION_WORDS = new Set([
   // Pronouns
-  "ana", "enta", "ente", "huwwe", "hiyye", "ne7na", "ne7ne", "ni7na",
+  "ana", "enta", "ente", "huwwe", "howwe", "hiyye", "ne7na", "ne7ne", "ni7na",
   "ento", "entou", "henne", "hinne",
   // Particles / prepositions
   "w", "bi", "b", "la", "fi", "ma", "la2", "eh", "iyeh",
   "3a", "3al", "3ala", "bel", "bil", "lal", "men", "min",
   // Articles / demonstratives
-  "el", "al", "l", "hal", "hayda", "hayde",
-  // Common nouns
-  "shi", "kil", "kel", "kell", "shi", "nos",
-  "7adan", "7ada", "nas", "nes", "3alam",
+  "el", "al", "l", "hal", "hayda", "hayde", "haydi", "hol", "hawde",
+  // Common nouns / quantifiers
+  "shi", "nos", "7adan", "7ada", "nas", "nes", "3alam",
   // Common verbs / connectors
-  "sar", "ken", "kenet", "bde", "bdi", "bdak", "bdik",
-  "rja3", "willa", "aw", "za7rat",
-  "nem", "nom", "nen", "nnam",  // sleep
-  "kol", "keli", "akel",        // eat
-  "rou7", "roo7", "ruh",        // go
-  "lezem", "lazem", "tkon", "tekun", "byeeje", "byeeji", "byiji",
-  "nsemo", "nsemo", "esa", "eza", "iza",
-  "btseer", "ytseer", "btl3", "btl3", "bimout",
-  "bbalek", "balak", "meshkle", "moshkle",
-  "dawle", "balad", "akel", "kalam",
-  "nfamela", "nfa3el", "3amel", "aamel",
+  "sar", "ken", "kenet", "bde", "bdi", "bdak", "bdik", "baddak", "baddik",
+  "rja3", "willa", "aw", "nem", "nnam", "kol", "keli", "akel",
+  "rou7", "roo7", "ruh", "lezem", "lazem", "tkon", "tekun", "byeeje", "byeeji", "byiji",
+  "eza", "iza", "btseer", "ytseer", "btl3", "bimout", "bbalek", "balak",
+  "meshkle", "moshkle", "dawle", "balad", "kalam", "3amel", "aamel",
   // Social / discourse
   "lol", "haha", "masha", "nshallah", "inshallah", "wallah", "walla",
-  "yaret", "akid", "akeed", "sara7a", "3anjad", "anjad",
-  "normal", // common as Arabizi usage ("normal sar")
-  "halshi", "halshee",  // "this thing" contraction
+  "yaret", "akid", "akeed", "sara7a", "3anjad", "anjad", "normal",
+  "halshi", "halshee",
   // Geographic / cultural markers
-  "lbnan", "lebnen", "beirut", "lebnen",
-  // Common suffixes / attached words often misclassified
+  "lbnan", "lebnen", "beirut",
+  // Common attached forms
   "menna", "menno", "meno", "menha",
+]);
+
+/**
+ * Forms that My Hayat should understand if encountered, but should not generate
+ * when it is trying to sound Lebanese. These are high-signal Egyptian/non-Lebanese
+ * forms that previously leaked into production output.
+ */
+export const NON_LEBANESE_GENERATION_FORMS = new Set([
+  "feen", "ezzay", "ezay", "izzay", "keda", "kedah",
+  "3ayez", "3ayza", "ayez", "ayza",
+  "e7na", "ehna", "homma", "humma", "hena",
+  "kollohom", "kolluhom",
+]);
+
+/**
+ * Known contaminated / synthetic-looking tokens that appeared in the old language
+ * layer or production regressions. Treat these as fatal if generated.
+ */
+export const SUSPECT_GENERATION_FORMS = new Set([
+  "nfamela", "nfa3el", "za7rat", "nsemo", "knesbi", "sa7a7a7a",
 ]);
 
 /** Reverse map: variant spelling -> canonical form. Built at module init. */
 export const VARIANT_TO_CANONICAL: Record<string, string> = {};
 for (const [canonical, variants] of Object.entries(SPELLING_CLUSTERS)) {
   for (const variant of variants) {
-    VARIANT_TO_CANONICAL[variant] = canonical;
+    VARIANT_TO_CANONICAL[variant.toLowerCase()] = canonical;
   }
 }
 
@@ -141,15 +155,8 @@ export const ENGLISH_CLINICAL_TERMS = new Set([
 ]);
 
 export const FRENCH_MARKERS = new Set([
-  "merci", "mersi",
-  "pardon",
+  "merci", "mersi", "pardon",
   "cest", "c'est", "cava", "ca", "va",
-  "bonjour", "bonsoir",
-  "voila",
-  "daccord",
-  "franchement",
-  "normalement",
-  "exactement",
-  "malheureusement",
-  "quand", "meme",
+  "bonjour", "bonsoir", "voila", "daccord", "franchement",
+  "normalement", "exactement", "malheureusement", "quand", "meme",
 ]);

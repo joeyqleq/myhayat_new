@@ -2,42 +2,43 @@ import { VARIANT_TO_CANONICAL } from "./lexicon";
 import type { LanguageProfile } from "./types";
 
 // Internal word-level Arabizi → English mapping for retrieval paraphrase.
-// Covers emotional states, distress signals, relationships, time, negation.
-// NOT exhaustive — focused on mental-health signal vocabulary.
+// This is NOT a generation dictionary. Keep it conservative and semantic.
 const ARABIZI_TO_ENGLISH: Record<string, string> = {
   // Negation / quantity
   mish: "not", mesh: "not", mech: "not",
   ma: "not/no", wala: "neither/nor",
   ktir: "a lot/very", kteer: "a lot/very",
   shway: "a little", shwayy: "a little",
-  kell: "all/every",
+  kell: "all/every", kelna: "all of us", kellon: "all of them",
 
   // Emotional states
   ta3ban: "tired/exhausted", te3ban: "tired/exhausted", ta3ben: "tired/exhausted",
   ze3lan: "upset/angry/sad", ze3len: "upset/angry/sad", ze3lene: "upset/angry/sad",
   "7azin": "sad", "7azine": "sad", hazin: "sad",
   mabsout: "happy", mabsouta: "happy",
-  mdayya2: "distressed/bothered", "mdayya2a": "distressed",
+  mdayya2: "distressed/bothered", mdayya2a: "distressed", mdeye2: "distressed/bothered",
+  deye2: "bothered/upset",
   khayef: "afraid/scared", khayfe: "afraid/scared",
   "2al2an": "worried/anxious", "2al2ane": "worried/anxious",
   far7an: "happy/joyful", far7ane: "happy/joyful",
-  mhabbes: "trapped/stuck",
+  mhabbes: "trapped/stuck", mhabbas: "trapped",
   wa7dan: "lonely/alone", la7ale: "alone",
   ta2eb: "tired/weary", ta2ebe: "tired/weary",
   zha2an: "bored/fed-up",
-  mhabbas: "trapped",
   "mish marte7": "uncomfortable",
   marte7: "comfortable/at ease",
+  "7asses": "sensitive/feeling",
+  "7essessin": "sensitive plural",
 
   // Want / ability
-  baddi: "I want", bade: "I want", bedde: "I want", biddi: "I want",
+  baddi: "I want", bade: "I want", badde: "I want", bedde: "I want", biddi: "I want",
   fiyye: "I can", "ma fiyye": "I cannot",
   "ma ba2dar": "I cannot", "mish 2adir": "not able to",
   bdi: "I want to",
 
   // Question words / discourse
   shu: "what", shou: "what", chou: "what", sho: "what",
-  kif: "how", wen: "where", meen: "who", leish: "why",
+  kif: "how", wen: "where", meen: "who", leish: "why", leh: "why",
   ya3ne: "meaning/I mean", ya3ni: "meaning/I mean",
   hek: "like this", heik: "like this",
   khalas: "enough/done/finished",
@@ -45,7 +46,7 @@ const ARABIZI_TO_ENGLISH: Record<string, string> = {
   habibi: "dear/friend",
   bas: "but/only", bass: "but/only",
   "la2an": "because", "la2enno": "because",
-  kameh: "also", kaman: "also",
+  kamen: "also", kaman: "also", kemen: "also",
 
   // Time
   hala2: "now", halla2: "now", hal2: "now",
@@ -69,7 +70,7 @@ const ARABIZI_TO_ENGLISH: Record<string, string> = {
   bkrah: "I hate",
 
   // Relationship / social
-  hadde: "someone", "ma7ada": "no one",
+  hadde: "someone", ma7ada: "no one",
   ahl: "family", jiran: "neighbours",
   sa7beh: "friend", sa7bo: "his friend",
   shi: "something/a thing",
@@ -85,13 +86,9 @@ const ARABIZI_TO_ENGLISH: Record<string, string> = {
 /**
  * Returns a normalised form of the text for internal use only (retrieval, safety).
  * Original user text is NEVER mutated or shown.
- *
- * - Lowercases
- * - Maps variant spellings to canonical forms via VARIANT_TO_CANONICAL
- * - Preserves standalone numbers (not phonemes)
  */
 export function normalizeArabizi(text: string): string {
-  const result = text
+  return text
     .split(/\s+/)
     .filter((t) => t.length > 0)
     .map((token) => {
@@ -102,7 +99,6 @@ export function normalizeArabizi(text: string): string {
       return lower;
     })
     .join(" ");
-  return result;
 }
 
 /**
@@ -127,16 +123,12 @@ export function toSemanticEnglish(
     if (Object.prototype.hasOwnProperty.call(ARABIZI_TO_ENGLISH, lower)) {
       const eng = ARABIZI_TO_ENGLISH[lower];
       arabiziHits++;
-      // Skip pure grammar markers in the paraphrase
       if (!eng.startsWith("[")) parts.push(eng);
     } else if (/^[a-zA-Z'-]+$/.test(word)) {
-      // Already Latin/English — keep as-is (but don't count as Arabizi)
       parts.push(word);
     }
-    // Arabic script words and unknowns: skip (no reliable transliteration here)
   }
 
-  // If nothing was actually translated from Arabizi, this is already English — return null
   if (arabiziHits === 0 || parts.length === 0) return null;
   return parts.join(" ").replace(/\s{2,}/g, " ").trim();
 }
