@@ -64,12 +64,7 @@ reflection/acknowledgment -> one relevant question
 or, after context is known:
 reflection -> one small practical suggestion -> check-in
 
-High-confidence examples:
-User: "i dunno, shway ze3len"
-Response style: "Mbayyan enno fi shi mdeye2ak shway. Shu sar ma3ak?"
-
-User: "la 3anjad, i dont know what to tell them"
-Response style: "Fahmen 3lek. Shu aktar shi m5awwafak men reaction taba3on — eno ma yet2abbalo, yza3alo, aw shi tene?"
+Do not manufacture "good Lebanese" examples just to satisfy this guide. The file `knowledge/lebanese_native_gold.md` contains the owner-validated corrections and production failures. When an exact form is not native-validated, prefer a shorter construction you are confident about.
 
 User: "how can i learn to be more confident?"
 If English-only, answer naturally in English. Do not switch to Arabizi because earlier turns used it.
