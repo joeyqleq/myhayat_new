@@ -1,6 +1,6 @@
 import { detectLanguage } from "./detect";
 import { normalizeArabizi, toSemanticEnglish } from "./normalize";
-import { VARIANT_TO_CANONICAL, CANONICAL_TO_PREF_KEY } from "./lexicon";
+import { VARIANT_TO_CANONICAL, CANONICAL_TO_PREF_KEY, SPELLING_CLUSTERS } from "./lexicon";
 import type { LanguageProfile, SessionLanguageProfile, SpellingPreferences } from "./types";
 
 const EMA_ALPHA = 0.3; // weight for the most recent message
@@ -113,8 +113,16 @@ export function getLanguageInstruction(profile: SessionLanguageProfile): string 
     ).filter(Boolean).join(", ");
 
     const styleNotes: string[] = [];
-    if (spellingPreferences.what) styleNotes.push(`'${spellingPreferences.what}' for what (NOT shu/chou/shou variants)`);
-    if (spellingPreferences.not) styleNotes.push(`'${spellingPreferences.not}' for not/negation (NOT mesh/mish variants)`);
+    // Build "use X, not Y/Z" notes from the cluster variants — exclude the preferred from the avoidance list
+    const buildStyleNote = (preferred: string, clusterKey: string): string => {
+      const allVariants = SPELLING_CLUSTERS[clusterKey] ?? [];
+      const others = allVariants.filter(v => v !== preferred).slice(0, 3);
+      return others.length > 0
+        ? `'${preferred}' (avoid: ${others.join("/")}) for ${clusterKey === "shu" ? "what" : clusterKey === "mish" ? "negation" : clusterKey}`
+        : `'${preferred}'`;
+    };
+    if (spellingPreferences.what) styleNotes.push(buildStyleNote(spellingPreferences.what, "shu"));
+    if (spellingPreferences.not) styleNotes.push(buildStyleNote(spellingPreferences.not, "mish"));
     if (spellingPreferences.now) styleNotes.push(`'${spellingPreferences.now}' for now`);
     if (spellingPreferences.want) styleNotes.push(`'${spellingPreferences.want}' for want`);
 
