@@ -62,4 +62,31 @@ describe("Lebanese generation output gate", () => {
     expect(result.rewriteNeeded).toBe(true);
     expect(result.issues.some(i => i.type === "loop_detected")).toBe(true);
   });
+
+  it("rejects digit-marked Arabizi when the current turn is English", () => {
+    const englishProfile = {
+      ...arabiziProfile,
+      dominantLanguage: "english" as const,
+      englishRatio: 1,
+      arabiziRatio: 0,
+    };
+    const result = validateResponse("Kol shi 7assas bas 7atti shi 3ala 7alak", englishProfile, []);
+    expect(result.rewriteNeeded).toBe(true);
+    expect(result.issues.some(i => i.type === "script_mismatch")).toBe(true);
+  });
+
+  it.each(["analysis: hidden reasoning", "<think>hidden reasoning</think>"])(
+    "rejects prompt/thinking leakage: %s",
+    (response) => {
+      const result = validateResponse(response, arabiziProfile, []);
+      expect(result.rewriteNeeded).toBe(true);
+      expect(result.issues.some(i => i.type === "prompt_leak")).toBe(true);
+    },
+  );
+
+  it("rejects the known incoherent production phrase even without a loop", () => {
+    const result = validateResponse("Kol shi 7assas hala2", arabiziProfile, []);
+    expect(result.rewriteNeeded).toBe(true);
+    expect(result.issues.some(i => i.type === "gibberish")).toBe(true);
+  });
 });

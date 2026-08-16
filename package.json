@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "eval:language": "vitest run src/__tests__/eval/language.eval.ts",
+    "eval:generation": "vitest run src/__tests__/eval/lebanese-generation-quality.eval.ts",
     "eval:rag": "vitest run src/__tests__/eval/rag.eval.ts",
     "eval:safety": "vitest run src/__tests__/eval/safety.eval.ts",
     "eval:all": "vitest run src/__tests__/eval/"
