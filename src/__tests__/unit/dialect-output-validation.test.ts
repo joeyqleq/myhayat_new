@@ -75,6 +75,34 @@ describe("Lebanese generation output gate", () => {
     expect(result.issues.some(i => i.type === "script_mismatch")).toBe(true);
   });
 
+  it("rejects Latin-only Arabizi when the current turn is English", () => {
+    const englishProfile = {
+      ...arabiziProfile,
+      dominantLanguage: "english" as const,
+      englishRatio: 1,
+      arabiziRatio: 0,
+    };
+    const result = validateResponse("Shu sar ma3ak hala2?", englishProfile, []);
+    expect(result.rewriteNeeded).toBe(true);
+    expect(result.issues.some(i => i.type === "script_mismatch")).toBe(true);
+  });
+
+  it("does not reject ordinary English containing ambiguous overlap words", () => {
+    const englishProfile = {
+      ...arabiziProfile,
+      dominantLanguage: "english" as const,
+      englishRatio: 1,
+      arabiziRatio: 0,
+    };
+    const result = validateResponse("This is normal, lol. You are allowed to feel unsure.", englishProfile, []);
+    expect(result.rewriteNeeded).toBe(false);
+  });
+
+  it("allows a repeated three-word empathy stem when no five-word loop exists", () => {
+    const response = "It sounds like this was hard. It sounds like you need time.";
+    expect(validateResponse(response, arabiziProfile, []).rewriteNeeded).toBe(false);
+  });
+
   it.each([
     "analysis: hidden reasoning",
     "<think>hidden reasoning</think>",

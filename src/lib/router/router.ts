@@ -140,6 +140,8 @@ export class ModelRouter {
             if (retry.ok && retry.response.body) {
               return { stream: retry.response.body, model, accountAlias: acct.alias };
             }
+            this.coolModel(model, errorClass);
+            skipToNextModel = true;
             break;
           }
           // network_error, unknown: try next account immediately

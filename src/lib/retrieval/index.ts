@@ -6,10 +6,15 @@ export type { RetrievedChunk, RetrievalOptions, Retriever } from "./types";
 import { VectorizeRetriever } from "./vectorize";
 import { dualRetrieve } from "./dual";
 import { formatContext } from "./format";
+import type { RetrievedChunk } from "./types";
 
 export interface RetrievedContext {
   text: string;
   chunks: number;
+}
+
+export function selectSupportChunks(chunks: RetrievedChunk[]): RetrievedChunk[] {
+  return chunks.filter((chunk) => chunk.category !== "language");
 }
 
 /**
@@ -28,7 +33,7 @@ export async function retrieveContext(
     // Language realization is supplied by the compact always-on surface guide.
     // Semantic RAG is reserved for clinical/context knowledge so an arbitrary
     // retrieved slang chunk cannot override the generation layer.
-    const supportChunks = chunks.filter((chunk) => chunk.category !== "language");
+    const supportChunks = selectSupportChunks(chunks);
     if (supportChunks.length === 0) return { text: "", chunks: 0 };
     return { text: formatContext(supportChunks), chunks: supportChunks.length };
   } catch {

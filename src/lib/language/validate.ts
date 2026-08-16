@@ -3,6 +3,8 @@ import {
   NON_LEBANESE_GENERATION_FORMS,
   UNKNOWN_REVIEW_REQUIRED_FORMS,
   KNOWN_CORRUPTED_GENERATION_FORMS,
+  VARIANT_TO_CANONICAL,
+  ARABIZI_FUNCTION_WORDS,
 } from "./lexicon";
 import type { SessionLanguageProfile } from "./types";
 
@@ -50,6 +52,24 @@ function latinTokens(text: string): string[] {
     .filter(Boolean);
 }
 
+const AMBIGUOUS_LATIN_OVERLAPS = new Set([
+  "normal", "lol", "haha", "fi", "w", "b", "bi", "la", "al", "el", "l", "min", "men", "aw",
+]);
+
+function lexicalArabiziSignal(text: string): { count: number; ratio: number } {
+  const tokens = latinTokens(text);
+  if (tokens.length === 0) return { count: 0, ratio: 0 };
+  const count = tokens.filter((token) => {
+    if (AMBIGUOUS_LATIN_OVERLAPS.has(token)) return false;
+    return (
+      DIGIT_PHONEME_RE.test(token) ||
+      Object.prototype.hasOwnProperty.call(VARIANT_TO_CANONICAL, token) ||
+      ARABIZI_FUNCTION_WORDS.has(token)
+    );
+  }).length;
+  return { count, ratio: count / tokens.length };
+}
+
 function findForbiddenTokens(text: string, set: Set<string>): string[] {
   const seen = new Set<string>();
   for (const token of latinTokens(text)) {
@@ -79,12 +99,13 @@ function hasRepeatedTokenPattern(text: string): boolean {
 
 function hasRepeatedPhraseLoop(text: string): boolean {
   const words = latinTokens(text);
-  if (words.length < 12) return false;
+  const phraseSize = 5;
+  if (words.length < phraseSize * 2) return false;
 
   const seen = new Map<string, number>();
-  for (let i = 0; i <= words.length - 3; i++) {
-    const gram = words.slice(i, i + 3).join(" ");
-    if (gram.length < 10) continue;
+  for (let i = 0; i <= words.length - phraseSize; i++) {
+    const gram = words.slice(i, i + phraseSize).join(" ");
+    if (gram.length < 20) continue;
     const count = (seen.get(gram) ?? 0) + 1;
     if (count >= 2) return true;
     seen.set(gram, count);
@@ -153,6 +174,7 @@ export function validateResponse(
 
   const arRatio = arabicScriptRatio(response);
   const aziRatio = arabiziRatio(response);
+  const lexicalAzi = lexicalArabiziSignal(response);
 
   if (
     (profile.dominantLanguage === "english" || profile.englishRatio > 0.8) &&
@@ -167,11 +189,11 @@ export function validateResponse(
 
   if (
     profile.dominantLanguage === "english" &&
-    aziRatio > 0.2
+    (aziRatio > 0.2 || (lexicalAzi.count >= 2 && lexicalAzi.ratio >= 0.5))
   ) {
     issues.push({
       type: "script_mismatch",
-      detail: `English-only user received ${(aziRatio * 100).toFixed(0)}% digit-marked Arabizi response.`,
+      detail: `English-only user received Arabizi output (${lexicalAzi.count} lexical markers; ${(aziRatio * 100).toFixed(0)}% digit-marked).`,
       severity: "fatal",
     });
   }

@@ -137,10 +137,17 @@ function serviceErrorText(profile: SessionLanguageProfile): string {
   return "Fi meshkle zghire hala2. Jarrib marra tene ba3d shway. 💛";
 }
 
-function qualityFailureFallback(): string {
-  // Deliberately plain English: after two failed language-quality attempts,
-  // do not invent an unreviewed Lebanese fallback merely to match script.
-  return "I'm sorry—I couldn't form a clear response. Could you try that once more?";
+function qualityFailureFallback(profile: SessionLanguageProfile): string {
+  return serviceErrorText(profile);
+}
+
+export function crisisResponseText(profile: SessionLanguageProfile): string {
+  if (profile.dominantLanguage === "arabic") {
+    return "أنا سمعتك وأنا معك. هل أنت في خطر مباشر الآن؟ اتصل بـ Embrace Lifeline على 1564، متاحين 24/7.";
+  }
+  // English is intentional for Latin-script Arabizi/mixed crisis turns: use a
+  // fully meaningful reviewed-language fallback rather than risky invented dialect.
+  return "I hear you, and I'm here with you. Are you in immediate danger right now? Call Embrace Lifeline: 1564 — available 24/7.";
 }
 
 // ---------------------------------------------------------------------------
@@ -208,8 +215,7 @@ export async function POST(req: Request): Promise<Response> {
     safetyCategory = safety.category;
 
     if (safety.category === "crisis" || safety.category === "immediate_danger") {
-      const crisisText =
-        "أنا سمعتك وأنا معك. هلق أهم شي — اتصل بـ Embrace Lifeline على 1564، متاحين 24/7. ما رح تكون لحالك بهيدا.";
+      const crisisText = crisisResponseText(langProfile);
       console.log(JSON.stringify({
         requestId, model: null, accountAlias: null,
         latencyMs: Date.now() - startMs,
@@ -302,7 +308,7 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     if (!fullText || vr.rewriteNeeded) {
-      fullText = qualityFailureFallback();
+      fullText = qualityFailureFallback(langProfile);
       logErrorClass = "response_validation_failed";
       validationOk = false;
     } else {
