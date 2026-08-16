@@ -28,7 +28,7 @@ describe("Lebanese generation output gate", () => {
     expect(result.rewriteNeeded).toBe(false);
   });
 
-  it.each(["feen", "ezzay", "keda", "3ayza", "e7na", "kollohom"])(
+  it.each(["feen", "fein", "ezzay", "keda", "3ayza", "e7na", "kollohom"])(
     "rejects known non-Lebanese generation form: %s",
     (word) => {
       const result = validateResponse(`Ana ${word} hala2`, arabiziProfile, []);
@@ -75,7 +75,11 @@ describe("Lebanese generation output gate", () => {
     expect(result.issues.some(i => i.type === "script_mismatch")).toBe(true);
   });
 
-  it.each(["analysis: hidden reasoning", "<think>hidden reasoning</think>"])(
+  it.each([
+    "analysis: hidden reasoning",
+    "<think>hidden reasoning</think>",
+    "Okay, let me start by understanding the user's message.",
+  ])(
     "rejects prompt/thinking leakage: %s",
     (response) => {
       const result = validateResponse(response, arabiziProfile, []);

@@ -87,12 +87,18 @@ export class ModelRouter {
   async callWithFallback(
     messages: Array<{ role: string; content: string }>,
     systemPrompt: string,
-    options?: { maxTokens?: number; temperature?: number; contextTooLarge?: boolean }
+    options?: {
+      maxTokens?: number;
+      temperature?: number;
+      contextTooLarge?: boolean;
+      excludeModels?: string[];
+    }
   ): Promise<{ stream: ReadableStream; model: string; accountAlias: string } | null> {
     const opts = options ?? {};
     const startIdx = Math.floor(Date.now() / 60000) % this.accounts.length;
 
     for (const model of this.models) {
+      if (opts.excludeModels?.includes(model)) continue;
       if (this.isModelSkippable(model)) continue;
 
       let skipToNextModel = false;

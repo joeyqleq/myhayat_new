@@ -5,10 +5,10 @@ export { ModelRouter } from "./router";
 export type { AccountConfig, ErrorClass, ModelHealth, RouterState } from "./types";
 
 const CF_MODELS = [
-  "@cf/qwen/qwen3-30b-a3b-fp8",
-  "@cf/qwen/qwq-32b",
-  "@cf/meta/llama-4-scout-17b-16e-instruct",
   "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "@cf/qwen/qwen3-30b-a3b-fp8",
+  "@cf/meta/llama-4-scout-17b-16e-instruct",
+  "@cf/qwen/qwq-32b",
   "@cf/meta/llama-3.1-8b-instruct-fp8",
 ];
 

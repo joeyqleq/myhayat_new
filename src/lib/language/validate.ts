@@ -120,7 +120,9 @@ export function validateResponse(
     response.includes("{{CONTEXT}}") ||
     /\b(system|assistant|analysis):/i.test(response) ||
     /<\/?(?:think|analysis)>/i.test(response) ||
-    /\bthe user (wrote|said)\b/i.test(response)
+    /\bthe user (wrote|said)\b/i.test(response) ||
+    /\b(?:okay,?\s+)?let me (?:start|see|think)\b/i.test(response) ||
+    /\bi need to (?:respond|parse|explain|acknowledge)\b/i.test(response)
   ) {
     issues.push({
       type: "prompt_leak",

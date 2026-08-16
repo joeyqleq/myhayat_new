@@ -284,6 +284,7 @@ export async function POST(req: Request): Promise<Response> {
       const retry = await router.callWithFallback(cfMessages, retryPrompt, {
         maxTokens: dialectMode ? 512 : 1024,
         temperature: dialectMode ? 0.2 : 0.35,
+        excludeModels: usedModel ? [usedModel] : [],
       });
 
       if (retry) {

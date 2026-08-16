@@ -122,7 +122,7 @@ export const INPUT_RECOGNITION_ONLY_FORMS = new Set([
  * forms that previously leaked into production output.
  */
 export const NON_LEBANESE_GENERATION_FORMS = new Set([
-  "feen", "ezzay", "ezay", "izzay", "keda", "kedah",
+  "feen", "fein", "ezzay", "ezay", "izzay", "keda", "kedah",
   "3ayez", "3ayza", "ayez", "ayza",
   "e7na", "ehna", "homma", "humma", "hena",
   "kollohom", "kolluhom",
