@@ -14,6 +14,7 @@
 import { describe, it, expect } from "vitest";
 import { detectLanguage } from "@/lib/language/detect";
 import { analyzeMessage, updateSessionProfile } from "@/lib/language/index";
+import type { SessionLanguageProfile } from "@/lib/language/types";
 
 // ---------------------------------------------------------------------------
 // Local type definitions (mirrors what detect.ts should export)
@@ -27,19 +28,6 @@ interface DetectResult {
   arabicRatio?: number;
   frenchRatio?: number;
   usesDigits?: boolean;
-}
-
-interface SpellingPreferences {
-  whatWord?: "shou" | "chou" | "shu";
-  negation?: "mish" | "mesh";
-  [key: string]: unknown;
-}
-
-interface SessionProfile {
-  dominant?: DominantLanguage;
-  messageCount?: number;
-  spellingPreferences?: SpellingPreferences;
-  [key: string]: unknown;
 }
 
 interface LangCase {
@@ -851,12 +839,10 @@ describe("Language Detection — Arabizi ratio bounds", () => {
 
 // ---------------------------------------------------------------------------
 // Tests: spelling preferences via updateSessionProfile
-// TODO: Implement once updateSessionProfile signature is confirmed
 // ---------------------------------------------------------------------------
 describe("Spelling preference detection via session profile", () => {
-  it.skip("TODO: detects shou/chou preference after repeated messages", async () => {
-    // After several messages with "shou"/"chou" the profile should reflect that preference
-    const profile: SessionProfile = {};
+  it("detects the latest valid shou/chou preference", () => {
+    let profile: SessionLanguageProfile | null = null;
     const shouInputs = [
       "shou sar ma3ak?",
       "chou 3am bta3mel?",
@@ -864,14 +850,13 @@ describe("Spelling preference detection via session profile", () => {
       "w shou kamen?",
     ];
     for (const input of shouInputs) {
-      const analysis = analyzeMessage(input);
-      updateSessionProfile(profile, analysis);
+      profile = updateSessionProfile(profile, input);
     }
-    expect(profile.spellingPreferences?.whatWord).toMatch(/shou|chou/);
+    expect(profile?.spellingPreferences.what).toBe("shou");
   });
 
-  it.skip("TODO: detects shu preference after repeated messages", async () => {
-    const profile: SessionProfile = {};
+  it("detects shu preference after repeated messages", () => {
+    let profile: SessionLanguageProfile | null = null;
     const shuInputs = [
       "shu sar?",
       "shu hek?",
@@ -879,14 +864,13 @@ describe("Spelling preference detection via session profile", () => {
       "ma ba3ref shu",
     ];
     for (const input of shuInputs) {
-      const analysis = analyzeMessage(input);
-      updateSessionProfile(profile, analysis);
+      profile = updateSessionProfile(profile, input);
     }
-    expect(profile.spellingPreferences?.whatWord).toBe("shu");
+    expect(profile?.spellingPreferences.what).toBe("shu");
   });
 
-  it.skip("TODO: detects mish preference after repeated messages", async () => {
-    const profile: SessionProfile = {};
+  it("detects mish preference after repeated messages", () => {
+    let profile: SessionLanguageProfile | null = null;
     const mishInputs = [
       "mish hek el shi",
       "mish 2ader",
@@ -894,14 +878,13 @@ describe("Spelling preference detection via session profile", () => {
       "ana mish mabsout",
     ];
     for (const input of mishInputs) {
-      const analysis = analyzeMessage(input);
-      updateSessionProfile(profile, analysis);
+      profile = updateSessionProfile(profile, input);
     }
-    expect(profile.spellingPreferences?.negation).toBe("mish");
+    expect(profile?.spellingPreferences.not).toBe("mish");
   });
 
-  it.skip("TODO: detects mesh preference after repeated messages", async () => {
-    const profile: SessionProfile = {};
+  it("detects mesh preference after repeated messages", () => {
+    let profile: SessionLanguageProfile | null = null;
     const meshInputs = [
       "mesh mni7 lyom",
       "mesh 3arfe shu a3mel",
@@ -909,18 +892,17 @@ describe("Spelling preference detection via session profile", () => {
       "mesh mre7a",
     ];
     for (const input of meshInputs) {
-      const analysis = analyzeMessage(input);
-      updateSessionProfile(profile, analysis);
+      profile = updateSessionProfile(profile, input);
     }
-    expect(profile.spellingPreferences?.negation).toBe("mesh");
+    expect(profile?.spellingPreferences.not).toBe("mesh");
   });
 
-  it.skip("TODO: profile messageCount increments correctly", async () => {
-    const profile: SessionProfile = {};
+  it("profile messageCount increments correctly", () => {
+    let profile: SessionLanguageProfile | null = null;
     for (let i = 0; i < 3; i++) {
-      updateSessionProfile(profile, analyzeMessage("ana mish mni7"));
+      profile = updateSessionProfile(profile, "ana mish mni7");
     }
-    expect(profile.messageCount).toBe(3);
+    expect(profile?.messageCount).toBe(3);
   });
 });
 

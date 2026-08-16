@@ -11,16 +11,16 @@ import { normalizeArabizi, toSemanticEnglish } from "@/lib/language/normalize";
 // ---------------------------------------------------------------------------
 // Minimal profile shape for toSemanticEnglish
 // ---------------------------------------------------------------------------
-type DominantLanguage = "english" | "arabic" | "arabizi" | "french" | "mixed";
+type DominantLanguage = "english" | "arabic" | "arabizi" | "mixed";
 
 interface MinimalProfile {
-  dominant: DominantLanguage;
-  [key: string]: unknown;
+  dominantLanguage: DominantLanguage;
+  arabiziRatio: number;
 }
 
-const arabiziProfile: MinimalProfile = { dominant: "arabizi" };
-const englishProfile: MinimalProfile = { dominant: "english" };
-const arabicProfile: MinimalProfile = { dominant: "arabic" };
+const arabiziProfile: MinimalProfile = { dominantLanguage: "arabizi", arabiziRatio: 1 };
+const englishProfile: MinimalProfile = { dominantLanguage: "english", arabiziRatio: 0 };
+const arabicProfile: MinimalProfile = { dominantLanguage: "arabic", arabiziRatio: 0 };
 
 // ---------------------------------------------------------------------------
 // normalizeArabizi
@@ -160,7 +160,7 @@ describe("toSemanticEnglish — Arabizi → English translation", () => {
   });
 
   it("returns a string (not throws) for mixed language input", () => {
-    const mixedProfile: MinimalProfile = { dominant: "mixed" };
+    const mixedProfile: MinimalProfile = { dominantLanguage: "mixed", arabiziRatio: 0.5 };
     expect(() =>
       toSemanticEnglish("I feel ta3ban all the time", mixedProfile)
     ).not.toThrow();
