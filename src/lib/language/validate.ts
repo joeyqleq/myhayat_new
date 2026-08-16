@@ -1,7 +1,8 @@
 import {
   SPELLING_CLUSTERS,
   NON_LEBANESE_GENERATION_FORMS,
-  SUSPECT_GENERATION_FORMS,
+  UNKNOWN_REVIEW_REQUIRED_FORMS,
+  KNOWN_CORRUPTED_GENERATION_FORMS,
 } from "./lexicon";
 import type { SessionLanguageProfile } from "./types";
 
@@ -115,7 +116,12 @@ export function validateResponse(
     issues.push({ type: "empty", detail: "Response is empty or too short.", severity: "fatal" });
   }
 
-  if (response.includes("{{CONTEXT}}") || /\bsystem:/i.test(response) || /\bthe user (wrote|said)\b/i.test(response)) {
+  if (
+    response.includes("{{CONTEXT}}") ||
+    /\b(system|assistant|analysis):/i.test(response) ||
+    /<\/?(?:think|analysis)>/i.test(response) ||
+    /\bthe user (wrote|said)\b/i.test(response)
+  ) {
     issues.push({
       type: "prompt_leak",
       detail: "Response contains prompt/reasoning artifacts.",
@@ -157,6 +163,17 @@ export function validateResponse(
     });
   }
 
+  if (
+    profile.dominantLanguage === "english" &&
+    aziRatio > 0.2
+  ) {
+    issues.push({
+      type: "script_mismatch",
+      detail: `English-only user received ${(aziRatio * 100).toFixed(0)}% digit-marked Arabizi response.`,
+      severity: "fatal",
+    });
+  }
+
   if (profile.dominantLanguage === "arabizi" && arRatio > 0.15) {
     issues.push({
       type: "script_mismatch",
@@ -183,11 +200,20 @@ export function validateResponse(
       });
     }
 
-    const suspect = findForbiddenTokens(response, SUSPECT_GENERATION_FORMS);
-    if (suspect.length > 0) {
+    const unknown = findForbiddenTokens(response, UNKNOWN_REVIEW_REQUIRED_FORMS);
+    if (unknown.length > 0) {
       issues.push({
         type: "gibberish",
-        detail: `Known contaminated/synthetic tokens: ${suspect.join(", ")}.`,
+        detail: `Unreviewed generation forms: ${unknown.join(", ")}.`,
+        severity: "fatal",
+      });
+    }
+
+    const corrupted = findForbiddenTokens(response, KNOWN_CORRUPTED_GENERATION_FORMS);
+    if (corrupted.length > 0) {
+      issues.push({
+        type: "gibberish",
+        detail: `Known corrupted generation forms: ${corrupted.join(", ")}.`,
         severity: "fatal",
       });
     }

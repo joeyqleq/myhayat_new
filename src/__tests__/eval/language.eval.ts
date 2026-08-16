@@ -143,7 +143,7 @@ const cases: LangCase[] = [
     input: "ana mish mni7 lyom",
     expectedDominant: "arabizi",
     expectedArabiziRatio: [0.7, 1.0],
-    expectedUsesDigits: false,
+    expectedUsesDigits: true,
   },
   {
     id: "azl_02",
@@ -204,7 +204,7 @@ const cases: LangCase[] = [
   },
   {
     id: "azl_10",
-    category: "arabizi_light",
+    category: "noisy_input_recognition_only",
     input: "eza bdak nfamela shi",
     expectedDominant: "arabizi",
     expectedArabiziRatio: [0.7, 1.0],
@@ -704,10 +704,11 @@ const cases: LangCase[] = [
   },
   {
     id: "dh_02",
-    category: "dark_humor",
+    category: "noisy_input_recognition_only",
     input: "normal 3am nsemo 3al dawle w btl3 menbehara 😭",
     expectedDominant: "arabizi",
     expectedUsesDigits: true,
+    notes: "Detection robustness only; nsemo is not generation gold.",
   },
   {
     id: "dh_03",

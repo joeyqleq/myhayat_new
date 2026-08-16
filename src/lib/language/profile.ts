@@ -1,6 +1,10 @@
 import { detectLanguage } from "./detect";
 import { toSemanticEnglish } from "./normalize";
-import { VARIANT_TO_CANONICAL, CANONICAL_TO_PREF_KEY } from "./lexicon";
+import {
+  VARIANT_TO_CANONICAL,
+  CANONICAL_TO_PREF_KEY,
+  INPUT_RECOGNITION_ONLY_FORMS,
+} from "./lexicon";
 import type { LanguageProfile, SessionLanguageProfile, SpellingPreferences } from "./types";
 
 const EMA_ALPHA = 0.3;
@@ -11,6 +15,7 @@ function extractSpellingPrefs(text: string): SpellingPreferences {
   const words = text.toLowerCase().split(/\s+/);
   for (const rawWord of words) {
     const word = rawWord.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, "");
+    if (INPUT_RECOGNITION_ONLY_FORMS.has(word)) continue;
     const canonical = VARIANT_TO_CANONICAL[word];
     if (!canonical) continue;
     const prefKey = CANONICAL_TO_PREF_KEY[canonical];

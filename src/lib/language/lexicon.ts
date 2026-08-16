@@ -94,6 +94,29 @@ export const ARABIZI_FUNCTION_WORDS = new Set([
 ]);
 
 /**
+ * Small allowlist for generation guidance and tests. This is deliberately not a
+ * complete dictionary: absence here does not prove a form is wrong. It only
+ * records forms backed by the owner fixture or the compact surface guide.
+ */
+export const VERIFIED_GENERATION_FORMS = new Set([
+  "ana", "enta", "ente", "huwwe", "hiyye", "ne7na", "ento", "henne",
+  "shu", "shou", "kif", "leh", "leish", "wen", "emta", "meen", "adde", "2adde",
+  "ma", "mish", "mesh", "3am", "ra7", "7a",
+  "baddi", "badde", "bade", "baddak", "baddik", "baddo", "baddna",
+  "fiyye", "fik", "fina", "fiyon",
+  "ya3ne", "bas", "hek", "hala2", "halla2", "3anjad", "kamen", "kemen",
+  "shway", "ktir", "kelna", "kellon", "7asses", "7essessin", "beb", "deye2",
+]);
+
+/**
+ * Noisy spellings that remain useful for input understanding but are not
+ * eligible spelling preferences for generated replies until native review.
+ */
+export const INPUT_RECOGNITION_ONLY_FORMS = new Set([
+  "ch", "msh", "hl2", "5las", "xalas", "t3ban",
+]);
+
+/**
  * Forms that My Hayat should understand if encountered, but should not generate
  * when it is trying to sound Lebanese. These are high-signal Egyptian/non-Lebanese
  * forms that previously leaked into production output.
@@ -109,8 +132,19 @@ export const NON_LEBANESE_GENERATION_FORMS = new Set([
  * Known contaminated / synthetic-looking tokens that appeared in the old language
  * layer or production regressions. Treat these as fatal if generated.
  */
+export const UNKNOWN_REVIEW_REQUIRED_FORMS = new Set([
+  "nfamela", "nfa3el", "za7rat", "nsemo",
+]);
+
+/** Production-confirmed meaningless/corrupted output, always fatal. */
+export const KNOWN_CORRUPTED_GENERATION_FORMS = new Set([
+  "knesbi", "sa7a7a7a",
+]);
+
+/** Backward-compatible union for existing consumers. */
 export const SUSPECT_GENERATION_FORMS = new Set([
-  "nfamela", "nfa3el", "za7rat", "nsemo", "knesbi", "sa7a7a7a",
+  ...UNKNOWN_REVIEW_REQUIRED_FORMS,
+  ...KNOWN_CORRUPTED_GENERATION_FORMS,
 ]);
 
 /** Reverse map: variant spelling -> canonical form. Built at module init. */

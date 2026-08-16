@@ -3,6 +3,9 @@ import type { DominantLanguage, LanguageProfile } from "./types";
 
 const ARABIC_RE = /[؀-ۿ]/;
 const DIGIT_PHONEMES = ["2", "3", "5", "7", "8", "9"] as const;
+const ENGLISH_CODE_SWITCH_MARKERS = new Set([
+  "frankly", "honestly", "actually", "days", "passed",
+]);
 type DigitPhoneme = (typeof DIGIT_PHONEMES)[number];
 
 /** True if a word contains a digit phoneme adjacent to at least one letter. */
@@ -116,10 +119,16 @@ export function detectLanguage(text: string): DetectResult {
   };
   const preserveSet = new Set<string>();
   let digitWordCount = 0;
+  let hasEnglishSwitchMarker = false;
 
   for (const word of words) {
     const lower = word.toLowerCase();
-    counts[classifyWord(word)]++;
+    const wordClass = classifyWord(word);
+    counts[wordClass]++;
+
+    if (wordClass === "english") {
+      if (ENGLISH_CODE_SWITCH_MARKERS.has(lower)) hasEnglishSwitchMarker = true;
+    }
 
     if (ENGLISH_CLINICAL_TERMS.has(lower)) preserveSet.add(word);
 
@@ -155,6 +164,14 @@ export function detectLanguage(text: string): DetectResult {
 
   // French present + any other language = Lebanese code-switch → mixed
   if (frenchRatio > 0.05 && (arabiziRatio > 0 || englishRatio > 0.2)) {
+    dominantLanguage = "mixed";
+  // A clear English phrase/discourse marker inside otherwise-Arabizi text is a
+  // genuine code switch. One unknown Latin token alone is not enough evidence.
+  } else if (
+    arabiziRatio > 0.25 &&
+    englishRatio > 0 &&
+    hasEnglishSwitchMarker
+  ) {
     dominantLanguage = "mixed";
   // English dominant but any Arabizi present = Lebanese code-switching → mixed
   } else if (englishRatio > 0.5 && arabiziRatio > 0) {
