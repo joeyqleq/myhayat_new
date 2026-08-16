@@ -190,16 +190,24 @@ export function validateResponse(
     });
   }
 
-  if (profile.dominantLanguage === "arabizi" || profile.dominantLanguage === "mixed") {
-    const nonLebanese = findForbiddenTokens(response, NON_LEBANESE_GENERATION_FORMS);
-    if (nonLebanese.length > 0) {
-      issues.push({
-        type: "dialect_contamination",
-        detail: `Known non-Lebanese generation forms: ${nonLebanese.join(", ")}.`,
-        severity: "fatal",
-      });
-    }
+  const nonLebanese = findForbiddenTokens(response, NON_LEBANESE_GENERATION_FORMS);
+  if (nonLebanese.length > 0) {
+    issues.push({
+      type: "dialect_contamination",
+      detail: `Known non-Lebanese generation forms: ${nonLebanese.join(", ")}.`,
+      severity: "fatal",
+    });
+  }
 
+  if (/\bkol\s+shi\s+7assas\b/i.test(response)) {
+    issues.push({
+      type: "gibberish",
+      detail: "Known incoherent production phrase: kol shi 7assas.",
+      severity: "fatal",
+    });
+  }
+
+  if (profile.dominantLanguage === "arabizi" || profile.dominantLanguage === "mixed") {
     const unknown = findForbiddenTokens(response, UNKNOWN_REVIEW_REQUIRED_FORMS);
     if (unknown.length > 0) {
       issues.push({

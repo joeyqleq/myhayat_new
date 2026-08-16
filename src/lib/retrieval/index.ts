@@ -25,8 +25,12 @@ export async function retrieveContext(
   try {
     const retriever = new VectorizeRetriever();
     const chunks = await dualRetrieve(query, semanticEnglish ?? null, retriever, { topK });
-    if (chunks.length === 0) return { text: "", chunks: 0 };
-    return { text: formatContext(chunks), chunks: chunks.length };
+    // Language realization is supplied by the compact always-on surface guide.
+    // Semantic RAG is reserved for clinical/context knowledge so an arbitrary
+    // retrieved slang chunk cannot override the generation layer.
+    const supportChunks = chunks.filter((chunk) => chunk.category !== "language");
+    if (supportChunks.length === 0) return { text: "", chunks: 0 };
+    return { text: formatContext(supportChunks), chunks: supportChunks.length };
   } catch {
     return { text: "", chunks: 0 };
   }

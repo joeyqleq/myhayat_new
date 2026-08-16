@@ -173,8 +173,8 @@ function isMedicalEmergency(lower: string): boolean {
 const GUIDANCE: Record<SafetyCategory, string> = {
   crisis: `CRISIS MODE: Acknowledge pain directly. Ask one clear safety question. Provide ${CRISIS_CONFIG.lifelineName} ${CRISIS_CONFIG.lifelineNumber}. Short, calm, non-euphemistic.`,
   immediate_danger: `CRISIS MODE: Acknowledge pain directly. Ask one clear safety question. Provide ${CRISIS_CONFIG.lifelineName} ${CRISIS_CONFIG.lifelineNumber}. Short, calm, non-euphemistic.`,
-  high_distress: "High distress: Respond with 2-3 short sentences. Acknowledge fully. One grounding suggestion max. No advice-giving.",
-  possible_self_harm: "High distress: Respond with 2-3 short sentences. Acknowledge fully. One grounding suggestion max. No advice-giving.",
+  high_distress: "High distress: Respond with 2-3 short sentences. Acknowledge fully. Ask one useful question unless the user explicitly requests immediate coping help. Do not automatically prescribe breathing or grounding.",
+  possible_self_harm: "High distress: Respond with 2-3 short sentences. Acknowledge fully. Ask one clear safety-oriented question. Do not automatically prescribe an exercise.",
   emotional_distress: "Emotional distress: Warm, brief. Acknowledge before anything else. Ask one follow-up.",
   medical_emergency: "Medical emergency: Stay calm, ask if they can call for help immediately. Keep response very short.",
   abuse_violence: "Abuse/violence: Validate safety concern, ask if they are safe right now, provide support without pressuring.",

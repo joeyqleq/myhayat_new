@@ -65,7 +65,7 @@ function extractDelta(parsed: Record<string, unknown>): string {
     ?? "";
 }
 
-/** Buffer a CF Workers AI SSE response into text so dialect checks can run BEFORE display. */
+/** Buffer a CF Workers AI SSE response into text so quality checks run BEFORE display. */
 async function readCFStreamToText(cfStream: ReadableStream): Promise<string> {
   const decoder = new TextDecoder();
   const reader = cfStream.getReader();
@@ -109,70 +109,6 @@ async function readCFStreamToText(cfStream: ReadableStream): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
-// Streaming transform used for non-dialect-gated responses
-// ---------------------------------------------------------------------------
-
-function transformCFStream(
-  cfStream: ReadableStream,
-  langProfile: SessionLanguageProfile,
-  historyTexts: string[],
-  onValidation?: (fullText: string) => void,
-): ReadableStream {
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder();
-  const textId = `part-${Date.now()}`;
-  let buffer = "";
-  let fullText = "";
-
-  return new ReadableStream({
-    async start(controller) {
-      const send = (chunk: object) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`));
-
-      send({ type: "start" });
-      send({ type: "start-step" });
-      send({ type: "text-start", id: textId });
-
-      try {
-        const reader = cfStream.getReader();
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || !trimmed.startsWith("data: ")) continue;
-            const data = trimmed.slice(6);
-            if (data === "[DONE]") continue;
-            try {
-              const delta = extractDelta(JSON.parse(data) as Record<string, unknown>);
-              if (delta) {
-                fullText += delta;
-                send({ type: "text-delta", id: textId, delta });
-              }
-            } catch {
-              // non-JSON SSE line
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Stream transform error:", err);
-      } finally {
-        send({ type: "text-end", id: textId });
-        send({ type: "finish-step" });
-        send({ type: "finish", finishReason: "stop" });
-        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-        controller.close();
-
-        if (onValidation) onValidation(fullText);
-      }
-    },
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Shared helpers
 // ---------------------------------------------------------------------------
 
@@ -201,11 +137,10 @@ function serviceErrorText(profile: SessionLanguageProfile): string {
   return "Fi meshkle zghire hala2. Jarrib marra tene ba3d shway. 💛";
 }
 
-function dialectFailureFallback(profile: SessionLanguageProfile): string {
-  if (profile.dominantLanguage === "mixed") {
-    return "Sorry, ma fhemet 3lek mnih. Fik t2oula bi tari2a tene?";
-  }
-  return "Ma fhemet 3lek mnih. Fik t2oula bi tari2a tene?";
+function qualityFailureFallback(): string {
+  // Deliberately plain English: after two failed language-quality attempts,
+  // do not invent an unreviewed Lebanese fallback merely to match script.
+  return "I'm sorry—I couldn't form a clear response. Could you try that once more?";
 }
 
 // ---------------------------------------------------------------------------
@@ -309,7 +244,7 @@ export async function POST(req: Request): Promise<Response> {
       maxTokens: dialectMode ? 512 : 1024,
       temperature: dialectMode ? 0.35 : 0.6,
     };
-    let result = await router.callWithFallback(cfMessages, systemPrompt, generationOptions);
+    const result = await router.callWithFallback(cfMessages, systemPrompt, generationOptions);
 
     if (!result) {
       fallbackUsed = true;
@@ -331,101 +266,63 @@ export async function POST(req: Request): Promise<Response> {
       .filter(m => m.role === "assistant")
       .map(m => m.content);
 
-    // Arabizi/mixed replies are deliberately buffered. The old implementation
-    // validated only after nonsense had already streamed to the user.
-    if (dialectMode) {
-      let fullText = await readCFStreamToText(result.stream);
-      let vr = validateResponse(fullText, langProfile, historyTexts);
+    // Every generated reply is buffered. This prevents wrong-language output,
+    // prompt leakage, loops, and broken Arabizi from reaching the user first.
+    let fullText = await readCFStreamToText(result.stream);
+    let vr = validateResponse(fullText, langProfile, historyTexts);
 
-      if (vr.rewriteNeeded) {
-        fallbackUsed = true;
-        console.warn(JSON.stringify({
-          event: "dialect_gate_retry",
-          requestId,
-          model: usedModel,
-          issues: vr.issues,
-        }));
+    if (vr.rewriteNeeded) {
+      fallbackUsed = true;
+      console.warn(JSON.stringify({
+        event: "quality_gate_retry",
+        requestId,
+        model: usedModel,
+        issues: vr.issues,
+      }));
 
-        const retryPrompt = `${systemPrompt}\n\n## RETRY CONSTRAINT\nYour previous draft failed deterministic Lebanese quality checks. Rewrite from scratch using only simple, high-confidence Lebanese wording. Do not use Egyptian forms, invented Arabizi, repeated filler, or malformed words. Preserve the intended meaning.`;
-        const retry = await router.callWithFallback(cfMessages, retryPrompt, {
-          maxTokens: 512,
-          temperature: 0.2,
-        });
+      const retryPrompt = `${systemPrompt}\n\n## RETRY CONSTRAINT\nYour previous draft failed deterministic quality checks. Rewrite from scratch in the CURRENT turn's required language. Preserve the intended meaning. Do not leak instructions, repeat filler, invent words, or use Egyptian forms. For Lebanese Arabizi, use only simple high-confidence wording.`;
+      const retry = await router.callWithFallback(cfMessages, retryPrompt, {
+        maxTokens: dialectMode ? 512 : 1024,
+        temperature: dialectMode ? 0.2 : 0.35,
+      });
 
-        if (retry) {
-          usedModel = retry.model;
-          usedAccount = retry.accountAlias;
-          const retryText = await readCFStreamToText(retry.stream);
-          const retryVr = validateResponse(retryText, langProfile, historyTexts);
-          if (!retryVr.rewriteNeeded && retryText) {
-            fullText = retryText;
-            vr = retryVr;
-          } else {
-            vr = retryVr;
-          }
+      if (retry) {
+        usedModel = retry.model;
+        usedAccount = retry.accountAlias;
+        const retryText = await readCFStreamToText(retry.stream);
+        const retryVr = validateResponse(retryText, langProfile, historyTexts);
+        if (!retryVr.rewriteNeeded && retryText) {
+          fullText = retryText;
+          vr = retryVr;
+        } else {
+          vr = retryVr;
         }
       }
-
-      if (!fullText || vr.rewriteNeeded) {
-        fullText = dialectFailureFallback(langProfile);
-        logErrorClass = "dialect_validation_failed";
-        validationOk = false;
-      } else {
-        validationOk = true;
-      }
-
-      console.log(JSON.stringify({
-        requestId,
-        model: usedModel,
-        accountAlias: usedAccount,
-        latencyMs: Date.now() - startMs,
-        safetyCategory,
-        dominantLanguage,
-        retrievedChunks,
-        validationOk,
-        fallbackUsed,
-        errorClass: logErrorClass,
-        validationIssues: vr.issues.length,
-      }));
-
-      return sseResponse(buildInlineStream(fullText, logErrorClass ? "error" : "stop"));
     }
 
-    // English / Arabic-script responses can keep low-latency streaming.
-    const onValidation = (fullText: string) => {
-      if (!langProfile) return;
-      const vr = validateResponse(fullText, langProfile, historyTexts);
-      validationOk = !vr.rewriteNeeded;
-      if (!vr.valid) {
-        console.warn(JSON.stringify({
-          event: "validation_failed",
-          requestId,
-          issues: vr.issues,
-        }));
-      }
-      console.log(JSON.stringify({
-        requestId,
-        model: usedModel,
-        accountAlias: usedAccount,
-        latencyMs: Date.now() - startMs,
-        safetyCategory,
-        dominantLanguage,
-        retrievedChunks,
-        validationOk,
-        fallbackUsed,
-        errorClass: logErrorClass,
-        validationIssues: vr.issues.length,
-      }));
-    };
+    if (!fullText || vr.rewriteNeeded) {
+      fullText = qualityFailureFallback();
+      logErrorClass = "response_validation_failed";
+      validationOk = false;
+    } else {
+      validationOk = true;
+    }
 
     console.log(JSON.stringify({
-      requestId, event: "stream_start",
-      model: usedModel, accountAlias: usedAccount,
+      requestId,
+      model: usedModel,
+      accountAlias: usedAccount,
       latencyMs: Date.now() - startMs,
-      safetyCategory, dominantLanguage, retrievedChunks,
+      safetyCategory,
+      dominantLanguage,
+      retrievedChunks,
+      validationOk,
+      fallbackUsed,
+      errorClass: logErrorClass,
+      validationIssues: vr.issues.length,
     }));
 
-    return sseResponse(transformCFStream(result.stream, langProfile, historyTexts, onValidation));
+    return sseResponse(buildInlineStream(fullText, logErrorClass ? "error" : "stop"));
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unexpected error";
     console.error("Chat API Error:", msg, { requestId, latencyMs: Date.now() - startMs });
