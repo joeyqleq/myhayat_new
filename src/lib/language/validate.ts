@@ -143,7 +143,9 @@ export function validateResponse(
     /<\/?(?:think|analysis)>/i.test(response) ||
     /\bthe user (wrote|said)\b/i.test(response) ||
     /\b(?:okay,?\s+)?let me (?:start|see|think)\b/i.test(response) ||
-    /\bi need to (?:respond|parse|explain|acknowledge)\b/i.test(response)
+    /\bi need to (?:respond|parse|explain|acknowledge)\b/i.test(response) ||
+    // "Acknowledge the X and the Y." — instruction leaked as literal response text
+    /^acknowledge the\b/i.test(response.trim())
   ) {
     issues.push({
       type: "prompt_leak",

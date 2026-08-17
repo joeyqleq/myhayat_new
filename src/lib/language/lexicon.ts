@@ -133,7 +133,15 @@ export const NON_LEBANESE_GENERATION_FORMS = new Set([
  * layer or production regressions. Treat these as fatal if generated.
  */
 export const UNKNOWN_REVIEW_REQUIRED_FORMS = new Set([
+  // Original unvalidated synthetic tokens
   "nfamela", "nfa3el", "za7rat", "nsemo",
+  // Model-generated hallucinations caught in quality review 2026-08-18
+  "btetkeles",  // invented Arabizi verb — meaningless
+  "entah",      // not a Lebanese pronoun (Lebanese: enta/ente)
+  "7aja2",      // wrongly glottalized form of 7aja (thing/need)
+  "entafze2",   // not a Lebanese word
+  "tet7as",     // not a valid Lebanese conjugation
+  "mohtash",    // not a Lebanese word
 ]);
 
 /** Production-confirmed meaningless/corrupted output, always fatal. */

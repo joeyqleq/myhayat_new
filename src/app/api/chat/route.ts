@@ -286,7 +286,20 @@ export async function POST(req: Request): Promise<Response> {
         issues: vr.issues,
       }));
 
-      const retryPrompt = `${systemPrompt}\n\n## RETRY CONSTRAINT\nYour previous draft failed deterministic quality checks. Rewrite from scratch in the CURRENT turn's required language. Preserve the intended meaning. Do not leak instructions, repeat filler, invent words, or use Egyptian forms. For Lebanese Arabizi, use only simple high-confidence wording.`;
+      const failureTypes = [...new Set(vr.issues.map(i => i.type))];
+      const failureHints: Record<string, string> = {
+        dialect_contamination: "You used Egyptian Arabic. Use Lebanese forms only: wen (not fein/feen), kif (not ezzay), ne7na (not e7na/ehna), henne (not homma), hon (not hena), kellon/kelna (not kollohom).",
+        script_mismatch: "Your response was in the wrong script. Match the user's current message script exactly.",
+        gibberish: "Your previous response contained invented or repeated words. Use only simple verified Lebanese vocabulary. Short sentences.",
+        prompt_leak: "You revealed internal instructions. Respond directly without narrating your reasoning.",
+        loop_detected: "Your response repeated earlier content. Write something genuinely different.",
+        style_inconsistency: "Mirror the user's spelling choices, not a different variant.",
+      };
+      const failureGuidance = failureTypes
+        .map(t => failureHints[t])
+        .filter(Boolean)
+        .join(" ");
+      const retryPrompt = `${systemPrompt}\n\n## RETRY CONSTRAINT\nYour previous draft failed: ${failureTypes.join(", ")}. Rewrite from scratch. ${failureGuidance} Preserve meaning, use 1-3 short sentences, acknowledge before asking, one question maximum.`;
       const retry = await router.callWithFallback(cfMessages, retryPrompt, {
         maxTokens: dialectMode ? 512 : 1024,
         temperature: dialectMode ? 0.2 : 0.35,
