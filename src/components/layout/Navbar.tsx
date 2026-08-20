@@ -44,7 +44,7 @@ export const Navbar = () => {
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-1.5 xl:gap-2 relative z-10">
+        <div className="hidden md:flex flex-1 min-w-0 items-center justify-center gap-1.5 xl:gap-2 relative z-10">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -63,7 +63,7 @@ export const Navbar = () => {
         </div>
 
         {/* Actions */}
-        <div className="hidden lg:flex items-center gap-2 shrink-0 relative z-10">
+        <div className="hidden md:flex items-center gap-2 shrink-0 relative z-10">
             {/* Language toggle — segmented pill, both options always visible */}
             <button
               onClick={toggleLocale}
@@ -91,7 +91,7 @@ export const Navbar = () => {
 
         {/* Mobile Menu Toggle */}
         <button 
-            className="lg:hidden p-2 text-myhayat-salmon dark:text-myhayat-pink relative z-10"
+            className="md:hidden p-2 text-myhayat-salmon dark:text-myhayat-pink relative z-10"
             onClick={() => setIsOpen(!isOpen)}
         >
             <span className="sr-only">Open menu</span>

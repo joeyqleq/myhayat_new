@@ -16,8 +16,8 @@ import { faqJsonLd } from "@/lib/seo";
 function FAQ({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = React.useState(false);
   return (
-    <div className="border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 rounded-2xl overflow-hidden border-glow-card">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-left hover:bg-myhayat-pink/5 transition-colors">
+    <div className="border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 rounded-2xl overflow-hidden card-edge-glow">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-5 text-start hover:bg-myhayat-pink/5 transition-colors">
         <span className="font-bold text-lg">{question}</span>
         <ChevronDown className={`w-5 h-5 text-myhayat-salmon dark:text-myhayat-pink transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -91,8 +91,8 @@ export default function PricingPage() {
         {/* Hero */}
         <section className="relative pt-36 pb-12 px-4 md:px-8 overflow-hidden">
           {/* Decorative: Cubes — represent value/building blocks */}
-          <img src="/decor_cube_1.svg" alt="" className="absolute -top-10 -left-20 w-48 opacity-8 dark:opacity-4 pointer-events-none hidden lg:block animate-drift" />
-          <img src="/decor_cube_2.svg" alt="" className="absolute bottom-0 right-0 w-40 opacity-6 dark:opacity-3 pointer-events-none hidden lg:block animate-drift" style={{ animationDelay: "2s" }} />
+          <img src="/decor_cube_1.svg" alt="" className="absolute -top-10 -left-20 w-48 opacity-8 dark:opacity-4 pointer-events-none hidden lg:block pointer-events-none" />
+          <img src="/decor_cube_2.svg" alt="" className="absolute bottom-0 right-0 w-40 opacity-6 dark:opacity-3 pointer-events-none hidden lg:block pointer-events-none" />
 
           <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
             <div className="inline-block px-6 py-2 bg-myhayat-yellow text-gray-900 rounded-full font-bold text-sm transform -rotate-2 border-2 border-myhayat-salmon shadow-sm">
@@ -116,7 +116,7 @@ export default function PricingPage() {
         </section>
 
         {/* Pricing Cards */}
-        <section className="py-12 px-4 md:px-8">
+        <section className="py-12 px-4 md:px-8 section-daylight">
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
             {plans.map((plan, i) => (
               <div key={i} className={`relative ${plan.popular ? "md:-mt-4 md:mb-4" : ""}`}>
@@ -154,7 +154,7 @@ export default function PricingPage() {
         </section>
 
         {/* FAQ */}
-        <section className="py-20 px-4 md:px-8 relative">
+        <section className="py-20 px-4 md:px-8 relative section-teal">
           {/* Decorative: Shapes ring pattern — represents questions/thinking */}
           <img src="/decor_shapes_ring_pattern.svg" alt="" className="absolute -bottom-10 -right-10 w-48 opacity-6 dark:opacity-3 pointer-events-none hidden lg:block" />
 

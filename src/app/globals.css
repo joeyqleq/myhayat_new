@@ -814,3 +814,67 @@ body {
     @apply font-mono;
   }
 }
+
+/* ======================================
+   SECTION BACKGROUND FAMILIES
+   Daylight / Sunset / Night / Teal
+   ====================================== */
+
+.section-daylight {
+  background: linear-gradient(135deg, var(--color-myhayat-offwhite) 0%, #FFE8F0 60%, #FFF5E0 100%);
+}
+.dark .section-daylight {
+  background: linear-gradient(135deg, #1a0a14 0%, #1e0d17 100%);
+}
+
+.section-sunset {
+  background: linear-gradient(135deg, #F85BAA 0%, #F98181 50%, #FEC810 100%);
+  color: white;
+}
+.dark .section-sunset {
+  background: linear-gradient(135deg, #9b2455 0%, #7a2020 50%, #8a5a00 100%);
+}
+
+.section-night {
+  background: linear-gradient(135deg, #1a0a14 0%, #0d0818 50%, #130a1f 100%);
+  color: var(--color-myhayat-offwhite);
+}
+
+.section-teal {
+  background: linear-gradient(135deg, #e8f7f5 0%, #d0eeea 100%);
+}
+.dark .section-teal {
+  background: linear-gradient(135deg, #041f1c 0%, #072b26 100%);
+}
+
+/* ======================================
+   SECTION BACKGROUND FAMILIES
+   Daylight / Sunset / Night / Teal
+   ====================================== */
+
+.section-daylight {
+  background: linear-gradient(135deg, var(--color-myhayat-offwhite) 0%, #FFE8F0 60%, #FFF5E0 100%);
+}
+.dark .section-daylight {
+  background: linear-gradient(135deg, #1a0a14 0%, #1e0d17 100%);
+}
+
+.section-sunset {
+  background: linear-gradient(135deg, #F85BAA 0%, #F98181 50%, #FEC810 100%);
+  color: white;
+}
+.dark .section-sunset {
+  background: linear-gradient(135deg, #9b2455 0%, #7a2020 50%, #8a5a00 100%);
+}
+
+.section-night {
+  background: linear-gradient(135deg, #1a0a14 0%, #0d0818 50%, #130a1f 100%);
+  color: var(--color-myhayat-offwhite);
+}
+
+.section-teal {
+  background: linear-gradient(135deg, #e8f7f5 0%, #d0eeea 100%);
+}
+.dark .section-teal {
+  background: linear-gradient(135deg, #041f1c 0%, #072b26 100%);
+}

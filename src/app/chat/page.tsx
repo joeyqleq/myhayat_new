@@ -139,7 +139,7 @@ export default function ChatPage() {
                         <button
                           key={i}
                           onClick={() => handleSend(text)}
-                          className="px-4 py-2 rounded-full border-2 border-myhayat-salmon/30 dark:border-myhayat-pink/30 text-sm font-medium hover:bg-myhayat-pink/10 hover:border-myhayat-pink/50 transition-all text-gray-700 dark:text-gray-300 text-left flex items-center gap-2"
+                          className="px-4 py-2 rounded-full border-2 border-myhayat-salmon/30 dark:border-myhayat-pink/30 text-sm font-medium hover:bg-myhayat-pink/10 hover:border-myhayat-pink/50 transition-all text-gray-700 dark:text-gray-300 text-start flex items-center gap-2"
                         >
                           <MessageCircle className="w-4 h-4 text-myhayat-pink" />
                           {text}

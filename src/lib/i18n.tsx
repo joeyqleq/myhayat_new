@@ -25,12 +25,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("myhayat-locale") as Locale | null;
     if (saved && (saved === "en" || saved === "ar")) {
       setLocaleState(saved);
+      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = saved;
     }
   }, []);
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
     localStorage.setItem("myhayat-locale", l);
+    document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = l;
   }, []);
 
   const toggleLocale = useCallback(() => {

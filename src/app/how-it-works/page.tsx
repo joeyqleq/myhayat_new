@@ -80,7 +80,7 @@ export default function HowItWorksPage() {
       <main className="flex-grow w-full">
 
         {/* Hero */}
-        <section className="relative pt-36 pb-16 px-4 md:px-8 overflow-hidden">
+        <section className="relative pt-36 pb-16 px-4 md:px-8 overflow-hidden section-daylight">
           <img src="/decor_wireframes_flower_1.svg" alt="" className="absolute -top-10 -right-20 w-72 opacity-8 dark:opacity-4 pointer-events-none hidden lg:block" />
           <img src="/decor_twinkle_yellow.svg" alt="" className="absolute bottom-20 left-10 w-8 h-8 opacity-40 animate-pulse pointer-events-none hidden md:block" />
           <img src="/decor_shapes_ring_pattern.svg" alt="" className="absolute top-40 -left-20 w-64 opacity-5 pointer-events-none hidden lg:block" />
@@ -106,7 +106,7 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Clinical Data Pipeline */}
-        <section className="py-16 px-4 md:px-8">
+        <section className="py-16 px-4 md:px-8 section-daylight">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-titan text-center mb-16">
               The Clinical Data <span className="text-myhayat-pink">Pipeline</span>
@@ -213,7 +213,7 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Security Section */}
-        <section className="py-20 px-4 md:px-8 relative">
+        <section className="py-20 px-4 md:px-8 relative section-teal">
           <img src="/decor_wireframes_diamond.svg" alt="" className="absolute top-10 right-10 w-40 opacity-6 dark:opacity-3 pointer-events-none hidden lg:block" />
 
           <div className="max-w-4xl mx-auto">
@@ -224,7 +224,7 @@ export default function HowItWorksPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {securityItems.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-teal/20 hover:border-myhayat-teal/50 hover-lift transition-all border-glow-card">
+                <div key={i} className="flex items-start gap-4 p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-teal/20 hover:border-myhayat-teal/50 hover-lift transition-all card-edge-glow">
                   <div className="w-10 h-10 rounded-full bg-myhayat-teal/10 text-myhayat-teal flex items-center justify-center shrink-0">
                     {item.icon}
                   </div>

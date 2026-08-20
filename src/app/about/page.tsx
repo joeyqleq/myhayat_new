@@ -69,9 +69,9 @@ export default function AboutPage() {
       <main className="flex-grow w-full">
 
         {/* Hero Section */}
-        <section className="relative pt-36 pb-20 px-4 md:px-8 overflow-hidden">
+        <section className="relative pt-36 pb-20 px-4 md:px-8 overflow-hidden section-daylight">
           {/* Decorative: Planet in background */}
-          <img src="/decor_hayat_planet.svg" alt="" className="absolute -top-20 -right-32 w-[500px] h-[500px] opacity-10 dark:opacity-5 pointer-events-none animate-drift" />
+          <img src="/decor_hayat_planet.svg" alt="" className="absolute -top-20 -right-32 w-[500px] h-[500px] opacity-10 dark:opacity-5 pointer-events-none pointer-events-none" />
           {/* Decorative: Eye in hand (hamsa) — culturally significant */}
           <img src="/decor_eye_in_hand.svg" alt="" className="absolute bottom-10 -left-16 w-40 h-40 opacity-8 dark:opacity-5 pointer-events-none animate-breathe hidden lg:block" />
 
@@ -92,7 +92,7 @@ export default function AboutPage() {
         </section>
 
         {/* How We're Different Section */}
-        <section className="py-20 px-4 md:px-8 relative">
+        <section className="py-20 px-4 md:px-8 relative section-daylight">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-titan mb-4">
@@ -124,7 +124,7 @@ export default function AboutPage() {
         </section>
 
         {/* Generic vs Purpose-Built Comparison */}
-        <section className="py-20 px-4 md:px-8 relative overflow-hidden">
+        <section className="py-20 px-4 md:px-8 relative overflow-hidden section-night">
           <div className="absolute inset-0 gradient-warm opacity-40" />
           <img src="/decor_wireframes_diamond.svg" alt="" className="absolute -right-20 top-10 w-64 opacity-5 hidden lg:block" />
           
@@ -180,8 +180,8 @@ export default function AboutPage() {
         </section>
 
         {/* Crisis Stats Section */}
-        <section className="py-20 px-4 md:px-8 relative">
-          <img src="/decor_cloud_1.svg" alt="" className="absolute top-0 right-0 w-64 opacity-10 dark:opacity-5 pointer-events-none animate-drift hidden md:block" />
+        <section className="py-20 px-4 md:px-8 relative section-teal">
+          <img src="/decor_cloud_1.svg" alt="" className="absolute top-0 right-0 w-64 opacity-10 dark:opacity-5 pointer-events-none hidden md:block" />
 
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-titan text-center mb-4">
@@ -215,7 +215,7 @@ export default function AboutPage() {
         </section>
 
         {/* Clinical Advisory Board */}
-        <section className="py-20 px-4 md:px-8 relative">
+        <section className="py-20 px-4 md:px-8 relative section-daylight">
           <img src="/decor_wireframes_globe.svg" alt="" className="absolute top-0 left-0 w-48 opacity-8 dark:opacity-5 pointer-events-none hidden lg:block" />
           
           <div className="max-w-6xl mx-auto">
@@ -252,7 +252,7 @@ export default function AboutPage() {
         <section className="mx-4 md:mx-8 mb-20">
           <div className="max-w-6xl mx-auto relative rounded-[3rem] bg-myhayat-pink dark:bg-myhayat-pink/90 p-12 md:p-16 overflow-hidden border-4 border-myhayat-salmon shadow-[var(--shadow-curved)]">
             <JapaneseCubesPattern size={28} opacity={0.1} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-overlay"} />
-            <img src="/decor_shooting_star.svg" alt="" className="absolute top-10 right-10 w-20 opacity-20 animate-drift hidden md:block" />
+            <img src="/decor_shooting_star.svg" alt="" className="absolute top-10 right-10 w-20 opacity-20 hidden md:block" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
               <div className="flex-1 text-center md:text-start space-y-4">

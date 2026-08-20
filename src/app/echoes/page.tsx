@@ -83,7 +83,7 @@ export default function EchoesPage() {
         <section className="py-16 px-4 md:px-8 relative overflow-hidden">
           <div className="absolute inset-0 gradient-warm" />
           {/* Decorative: Planet — represents the cosmos of memory/afterlife */}
-          <img src="/decor_hayat_planet_2.svg" alt="" className="absolute top-10 right-10 w-24 opacity-20 dark:opacity-10 pointer-events-none animate-drift hidden md:block" />
+          <img src="/decor_hayat_planet_2.svg" alt="" className="absolute top-10 right-10 w-24 opacity-20 dark:opacity-10 pointer-events-none hidden md:block" />
 
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
             <div className="flex-1 space-y-6">
@@ -141,7 +141,7 @@ export default function EchoesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {phases.map((phase, i) => (
-                <MyHayatCard key={i} noPattern className="p-6 bg-white dark:bg-[#251320] hover:-translate-y-2 transition-transform border-glow-card">
+                <MyHayatCard key={i} noPattern className="p-6 bg-white dark:bg-[#251320] transition-shadow card-edge-glow">
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-12 h-12 rounded-full ${phase.color} text-white flex items-center justify-center shadow-md`}>
                       {phase.icon}
@@ -173,7 +173,7 @@ export default function EchoesPage() {
                 { title: "Cultural Respect", desc: "Rooted in Lebanese mourning traditions — sitting with grief, not rushing through it." },
                 { title: "User Control", desc: "Pause, delete, or export your Echoes data at any time. You're always in control." },
               ].map((item, i) => (
-                <div key={i} className="p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-lavender/20 hover:border-myhayat-lavender/50 transition-colors border-glow-card">
+                <div key={i} className="p-6 rounded-2xl bg-white/50 dark:bg-[#251320]/50 border-2 border-myhayat-lavender/20 hover:border-myhayat-lavender/50 transition-colors card-edge-glow">
                   <h4 className="font-titan text-xl mb-2 text-myhayat-lavender">{item.title}</h4>
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                 </div>
@@ -185,7 +185,7 @@ export default function EchoesPage() {
         {/* CTA */}
         <section className="py-20 px-4 md:px-8">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <img src="/decor_cloud_3.svg" alt="" className="mx-auto w-40 opacity-30 animate-drift mb-4" />
+            <img src="/decor_cloud_3.svg" alt="" className="mx-auto w-40 opacity-30 mb-4" />
             <h2 className="text-3xl md:text-5xl font-titan">
               Ready to remember?
             </h2>
