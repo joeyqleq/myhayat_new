@@ -7,13 +7,13 @@ import { MyHayatButton } from "../ui/MyHayatButton";
 import { PixelHoverPill } from "../ui/PixelHoverPill";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { JapaneseCubesPattern } from "@/components/ui/JapaneseCubesPattern";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { t, toggleLocale } = useTranslation();
+  const { t, locale, toggleLocale } = useTranslation();
 
   const navLinks = [
     { name: t("nav.home"), href: "/" },
@@ -64,14 +64,24 @@ export const Navbar = () => {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center gap-2 shrink-0 relative z-10">
-            {/* Language Toggle */}
-            <button 
+            {/* Language toggle — segmented pill, both options always visible */}
+            <button
               onClick={toggleLocale}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/40 text-myhayat-salmon transition-colors text-sm font-bold dark:text-myhayat-pink dark:hover:bg-white/10"
               aria-label="Switch language"
+              className="relative flex items-center gap-0 rounded-full border-2 border-myhayat-salmon/40 dark:border-myhayat-pink/30 bg-white/50 dark:bg-black/20 overflow-hidden text-xs font-bold transition-colors hover:border-myhayat-salmon dark:hover:border-myhayat-pink"
             >
-              <Globe className="w-4 h-4" />
-              {t("language.switch")}
+              {(["en", "ar"] as const).map((lang) => (
+                <span
+                  key={lang}
+                  className={`px-3 py-1.5 transition-colors duration-200 ${
+                    locale === lang
+                      ? "bg-myhayat-pink text-white"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
+                >
+                  {lang === "en" ? "EN" : "ع"}
+                </span>
+              ))}
             </button>
 
             <MyHayatButton size="sm" variant="primary" className="text-sm border-2 border-black dark:border-white text-black dark:text-white hover:bg-myhayat-pink/90 drop-shadow-[2px_2px_0_rgba(254,200,16,1)]">
@@ -109,12 +119,23 @@ export const Navbar = () => {
           ))}
           <div className="h-px bg-myhayat-salmon/20 my-1" />
           <div className="flex items-center justify-center gap-3">
-            <button 
+            <button
               onClick={toggleLocale}
-              className="flex items-center gap-1 px-4 py-2 rounded-full bg-white/30 text-myhayat-salmon font-bold text-sm dark:bg-white/10 dark:text-myhayat-pink"
+              aria-label="Switch language"
+              className="relative flex items-center rounded-full border-2 border-myhayat-salmon/40 dark:border-myhayat-pink/30 bg-white/50 dark:bg-black/20 overflow-hidden text-sm font-bold"
             >
-              <Globe className="w-4 h-4" />
-              {t("language.switch")}
+              {(["en", "ar"] as const).map((lang) => (
+                <span
+                  key={lang}
+                  className={`px-4 py-2 transition-colors duration-200 ${
+                    locale === lang
+                      ? "bg-myhayat-pink text-white"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
+                >
+                  {lang === "en" ? "EN" : "ع"}
+                </span>
+              ))}
             </button>
 
           </div>

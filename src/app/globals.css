@@ -350,8 +350,8 @@ body {
 }
 
 @keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.33,0,0.66,0); }
+  50% { transform: translateY(-8px); animation-timing-function: cubic-bezier(0.33,1,0.68,1); }
 }
 
 @keyframes wiggle {
@@ -386,7 +386,7 @@ body {
 .animate-orbit { animation: orbit 25s ease-in-out infinite; }
 .animate-sway { animation: sway 6s ease-in-out infinite; }
 .animate-color-shift { animation: color-shift 10s ease-in-out infinite; }
-.animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+.animate-bounce-slow { animation: bounce-slow 3s linear infinite; }
 .animate-wiggle { animation: wiggle 2s ease-in-out infinite; }
 .animate-shader-rotate { animation: shader-rotate var(--shader-speed, 30s) linear infinite; }
 .animate-shader-rotate-reverse { animation: shader-rotate-reverse var(--shader-speed, 42s) linear infinite; }
@@ -535,20 +535,60 @@ body {
 }
 
 /* ======================================
-   BORDER GLOW ANIMATION (reactbits-inspired)
+   EDGE-GLOW SYSTEM — thin perimeter only, hover/focus triggered
+   Replaces the always-on border-glow-card interior flash.
    ====================================== */
 
-@property --border-glow-angle {
+@property --edge-angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
 
-@keyframes border-glow-rotate {
-  0% { --border-glow-angle: 0deg; }
-  100% { --border-glow-angle: 360deg; }
+@keyframes edge-spin {
+  to { --edge-angle: 360deg; }
 }
 
+/* Stable card with thin perimeter glow on hover/focus only */
+.card-edge-glow {
+  position: relative;
+  isolation: isolate;
+}
+.card-edge-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--edge-angle, 0deg),
+    transparent 55%,
+    rgba(248,91,170,0.9) 68%,
+    rgba(254,200,16,0.7) 76%,
+    rgba(249,129,129,0.7) 84%,
+    transparent 94%
+  );
+  padding: 2px;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 0;
+  pointer-events: none;
+}
+.card-edge-glow:hover::after,
+.card-edge-glow:focus-within::after {
+  opacity: 1;
+  animation: edge-spin 2.5s linear infinite;
+}
+/* Static accessible focus ring */
+.card-edge-glow:focus-visible {
+  outline: 2px solid var(--color-myhayat-pink);
+  outline-offset: 3px;
+}
+
+/* Legacy — kept for any remaining consumers; no longer on cards by default */
 .border-glow-card {
   position: relative;
 }
@@ -558,7 +598,7 @@ body {
   inset: -2px;
   border-radius: inherit;
   background: conic-gradient(
-    from var(--border-glow-angle, 0deg),
+    from var(--edge-angle, 0deg),
     transparent 40%,
     var(--color-myhayat-pink) 55%,
     var(--color-myhayat-yellow) 65%,
@@ -566,13 +606,19 @@ body {
     transparent 90%
   );
   z-index: -1;
-  animation: border-glow-rotate 4s linear infinite;
-  opacity: 0.6;
+  opacity: 0;
+  transition: opacity 0.25s ease;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  padding: 4px;
+  padding: 3px;
+  pointer-events: none;
+}
+.border-glow-card:hover::before,
+.border-glow-card:focus-within::before {
+  opacity: 0.7;
+  animation: edge-spin 3s linear infinite;
 }
 
 /* ======================================
@@ -621,6 +667,137 @@ body {
 .decor-md { width: 4rem; height: 4rem; }
 .decor-lg { width: 6rem; height: 6rem; }
 .decor-xl { width: 10rem; height: 10rem; }
+
+/* ======================================
+   CLOUD TRAVERSAL — cross-viewport lanes
+   Three depth layers; clouds enter outside edge, fully cross, exit.
+   Use translate3d + opacity only (no layout animation).
+   ====================================== */
+
+@keyframes cloud-ltr {
+  0%   { transform: translate3d(-120%, 0, 0); opacity: 0; }
+  5%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translate3d(110vw, 0, 0); opacity: 0; }
+}
+
+@keyframes cloud-rtl {
+  0%   { transform: translate3d(110vw, 0, 0); opacity: 0; }
+  5%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translate3d(-120%, 0, 0); opacity: 0; }
+}
+
+/* Far background lane: large, low opacity, slow */
+.cloud-cross-slow {
+  animation: cloud-ltr 90s linear infinite;
+  opacity: 0;
+}
+.cloud-cross-slow-rtl {
+  animation: cloud-rtl 100s linear infinite;
+  opacity: 0;
+}
+
+/* Mid lane: medium size */
+.cloud-cross-mid {
+  animation: cloud-ltr 60s linear infinite;
+  opacity: 0;
+}
+.cloud-cross-mid-rtl {
+  animation: cloud-rtl 65s linear infinite;
+  opacity: 0;
+}
+
+/* Near lane: slightly more opaque, faster */
+.cloud-cross-near {
+  animation: cloud-ltr 40s linear infinite;
+  opacity: 0;
+}
+.cloud-cross-near-rtl {
+  animation: cloud-rtl 42s linear infinite;
+  opacity: 0;
+}
+
+/* Reduced motion: keep clouds as static low-opacity decoration */
+@media (prefers-reduced-motion: reduce) {
+  .cloud-cross-slow,
+  .cloud-cross-slow-rtl,
+  .cloud-cross-mid,
+  .cloud-cross-mid-rtl,
+  .cloud-cross-near,
+  .cloud-cross-near-rtl {
+    animation: none;
+    opacity: 0.08;
+    transform: none;
+  }
+}
+
+/* ======================================
+   SHOOTING STAR — 2-o'clock → 8-o'clock diagonal
+   Long quiet interval; visible flight ~2.5s; total loop ~16s.
+   ====================================== */
+
+@keyframes shooting-star {
+  /* invisible at rest */
+  0%, 10% {
+    transform: translate3d(40vw, -15vh, 0) rotate(-40deg) scale(0.4);
+    opacity: 0;
+  }
+  /* fade in + travel */
+  12% {
+    transform: translate3d(38vw, -12vh, 0) rotate(-40deg) scale(0.5);
+    opacity: 0.6;
+  }
+  24% {
+    transform: translate3d(20vw, 5vh, 0) rotate(-40deg) scale(0.75);
+    opacity: 1;
+  }
+  /* peak brightness mid-path */
+  36% {
+    transform: translate3d(-5vw, 22vh, 0) rotate(-40deg) scale(0.65);
+    opacity: 0.85;
+  }
+  /* fade out toward lower-left */
+  48% {
+    transform: translate3d(-25vw, 38vh, 0) rotate(-40deg) scale(0.45);
+    opacity: 0;
+  }
+  /* invisible rest of loop */
+  49%, 100% {
+    transform: translate3d(40vw, -15vh, 0) rotate(-40deg) scale(0.4);
+    opacity: 0;
+  }
+}
+
+.shooting-star {
+  animation: shooting-star 16s ease-in-out infinite;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Afterimage copies — lower opacity, slightly behind */
+.shooting-star-ghost-1 {
+  animation: shooting-star 16s ease-in-out infinite;
+  animation-delay: 0.08s;
+  opacity: 0; /* controlled by keyframes */
+  filter: blur(1px);
+}
+.shooting-star-ghost-2 {
+  animation: shooting-star 16s ease-in-out infinite;
+  animation-delay: 0.16s;
+  opacity: 0;
+  filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shooting-star,
+  .shooting-star-ghost-1,
+  .shooting-star-ghost-2 {
+    animation: none;
+    opacity: 0;
+  }
+}
 
 /* ======================================
    BASE LAYER

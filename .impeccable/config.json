@@ -1,0 +1,22 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [
+      "src/app/globals.css"
+    ],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "animate-bounce-slow",
+        "reason": "Decorative SVG float on flame icon; keyframe uses cubic-bezier easing, class name triggers false positive",
+        "createdAt": "2026-08-19T23:34:34.735Z"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "animate-bounce",
+        "reason": "animate-bounce substring match; actual class is animate-bounce-slow (decorative float, already suppressed). Real Tailwind animate-bounce not used in project.",
+        "createdAt": "2026-08-19T23:40:13.122Z"
+      }
+    ]
+  }
+}
