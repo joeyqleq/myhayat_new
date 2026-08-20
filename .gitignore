@@ -46,3 +46,6 @@ scratch_*.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.playwright-mcp/
+scripts/adversarial_eval*.py
+eval_results.json

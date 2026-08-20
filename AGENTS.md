@@ -171,3 +171,5 @@ The task tracker is maintained at:
 ---
 
 *Last updated: 2026-06-20T13:05Z — Corrective checkpoint: rejected Codex nav/button/shader experiment was rolled back. Fixed JapaneseCubesPattern hydration risk with stable SVG IDs/rounded points. Removed the hero 24/7 floating card and replaced it with orbiting decor_cube_1/decor_cube_2 animation. `npx tsc --noEmit` passes; `npm run lint` still fails on pre-existing repo-wide lint errors.*
+
+*2026-07-27 corpus checkpoint: added `knowledge/08_myhayat_lebanese_arabizi_corpus.md`, a curated chatbot-ready Lebanese Arabizi/English corpus built on the existing language guides, 2,884 Firecrawl-extracted LebaneseDictionary.com entries, and a privacy-preserving aggregate scan of 931,911 local r/lebanon posts/comments. The document includes spelling/accent variation, grammar, everyday and emotional vocabulary, code-switching, response patterns, and recognize-only safety registers. Reddit usernames, IDs, links, and verbatim messages were excluded. Before production RAG ingestion, complete the native-speaker and Lebanese clinician review listed in the corpus.*

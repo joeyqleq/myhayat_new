@@ -738,33 +738,34 @@ body {
    ====================================== */
 
 @keyframes shooting-star {
-  /* invisible at rest */
-  0%, 10% {
-    transform: translate3d(40vw, -15vh, 0) rotate(-40deg) scale(0.4);
+  /* invisible — positioned far upper-right, outside viewport */
+  0%, 15% {
+    transform: translate3d(55vw, -20vh, 0) rotate(-35deg) scale(0.3);
     opacity: 0;
   }
-  /* fade in + travel */
-  12% {
-    transform: translate3d(38vw, -12vh, 0) rotate(-40deg) scale(0.5);
+  /* entering from upper-right */
+  18% {
+    transform: translate3d(45vw, -10vh, 0) rotate(-35deg) scale(0.4);
+    opacity: 0.5;
+  }
+  /* mid travel — growing, brightest */
+  28% {
+    transform: translate3d(20vw, 10vh, 0) rotate(-35deg) scale(0.55);
+    opacity: 0.9;
+  }
+  /* past center — fading */
+  38% {
+    transform: translate3d(-5vw, 28vh, 0) rotate(-35deg) scale(0.45);
     opacity: 0.6;
   }
-  24% {
-    transform: translate3d(20vw, 5vh, 0) rotate(-40deg) scale(0.75);
-    opacity: 1;
-  }
-  /* peak brightness mid-path */
-  36% {
-    transform: translate3d(-5vw, 22vh, 0) rotate(-40deg) scale(0.65);
-    opacity: 0.85;
-  }
-  /* fade out toward lower-left */
-  48% {
-    transform: translate3d(-25vw, 38vh, 0) rotate(-40deg) scale(0.45);
+  /* exit lower-left */
+  46% {
+    transform: translate3d(-30vw, 45vh, 0) rotate(-35deg) scale(0.35);
     opacity: 0;
   }
   /* invisible rest of loop */
-  49%, 100% {
-    transform: translate3d(40vw, -15vh, 0) rotate(-40deg) scale(0.4);
+  47%, 100% {
+    transform: translate3d(55vw, -20vh, 0) rotate(-35deg) scale(0.3);
     opacity: 0;
   }
 }

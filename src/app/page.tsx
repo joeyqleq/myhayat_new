@@ -42,7 +42,7 @@ export default function Home() {
       <main className="flex-grow w-full">
 
         {/* HERO SECTION */}
-        <section className="relative h-[100dvh] flex items-center pt-20 pb-0 px-4 md:px-8 overflow-hidden">
+        <section className="relative h-[100dvh] flex items-center pt-28 pb-0 px-4 md:px-8 overflow-hidden">
           <div className="absolute inset-0 gradient-warm opacity-50 z-0 pointer-events-none" />
 
           <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center gap-12 md:gap-20 relative z-20">
@@ -105,7 +105,6 @@ export default function Home() {
             {/* Visual Content */}
             <div className="flex-1 relative w-full flex justify-center md:justify-end -translate-y-2 md:-translate-y-4">
                  {/* Blob background */}
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-[linear-gradient(45deg,#F85BAA,#FEC810,#5BB8A6,#F98181)] opacity-20 rounded-full blur-3xl -z-10 animate-rainbow-bg" />
 
                  <div className="relative z-10 w-full max-w-[360px] animate-sequence" style={{ animationDuration: '8s' }}>
                       <Image
@@ -118,19 +117,6 @@ export default function Home() {
                       />
                  </div>
 
-                 {/* Orbiting cubes — playful depth without covering hero copy */}
-                 <div className="hero-cube-orbit -bottom-8 -start-2 md:-start-12 z-20 hidden sm:block" aria-hidden="true">
-                    <div className="hero-cube-orbit__track">
-                      <div className="hero-cube-orbit__cube">
-                        <Image src="/decor_cube_1.svg" alt="" width={96} height={96} />
-                      </div>
-                    </div>
-                    <div className="hero-cube-orbit__track hero-cube-orbit__track--reverse">
-                      <div className="hero-cube-orbit__cube">
-                        <Image src="/decor_cube_2.svg" alt="" width={96} height={96} />
-                      </div>
-                    </div>
-                 </div>
             </div>
           </div>
         </section>
@@ -298,10 +284,10 @@ export default function Home() {
 
           <div className="space-y-4">
             {[
-              { q: "Is this a replacement for real therapy?", a: "No. My Hayat is an accessible companion for emotional support, grounding, and guidance. It is not a replacement for professional clinical therapy. We act as a bridge, and we provide resources to connect you with human professionals when needed.", variant: "waves" as const, color: "pink" as const },
-              { q: "Is my data private and secure?", a: "Absolutely. Your privacy is our priority. Conversation data is encrypted at rest and in transit. We never sell your data, and we do not use your personal conversations to train our models without your explicit consent. You can delete your account and data at any time.", variant: "diamonds" as const, color: "teal" as const },
-              { q: "Does the AI understand Lebanese Arabic?", a: "Yes. Our model is fine-tuned to understand and respond in Lebanese dialect, grasping the cultural nuances, idioms, and context that generic AI often misses.", variant: "triangles" as const, color: "yellow" as const },
-              { q: "How much does it cost?", a: "We believe mental health support should be accessible. The core companion features are completely free. We also offer Premium plans with advanced features like Echoes and unlimited session memory to support the platform.", variant: "hexagons" as const, color: "lavender" as const },
+              { q: t("pricing.faq.q1"), a: t("pricing.faq.a1"), variant: "waves" as const, color: "pink" as const },
+              { q: t("pricing.faq.q2"), a: t("pricing.faq.a2"), variant: "diamonds" as const, color: "teal" as const },
+              { q: t("pricing.faq.q3"), a: t("pricing.faq.a3"), variant: "triangles" as const, color: "yellow" as const },
+              { q: t("pricing.faq.q4"), a: t("pricing.faq.a4"), variant: "hexagons" as const, color: "lavender" as const },
             ].map((faq, i) => (
               <div key={i} className="relative overflow-hidden p-6 bg-white dark:bg-[#251320] border-2 border-myhayat-salmon/20 dark:border-myhayat-pink/20 text-left rounded-[2rem] shadow-[4px_4px_0px_0px_var(--color-myhayat-salmon)] card-edge-glow">
                 <JapaneseCubesPattern variant={faq.variant} colorScheme={faq.color} size={28} opacity={0.05} className={"absolute inset-0 pointer-events-none -z-10" + " mix-blend-multiply dark:mix-blend-overlay"} />
